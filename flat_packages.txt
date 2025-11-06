@@ -1,0 +1,7 @@
+com.github.tchx84.Flatseal
+com.github.vikdevelop.timer
+com.usebottles.bottles
+io.github.nozwock.Packet
+it.mijorus.gearlever
+org.gnome.Boxes
+org.videolan.VLC
