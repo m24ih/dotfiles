@@ -58,6 +58,7 @@ filelight
 firefox
 fish
 fisher
+flatpak
 flutter-bin
 fsearch
 fzf
