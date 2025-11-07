@@ -1,38 +1,36 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Hata durumunda script'i durdur
-set -e
+baseDir=$(dirname "$(realpath "$0")")
+scrDir=$(dirname "$(dirname "$(realpath "$0")")")
 
-echo -e "\n--- Flatpak Kurulum Script'i Başlıyor ---"
+pkg_installed() {
+  local PkgIn=$1
 
-# -----------------------------------------------------------------
-# 1. 'flatpak' Kurulumu ve Yapılandırması
-# -----------------------------------------------------------------
+  if pacman -Q "${PkgIn}" &>/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
 
-# 1.A: flatpak paketini kur (eğer kurulu değilse)
-if ! command -v flatpak &>/dev/null; then
-  echo "'flatpak' bulunamadı. Pacman ile kuruluyor..."
-  # 'yay' zaten kurulu olmalı, ama bu temel paket için pacman kullanmak daha güvenli.
-  sudo pacman -S flatpak --noconfirm --needed
-  echo "'flatpak' başarıyla kuruldu."
-else
-  echo "'flatpak' zaten kurulu."
+if ! pkg_installed flatpak; then
+  sudo pacman -S flatpak
 fi
 
-# 1.B: Flathub deposunu ekle (Flatpak için şart)
-echo "Flathub deposu ekleniyor (gerekirse)..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flats=$(awk -F '#' '{print $1}' "${baseDir}/flat_packages.txt" | sed 's/ //g' | xargs)
 
-# 1.C: flatpak.txt dosyasından paketleri kur
-echo "'flatpak.txt' dosyasındaki paketler kuruluyor..."
-if [ -f flatpak.txt ]; then
-  # 'flatpak.txt' dosyasını oku, yorumları (#) ve boş satırları filtrele,
-  # ve 'xargs' ile hepsini tek bir 'flatpak install' komutuna besle.
-  grep -vE '^\s*#|^\s*$' flatpak.txt | xargs -r flatpak install flathub -y --noninteractive
+flatpak install -y flathub ${flats}
+flatpak remove --unused
 
-  echo "Flatpak paketleri başarıyla kuruldu."
-else
-  echo "Uyarı: 'flatpak.txt' dosyası bulunamadı. Flatpak kurulumu atlanıyor."
-fi
+gtkTheme=$(gsettings get org.gnome.desktop.interface gtk-theme | sed "s/'//g")
+gtkIcon=$(gsettings get org.gnome.desktop.interface icon-theme | sed "s/'//g")
 
-echo "--- Flatpak Kurulum Script'i Tamamlandı ---"
+flatpak --user override --filesystem=~/.themes
+flatpak --user override --filesystem=~/.icons
+
+flatpak --user override --filesystem=~/.local/share/themes
+flatpak --user override --filesystem=~/.local/share/icons
+
+flatpak --user override --env=GTK_THEME=${gtkTheme}
+flatpak --user override --env=ICON_THEME=${gtkIcon}
