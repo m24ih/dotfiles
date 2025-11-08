@@ -1,0 +1,11 @@
+# Tek seferlik taşıma betiği, yeni kurulumda gereksiz
+migrate_dotfiles.sh
+
+# Gelecekte eklenebilecek potansiyel sır dosyaları
+*secret*
+*.secret
+*.env
+
+# OS'e özel dosyalar
+.DS_Store
+Thumbs.db
