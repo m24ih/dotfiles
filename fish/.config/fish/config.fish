@@ -95,7 +95,7 @@ alias rmd '/bin/rm --recursive --force --verbose'
 # eza (ls alternatifi) için alias'lar
 alias ls 'eza -l --icons --git --header'
 alias l 'eza --icons --git'
-alias ll 'eza -l --icons --git --header'
+alias ll 'eza -la --icons --git --header'
 alias la 'eza -la --icons --git --header'
 alias l. 'eza -laD --icons --git --header'
 alias lt 'eza -la --sort=modified --reverse --icons --git --header'
