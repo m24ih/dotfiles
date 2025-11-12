@@ -87,7 +87,9 @@ fastfetch --config hyde/*.jsonc
     },
     {
       "type": "gpu",
-      "format": "{1} {2}",
+      "hideIntegrated": true,
+      "driverSpecific": true,
+      "format": "{2}",
       "key": "  󰊴 GPU",
       "keyColor": "blue"
     },
@@ -98,8 +100,8 @@ fastfetch --config hyde/*.jsonc
       "keyColor": "magenta"
     },
     {
-      "type": "memory",
-      "key": "   Memory ",
+      "type": "disk",
+      "key": "   Disk",
       "keyColor": "magenta"
     },
     {
