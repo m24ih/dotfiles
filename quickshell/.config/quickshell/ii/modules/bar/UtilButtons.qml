@@ -67,7 +67,6 @@ Item {
                 }
             }
         }
-
         Loader {
             active: Config.options.bar.utilButtons.showKeyboardToggle
             visible: Config.options.bar.utilButtons.showKeyboardToggle
@@ -83,7 +82,6 @@ Item {
                 }
             }
         }
-
         Loader {
             active: Config.options.bar.utilButtons.showMicToggle
             visible: Config.options.bar.utilButtons.showMicToggle
@@ -99,7 +97,6 @@ Item {
                 }
             }
         }
-
         Loader {
             active: Config.options.bar.utilButtons.showDarkModeToggle
             visible: Config.options.bar.utilButtons.showDarkModeToggle
