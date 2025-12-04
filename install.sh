@@ -100,13 +100,34 @@ stow -R -t "$HOME" "${STOW_PACKAGES[@]}"
 echo ":: 'Stow' işlemi tamamlandı."
 
 # -----------------------------------------------------------------
-# 6. MODÜL: Donanım Ayarlarını Uygula (fkeys)
+# 6. MODÜL: Donanım Ayarlarını Uygula
 # -----------------------------------------------------------------
 echo ":: 'setup_fkeys.sh' script'i çalıştırılıyor..."
 chmod +x "$DOTFILES_DIR/setup_fkeys.sh"
 # Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
 "$DOTFILES_DIR/setup_fkeys.sh"
-echo ":: Donanım ayarları tamamlandı."
+echo ":: F tuslari Donanım ayarları tamamlandı."
+
+echo ":: 'setup_keychron.sh' script'i çalıştırılıyor..."
+chmod +x "$DOTFILES_DIR/setup_keychron.sh"
+# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
+"$DOTFILES_DIR/setup_keychron.sh"
+echo ":: Keychron Klavye Donanım ayarları tamamlandı."
+
+# -----------------------------------------------------------------
+# 7. MODÜL: Yazilim Ayarlarını Uygula
+# -----------------------------------------------------------------
+echo ":: 'switch_to_iwd.sh' script'i çalıştırılıyor..."
+chmod +x "$DOTFILES_DIR/switch_to_iwd.sh"
+# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
+"$DOTFILES_DIR/switch_to_iwd"
+echo ":: Oyunlarda Jitter azaltmak icin iwd gecisi tamamlandı."
+
+echo ":: 'vivaldi_middle_click.sh' script'i çalıştırılıyor..."
+chmod +x "$DOTFILES_DIR/vivaldi_middle_click.sh"
+# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
+"$DOTFILES_DIR/vivaldi_middle_click.sh"
+echo ":: Vivaldi de middle click kullanarak kaydirma aktif edildi."
 
 echo "--------------------------------"
 echo "🎉 TÜM KURULUM TAMAMLANDI! 🎉"
