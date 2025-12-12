@@ -148,18 +148,18 @@ ContentPage {
         ConfigSwitch {
             buttonIcon: "keep"
             text: Translation.tr('Make icons pinned by default')
-            checked: Config.options.bar.tray.invertPinnedItems
+            checked: Config.options.tray.invertPinnedItems
             onCheckedChanged: {
-                Config.options.bar.tray.invertPinnedItems = checked;
+                Config.options.tray.invertPinnedItems = checked;
             }
         }
         
         ConfigSwitch {
             buttonIcon: "colors"
             text: Translation.tr('Tint icons')
-            checked: Config.options.bar.tray.monochromeIcons
+            checked: Config.options.tray.monochromeIcons
             onCheckedChanged: {
-                Config.options.bar.tray.monochromeIcons = checked;
+                Config.options.tray.monochromeIcons = checked;
             }
         }
     }
@@ -321,7 +321,7 @@ ContentPage {
                         value: '[]'
                     },
                     {
-                        displayName: Translation.tr("Japanese"),
+                        displayName: Translation.tr("Han chars"),
                         icon: "square_dot",
                         value: '["一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十"]'
                     },
@@ -331,6 +331,19 @@ ContentPage {
                         value: '["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"]'
                     }
                 ]
+            }
+        }
+    }
+
+    ContentSection {
+        icon: "tooltip"
+        title: Translation.tr("Tooltips")
+        ConfigSwitch {
+            buttonIcon: "ads_click"
+            text: Translation.tr("Click to show")
+            checked: Config.options.bar.tooltips.clickToShow
+            onCheckedChanged: {
+                Config.options.bar.tooltips.clickToShow = checked;
             }
         }
     }
