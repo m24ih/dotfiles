@@ -145,6 +145,24 @@ alias docker-clean 'docker container prune -f; docker image prune -f; docker net
 alias hug "systemctl --user restart hugo"
 alias lanm "systemctl --user restart lan-mouse"
 
+# Temel Komut
+abbr --add p paru
+
+# Güncelleme (System Update)
+abbr --add pup "paru -Syu"
+
+# Kurulum (Install)
+abbr --add in "paru -S"
+
+# Silme (Remove - Bağımlılıklar ve ayar dosyalarıyla birlikte)
+abbr --add prm "paru -Rns"
+
+# Arama (Search - Yüklü olmayanları da bulur)
+abbr --add se "paru -Ss"
+
+# Temizlik (Cache Clean - Orphan paketler ve önbellek)
+abbr --add cl "paru -Sc"
+
 # cat'i bat olarak kullanmak için (eğer yüklüyse)
 if command -v bat >/dev/null 2>&1
     alias cat bat
