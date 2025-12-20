@@ -33,6 +33,7 @@ gparted
 haruna
 htop
 jetbrains-toolbox
+jellyfin-desktop
 jq
 lazydocker
 lazygit
