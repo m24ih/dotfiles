@@ -41,9 +41,12 @@ set -gx XDG_CONFIG_HOME "$HOME/.config"
 set -gx XDG_STATE_HOME "$HOME/.local/state"
 set -gx XDG_CACHE_HOME "$HOME/.cache"
 set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
-stty -ixon
 set -gx EDITOR nvim
 set -gx VISUAL nvim
+
+if status is-interactive
+    stty -ixon
+end
 
 alias spico 'sudo pico'
 alias snano 'sudo nano'
@@ -79,7 +82,7 @@ alias apt-get 'sudo apt-get'
 alias multitail 'multitail --no-repeat -c'
 alias freshclam 'sudo freshclam'
 alias yayf "yay -Slq | fzf --multi --preview 'yay -Sii {1}' --preview-window=down:75% | xargs -ro yay -S"
-
+alias paruf "paru -Slq | fzf --multi --preview 'paru -Sii {1}' --preview-window=down:75% | xargs -ro paru -S"
 # Dizin değiştirme alias'ları
 alias home 'cd ~'
 alias cd.. 'cd ..'

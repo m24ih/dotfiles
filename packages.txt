@@ -25,6 +25,7 @@ gamescope
 gemini-cli
 git
 github-cli
+ghostty
 glances
 gnome-calculator
 gnome-disk-utility
@@ -65,7 +66,7 @@ supergfxctl
 syncthing
 tailscale
 termius
-trash
+trash-cli
 tree
 ufw-docker
 umu-launcher

@@ -1,4 +1,3 @@
-com.github.vikdevelop.timer
 io.github.nozwock.Packet
 it.mijorus.gearlever
 org.videolan.VLC
