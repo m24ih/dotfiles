@@ -131,6 +131,16 @@ chmod +x "$DOTFILES_DIR/vivaldi_middle_click.sh"
 "$DOTFILES_DIR/vivaldi_middle_click.sh"
 echo ":: Vivaldi de middle click kullanarak kaydirma aktif edildi."
 
+# -----------------------------------------------------------------
+# 7. MODÜL: Yazilim Ayarlarını Uygula
+# -----------------------------------------------------------------
+echo ":: 'setup_discord_proxy.sh' script'i çalıştırılıyor..."
+chmod +x "$DOTFILES_DIR/setup_discord_proxy.sh"
+# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
+"$DOTFILES_DIR/setup_discord_proxy.sh"
+echo ":: Digital Ocean Amsterdam Serverina proxy ile baglanildi."
+echo ":: Artik discord-secure yazarak veya discord iconuna tiklayarak girebilirsin"
+
 echo "--------------------------------"
 echo "🎉 TÜM KURULUM TAMAMLANDI! 🎉"
 echo "Değişikliklerin tamamının etkili olması için sistemi yeniden başlatman gerekebilir."
