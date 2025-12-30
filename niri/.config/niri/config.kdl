@@ -68,6 +68,8 @@ gestures {
     }
 }
 
+
+
 // Input device configuration.
 // Find the full list of options on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
@@ -188,6 +190,11 @@ overview {
 spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
 //spawn-at-startup "dms" "run"
 spawn-at-startup "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
+
+// Vicinae Settings
+spawn-sh-at-startup "vicinae server"
+
+
 environment {
   XDG_CURRENT_DESKTOP "niri"
   QT_QPA_PLATFORM "wayland"
@@ -502,6 +509,11 @@ binds {
     // === System Controls ===
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
     Mod+Shift+P { power-off-monitors; }
+
+
+    // Vicinae Settings
+    Alt+Space repeat=false { spawn "vicinae" "toggle"; }
+
 }
 debug {
     honor-xdg-activation-with-invalid-serial
