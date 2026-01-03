@@ -141,6 +141,16 @@ chmod +x "$DOTFILES_DIR/setup_discord_proxy.sh"
 echo ":: Digital Ocean Amsterdam Serverina proxy ile baglanildi."
 echo ":: Artik discord-secure yazarak veya discord iconuna tiklayarak girebilirsin"
 
+# -----------------------------------------------------------------
+# 8. MODÜL: Zapret ve DNS Ayarlama
+# -----------------------------------------------------------------
+echo ":: 'ibb-login.sh' script'i symlink ile baglaniyor..."
+chmod +x "$DOTFILES_DIR/ibb-login.sh"
+# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
+sudo ln -sf "$DOTFILES_DIR/ibb-login.sh" /usr/local/bin/ibb-login
+echo ":: ibb-login symlink ile baglandi."
+echo ":: Artik ibb-login on/off yazarak zapret ve dns ayarlarini degistirebilirsin"
+
 echo "--------------------------------"
 echo "🎉 TÜM KURULUM TAMAMLANDI! 🎉"
 echo "Değişikliklerin tamamının etkili olması için sistemi yeniden başlatman gerekebilir."
