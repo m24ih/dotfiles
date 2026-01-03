@@ -41,6 +41,14 @@ set -gx XDG_CONFIG_HOME "$HOME/.config"
 set -gx XDG_STATE_HOME "$HOME/.local/state"
 set -gx XDG_CACHE_HOME "$HOME/.cache"
 set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
+
+set -gx ANDROID_HOME /opt/android-sdk
+set -gx ANDROID_AVD_HOME $HOME/.android/avd
+set -gx JAVA_HOME /usr/lib/jvm/java-25-openjdk
+set -gx FLUTTER_HOME /opt/flutter
+set -gx PUB_CACHE $HOME/.pub-cache
+fish_add_path $ANDROID_HOME/platform-tools $ANDROID_HOME/cmdline-tools/latest/bin $ANDROID_HOME/emulator $FLUTTER_HOME/bin $PUB_CACHE/bin $ANDROID_HOME/tools/bin
+
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
