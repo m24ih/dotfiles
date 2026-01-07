@@ -1,33 +1,37 @@
 #!/bin/bash
 
 # Değişkenler
-SOURCE_FILE="/usr/share/applications/vivaldi-stable.desktop"
-DEST_DIR="$HOME/.local/share/applications"
-DEST_FILE="$DEST_DIR/vivaldi-stable.desktop"
+CONF_FILE="$HOME/.config/vivaldi-stable.conf"
 FLAG="--enable-features=MiddleClickAutoscroll"
+LOCAL_DESKTOP="$HOME/.local/share/applications/vivaldi-stable.desktop"
 
-# 1. Kaynak dosya var mı kontrol et
-if [ ! -f "$SOURCE_FILE" ]; then
-  echo "HATA: Vivaldi kaynak dosyası bulunamadı ($SOURCE_FILE)."
-  exit 1
+echo "Vivaldi Autoscroll Yapılandırması Başlatılıyor..."
+
+# 1. Eski (ve artık gereksiz) yerel desktop dosyasını temizle
+# Bu sayede sistemdeki orijinal vivaldi.desktop dosyası kullanılır,
+# parametreler conf dosyasından çekilir.
+if [ -f "$LOCAL_DESKTOP" ]; then
+  rm "$LOCAL_DESKTOP"
+  echo "Gereksiz yerel .desktop dosyası kaldırıldı."
 fi
 
-# 2. Hedef klasör yoksa oluştur
-if [ ! -d "$DEST_DIR" ]; then
-  mkdir -p "$DEST_DIR"
-  echo "Klasör oluşturuldu: $DEST_DIR"
+# 2. Config klasörünün varlığını kontrol et
+mkdir -p "$(dirname "$CONF_FILE")"
+
+# 3. Flag kontrolü ve ekleme
+if [ -f "$CONF_FILE" ]; then
+  if grep -qF "$FLAG" "$CONF_FILE"; then
+    echo "✅ Bayrak zaten $CONF_FILE içerisinde mevcut."
+  else
+    echo "$FLAG" >>"$CONF_FILE"
+    echo "✅ Bayrak $CONF_FILE dosyasına eklendi."
+  fi
+else
+  echo "$FLAG" >"$CONF_FILE"
+  echo "✅ Yapılandırma dosyası oluşturuldu ve bayrak eklendi."
 fi
 
-# 3. Dosyayı işle ve yeni yerine kaydet
-# sed komutu 'Exec=/usr/bin/vivaldi-stable' gördüğü yere flag'i ekler.
-echo "Ayar ekleniyor..."
-sed "s|Exec=/usr/bin/vivaldi-stable|Exec=/usr/bin/vivaldi-stable $FLAG|g" "$SOURCE_FILE" >"$DEST_FILE"
-
-# 4. Dosya izinlerini ayarla (Çalıştırılabilir yap)
-chmod +x "$DEST_FILE"
-
-# 5. Masaüstü veritabanını güncelle (Değişikliğin hemen algılanması için)
-update-desktop-database "$DEST_DIR" 2>/dev/null
-
-echo "✅ İşlem tamamlandı! Vivaldi artık Autoscroll ile başlayacak."
-echo "Dosya konumu: $DEST_FILE"
+# 4. Vivaldi'nin temiz bir şekilde yeniden başlatılması için uyarı
+echo "---"
+echo "İşlem tamamlandı. Değişikliklerin aktif olması için Vivaldi'yi tamamen kapatıp açın."
+echo "Eğer çalışmazsa: 'pkill vivaldi' komutunu kullanabilirsiniz."
