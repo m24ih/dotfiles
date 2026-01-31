@@ -9,122 +9,132 @@ fastfetch --config hyde/*.jsonc
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
   "logo": {
-    "source": "\"$(fastfetch.sh logo)\"",
+    "source": "~/.config/fastfetch/logo/CachyOS_Logo.png",
     "height": 18
   },
   "display": {
     "separator": " : "
   },
   "modules": [
+    // {
+    //   "type": "custom",
+    //   "format": "┌────────────────────────────────────────────────┐"
+    // },
     {
-      "type": "command",
-      "key": "  ",
-      "keyColor": "blue",
-      "text": "splash=$(hyprctl splash);echo $splash"
-    },
-    {
-      "type": "custom",
-      "format": "┌────────────────────────────────────────────────┐"
+      "type": "title",
+      "key": "",
+      "format": "{6} {7} {8}"
     },
     {
       "type": "host",
-      "key": "  󰌢 Laptop",
+      "key": "󰌢 Laptop",
       "format": "{2}"
     },
     {
       "type": "os",
-      "key": "  󰣇 OS",
+      "key": "󰣇 OS",
       "format": "{2}",
       "keyColor": "red"
     },
     {
       "type": "kernel",
-      "key": "   Kernel",
+      "key": " Kernel",
       "format": "{2}",
       "keyColor": "red"
     },
     {
       "type": "packages",
-      "key": "  󰏗 Packages",
+      "key": "󰏗 Packages",
       "keyColor": "green"
     },
     {
       "type": "display",
-      "key": "  󰍹 Display",
+      "key": "󰍹 Display",
       "format": "{1}x{2} @ {3}Hz [{7}]",
       "keyColor": "green"
     },
     {
       "type": "terminal",
-      "key": "   Terminal",
+      "key": " Terminal",
       "keyColor": "yellow"
     },
     {
       "type": "wm",
-      "key": "  󱗃 WM",
+      "key": "󱗃 WM",
       "format": "{2}",
       "keyColor": "yellow"
     },
-    {
-      "type": "custom",
-      "format": "└────────────────────────────────────────────────┘"
-    },
-    "break",
-    {
-      "type": "title",
-      "key": "  ",
-      "format": "{6} {7} {8}"
-    },
-    {
-      "type": "custom",
-      "format": "┌────────────────────────────────────────────────┐"
-    },
+    // {
+    //   "type": "custom",
+    //   "format": "└────────────────────────────────────────────────┘"
+    // },
+
+    // {
+    //   "type": "custom",
+    //   "format": "┌────────────────────────────────────────────────┐"
+    // },
     {
       "type": "cpu",
       "format": "{1} @ {7}",
-      "key": "   CPU",
+      "key": " CPU",
       "keyColor": "blue"
     },
+    // {
+    //   "type": "gpu",
+    //   "hideIntegrated": true,
+    //   "driverSpecific": true,
+    //   "format": "{2}",
+    //   "key": "  󰊴 GPU",
+    //   "keyColor": "blue"
+    // },
     {
       "type": "gpu",
-      "hideIntegrated": true,
-      "driverSpecific": true,
+      "hideIntegrated": false, 
+     // "detectionMethod": "pci", // Sürücüye sormaz, sadece PCI veri yoluna bakar (çok daha hızlıdır)
+      "driverSpecific": false,   // Sıcaklık/VRAM gibi detayları sormaz
       "format": "{2}",
-      "key": "  󰊴 GPU",
+      "key": "󰊴 GPU",
       "keyColor": "blue"
     },
     {
       "type": "gpu",
       "format": "{3}",
-      "key": "   GPU Driver",
+      "key": " GPU Driver",
       "keyColor": "magenta"
     },
     {
       "type": "disk",
-      "key": "   Disk",
-      "keyColor": "magenta"
+      "key": " Disk",
+      "keyColor": "yellow"
     },
     {
       "type": "disk",
-      "key": "  󱦟 OS Age ",
+      "key": "󱦟 OS Age ",
       "folders": "/",
       "keyColor": "red",
       "format": "{days} days"
     },
     {
       "type": "uptime",
-      "key": "  󱫐 Uptime ",
+      "key": "󱫐 Uptime ",
       "keyColor": "red"
     },
     {
-      "type": "custom",
-      "format": "└────────────────────────────────────────────────┘"
-    },
-    {
       "type": "colors",
-      "paddingLeft": 2,
+      "paddingLeft": 0,
       "symbol": "circle"
     },
+    // {
+    //   "type": "custom",
+    //   "format": "└────────────────────────────────────────────────┘"
+    // },
+    {
+      "type": "command",
+      "key": " ",
+      "keyColor": "blue",
+      "text": "hyprctl splash 2>/dev/null || fortune -a -s -n 40"
+    },
+
     "break"
   ]
 }
