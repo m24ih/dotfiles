@@ -1,3 +1,13 @@
-.theme-dark .tab-position .tab.active .tab-header .favicon {
+/* Tüm temalarda ve tüm sekmelerde favicon efektlerini sıfırla */
+.tab-position .tab .tab-header .favicon,
+.tab-position .tab.active .tab-header .favicon {
     filter: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Eğer kenarlarda hala çok ince bir beyazlık varsa, bu genellikle border-radius kaynaklıdır */
+.favicon {
+    border: none !important;
+    outline: none !important;
 }
