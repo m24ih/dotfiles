@@ -19,6 +19,7 @@ ffmpeg4.4
 filelight
 flatpak
 fsearch
+fortune-mod
 fzf
 gamemode
 gamescope
@@ -72,6 +73,7 @@ ufw-docker
 umu-launcher
 unrar
 unzip
+vicinae-bin
 vim
 visual-studio-code-bin
 vivaldi

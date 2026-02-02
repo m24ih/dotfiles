@@ -101,6 +101,8 @@ stow -R -t "$HOME" "${STOW_PACKAGES[@]}"
 
 echo ":: 'Stow' işlemi tamamlandı."
 
+systemctl --user enable vicinae --now
+
 # -----------------------------------------------------------------
 # 6. MODÜL: Donanım Ayarlarını Uygula
 # -----------------------------------------------------------------
