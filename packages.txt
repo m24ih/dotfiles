@@ -1,10 +1,11 @@
-1password
-1password-cli
 7zip
 alacritty
+antigravity
+antigravity-manager-bin
 bash
 bat
 btop
+rocm-smi-lib #btop amd dependency
 clinfo
 cloudflare-warp
 docker
@@ -47,6 +48,8 @@ mpvqt
 ncdu
 neovim
 newsflash
+npm
+nodejs
 headsetcontrol
 headsetkontrol
 nvtop
@@ -54,6 +57,7 @@ obs-studio
 obsidian
 octopi
 powertop
+proton-pass
 python
 python-pip
 qbittorrent
@@ -63,7 +67,7 @@ ripgrep-all
 rsync
 scrcpy
 stacer-bin
-supergfxctl
+envycontrol # veya supergfxctl
 syncthing
 tailscale
 termius
