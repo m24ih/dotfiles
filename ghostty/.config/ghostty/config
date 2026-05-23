@@ -48,15 +48,28 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
-
 theme = "light:Horizon Bright,dark:Broadcast"
-
 background-opacity = 0.9
 confirm-close-surface = false
 font-size = 11
-font-family = "MesloLGS NF"
-term = xterm-256color
+font-family = "JetBrains Mono"
 
-font-thicken = true
 adjust-cursor-thickness = 2
 scrollbar = system
+
+notify-on-command-finish = always
+notify-on-command-finish-action = notify
+notify-on-command-finish-after = 20s
+
+# Seçilen metni otomatik olarak panoya (primary selection) kopyalar
+copy-on-select = true
+clipboard-read = allow
+clipboard-write = allow
+clipboard-paste-protection = false
+
+# Fare olaylarının terminal uygulamalarına (nvim, zsh vb.) gitmesini tamamen engeller.
+# Bu sayede orta tuş (primary selection) doğrudan Ghostty tarafından yapıştırılır.
+mouse-reporting = false
+
+# Alternatif olarak (mouse-reporting = true kalacaksa), Shift+Orta Tuş ile bypass edebilmek için:
+mouse-shift-capture = never
