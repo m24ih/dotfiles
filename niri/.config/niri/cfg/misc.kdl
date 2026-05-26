@@ -1,0 +1,45 @@
+// ┌────────────────────────────────────────────────────────────────────────────┐
+// │                       MISCELLANEOUS SETTINGS                               │
+// └────────────────────────────────────────────────────────────────────────────┘
+// Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous
+
+// ─── General Behavior ───
+prefer-no-csd
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// ─── Background Blur ───
+blur {
+    passes 2
+    offset 3.0
+    noise 0.03
+    saturation 1.0
+}
+
+// ─── Environment Variables ───
+environment {
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    QT_QPA_PLATFORM "wayland"
+    QT_QPA_PLATFORMTHEME "gtk3"
+    QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
+    XDG_CURRENT_DESKTOP "niri"
+    XDG_SESSION_TYPE "wayland"
+}
+
+// ─── Cursor Settings ───
+cursor {
+    xcursor-theme "capitaine-cursors"
+    xcursor-size 24
+    hide-when-typing
+    hide-after-inactive-ms 2000
+}
+
+// ─── Debug & Specialized Logic ───
+debug {
+    // Essential for Noctalia's window activation
+    honor-xdg-activation-with-invalid-serial
+}
+
+// ─── Keybinding UI ───
+hotkey-overlay {
+   skip-at-startup
+}

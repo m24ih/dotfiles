@@ -1,0 +1,146 @@
+// ┌────────────────────────────────────────────────────────────────────────────┐
+// │                            WINDOW RULES SETTINGS                           │
+// └────────────────────────────────────────────────────────────────────────────┘
+// Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
+
+// ─── Global Window Geometry ───
+window-rule {
+    geometry-corner-radius 20
+    clip-to-geometry true
+}
+
+// ─── Security & Privacy ───
+// Hide sensitive apps (Proton Pass) from screen capture.
+window-rule {
+    match app-id=r#"^proton-pass.*$"#
+    match title=r#"^Proton Pass.*$"#
+    block-out-from "screen-capture"
+}
+
+// ─── Gaming & Performance ───
+// Optimized for RTX 4060 / 144Hz displays.
+window-rule {
+    match app-id=r#"^cs2$"#
+    match app-id=r#"^gamescope$"#
+    match app-id=r#"^steam_app_.*$"#
+    
+    variable-refresh-rate true
+    open-fullscreen true
+}
+
+window-rule {
+    match app-id="^mpv$"
+    variable-refresh-rate true
+}
+
+// ─── Productivity & Styling ───
+window-rule {
+    match app-id=r#"^obsidian$"#
+    open-maximized true
+}
+
+// Applications with blur and specific decorations.
+window-rule {
+    match app-id=r#"^org\.gnome\.Nautilus$"#
+    match app-id=r#"^kitty$"#
+    match app-id=r#"^obsidian$"#
+    
+    background-effect {
+        blur true
+        xray false
+    }
+    
+    popups {
+        geometry-corner-radius 12
+        background-effect {
+            blur true
+        }
+    }
+}
+
+// Floating rules (Firefox PiP).
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+    default-column-width { fixed 480; }
+    default-window-height { fixed 270; }
+    default-floating-position x=32 y=32 relative-to="bottom-right"
+}
+
+// Vicinae Launcher
+window-rule {
+    match app-id="vicinae"
+    open-floating true
+    default-column-width { proportion 0.4; }
+    background-effect {
+        blur true
+    }
+}
+
+// ─── Steam Specifics ───
+window-rule {
+    match app-id="steam"
+    exclude title=r#"^[Ss]team$"#
+    open-floating true
+}
+
+window-rule {
+    match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+    open-focused false
+}
+
+// ┌────────────────────────────────────────────────────────────────────────────┐
+// │                             LAYER RULES                                    │
+// └────────────────────────────────────────────────────────────────────────────┘
+// Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Layer-Rules
+
+// ─── Noctalia Shell Layers ───
+// Anchoring core UI elements to the backdrop.
+layer-rule {
+    match namespace="^noctalia-(wallpaper|overview).*"
+    place-within-backdrop true
+}
+
+// Noctalia visual effects.
+layer-rule {
+    match namespace="^noctalia-(background|launcher-overlay|dock)-.*$"
+    background-effect {
+        xray false
+        blur true
+    }
+}
+
+// UI styling for the Noctalia launcher.
+layer-rule {
+    match namespace="^noctalia-launcher-overlay.*$"
+    geometry-corner-radius 12
+    shadow {
+        on
+        softness 30
+        spread 2
+        offset x=0 y=4
+        color "#00000070"
+    }
+}
+
+// ─── System & Security Layers ───
+layer-rule {
+    match namespace="^notifications$"
+    match namespace="^noctalia-notifications.*$"
+    block-out-from "screen-capture"
+}
+
+// General UI blur for menus and bars.
+layer-rule {
+    match layer="top"
+    match layer="overlay"
+    
+    popups {
+        geometry-corner-radius 12
+        background-effect {
+            blur true
+            xray false
+        }
+    }
+}

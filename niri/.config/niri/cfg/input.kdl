@@ -1,0 +1,39 @@
+// ┌────────────────────────────────────────────────────────────────────────────┐
+// │                             INPUT SETTINGS                                 │
+// └────────────────────────────────────────────────────────────────────────────┘
+// Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Input
+
+input {
+    // ─── Keyboard Configuration ───
+    keyboard {
+        xkb {
+            // Dual layout with Alt+Shift toggle
+            layout "us,tr"
+            options "grp:alt_shift_toggle"
+        }
+        numlock // Enable numlock on startup
+        repeat-delay 600
+        repeat-rate 25
+        track-layout "global"
+    }
+
+    // ─── Touchpad Configuration ───
+    touchpad {
+        tap // Tap-to-click
+        natural-scroll // Reverse scrolling direction
+        dwt // Disable while typing
+        dwtp // Disable while trackpoint activity
+        drag-lock
+    }
+
+    // ─── Mouse Configuration ───
+    mouse {
+        accel-profile "flat" // Consistent movement
+        accel-speed -0.6
+    }
+
+    // ─── General Interaction ───
+   // warp-mouse-to-focus
+    focus-follows-mouse
+    workspace-auto-back-and-forth
+}

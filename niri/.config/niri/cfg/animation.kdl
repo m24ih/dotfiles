@@ -1,0 +1,54 @@
+// ┌────────────────────────────────────────────────────────────────────────────┐
+// │                            ANIMATION SETTINGS                              │
+// └────────────────────────────────────────────────────────────────────────────┘
+// Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Animations
+
+animations {
+    // Workspace switching: Pure spring for a bouncy but responsive feel
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    // Window opening: Fast ease-out for immediate feedback
+    window-open {
+        duration-ms 200
+        curve "ease-out-quad"
+    }
+
+    // Window closing: Slightly different curve for closing feel
+    window-close {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+
+    // View movement: Smooth horizontal scrolling
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    }
+
+    // Window movement: Standard spring for moving windows
+    window-movement {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+
+    // Window resizing: Responsive spring for dragging borders
+    window-resize {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    // Configuration notifications: Slightly more damped spring
+    config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1200 epsilon=0.001
+    }
+
+    // Screenshot UI: Clean ease-out transition
+    screenshot-ui-open {
+        duration-ms 300
+        curve "ease-out-quad"
+    }
+
+    // Overview transitions: Responsive spring
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    }
+}

@@ -1,0 +1,127 @@
+// ┌────────────────────────────────────────────────────────────────────────────┐
+// │                           KEYBINDING SETTINGS                              │
+// └────────────────────────────────────────────────────────────────────────────┘
+// Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Key-Bindings
+
+binds {
+    // ─── Core Shortcuts ───
+    Mod+Shift+ESCAPE                     { show-hotkey-overlay; }
+
+    // ─── Basic Applications ───
+    Mod+Return                          hotkey-overlay-title="Open Terminal: Kitty" { spawn "kitty"; }
+    Mod+B                               hotkey-overlay-title="Open Browser: Vivaldi" { spawn "vivaldi"; }
+    Mod+S                               hotkey-overlay-title="Proton Pass" { spawn "proton-pass"; }
+    Mod+E                               hotkey-overlay-title="File Manager: Dolphin" { spawn "dolphin"; }
+    Mod+L                               hotkey-overlay-title="Lock Screen" { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
+    Mod+Shift+Q                         hotkey-overlay-title="Session Menu" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; }
+
+    // ─── Noctalia Shell Services ───
+    Mod+Space                           hotkey-overlay-title="App Launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
+    Alt+Space            repeat=false   hotkey-overlay-title="Vicinae Launcher" { spawn "vicinae" "toggle"; }
+    Mod+V                               hotkey-overlay-title="Clipboard Manager" { spawn-sh "qs -c noctalia-shell ipc call launcher clipboard"; }
+    Mod+Period                          hotkey-overlay-title="Emoji Picker" { spawn-sh "qs -c noctalia-shell ipc call launcher emoji"; }
+    Mod+Shift+C                         hotkey-overlay-title="Control Center" { spawn-sh "qs -c noctalia-shell ipc call controlCenter toggle"; }
+    Mod+CTRL+S                          hotkey-overlay-title="Noctalia Settings" { spawn-sh "qs -c noctalia-shell ipc call settings toggle"; }
+    Mod+D                               hotkey-overlay-title="Calendar" { spawn-sh "qs -c noctalia-shell ipc call calendar toggle"; }
+    Mod+Shift+M                         hotkey-overlay-title="System Monitor" { spawn-sh "qs -c noctalia-shell ipc call systemMonitor toggle"; }
+    Mod+Shift+L                         hotkey-overlay-title="Suspend & Lock" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu lockAndSuspend"; }
+
+    // ─── Hardware Controls ───
+    XF86AudioRaiseVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume increase"; }
+    XF86AudioLowerVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume decrease"; }
+    XF86AudioMute                       allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteOutput"; }
+    XF86AudioMicMute                    allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteInput"; }
+    XF86AudioNext                       allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media next"; }
+    XF86AudioPrev                       allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media previous"; }
+    XF86AudioPlay                       allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media playPause"; }
+    XF86AudioPause                      allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media playPause"; }
+    XF86MonBrightnessUp                 allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call brightness increase"; }
+    XF86MonBrightnessDown               allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call brightness decrease"; }
+
+    // ─── Navigation & Movement ───
+    Mod+Q                               { close-window; }
+    
+    // Focus (Arrows)
+    Mod+Left                            { focus-column-left; }
+    Mod+Right                           { focus-column-right; }
+    Mod+Up                              { focus-window-up; }
+    Mod+Down                            { focus-window-down; }
+
+    // Move (Shift + Arrows)
+    Mod+Shift+Left                      { move-column-left; }
+    Mod+Shift+Right                     { move-column-right; }
+    Mod+Shift+UP                        { move-window-up; }
+    Mod+Shift+Down                      { move-window-down; }
+
+    // Extreme Movement
+    Mod+Home                            { focus-column-first; }
+    Mod+End                             { focus-column-last; }
+    Mod+CTRL+Home                       { move-column-to-first; }
+    Mod+CTRL+End                        { move-column-to-last; }
+
+    // ─── Workspace Management ───
+    Mod+WheelScrollDown                 cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp                   cooldown-ms=150 { focus-workspace-up; }
+    Mod+CTRL+WheelScrollDown            cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+CTRL+WheelScrollUp              cooldown-ms=150 { move-column-to-workspace-up; }
+    
+    // Quick Switching
+    Mod+1                               { focus-workspace 1; }
+    Mod+2                               { focus-workspace 2; }
+    Mod+3                               { focus-workspace 3; }
+    Mod+4                               { focus-workspace 4; }
+    Mod+5                               { focus-workspace 5; }
+    Mod+6                               { focus-workspace 6; }
+    Mod+7                               { focus-workspace 7; }
+    Mod+8                               { focus-workspace 8; }
+    Mod+9                               { focus-workspace 9; }
+
+    // Quick Moving (Shift)
+    Mod+Shift+1                         { move-column-to-workspace 1; }
+    Mod+Shift+2                         { move-column-to-workspace 2; }
+    Mod+Shift+3                         { move-column-to-workspace 3; }
+    Mod+Shift+4                         { move-column-to-workspace 4; }
+    Mod+Shift+5                         { move-column-to-workspace 5; }
+    Mod+Shift+6                         { move-column-to-workspace 6; }
+    Mod+Shift+7                         { move-column-to-workspace 7; }
+    Mod+Shift+8                         { move-column-to-workspace 8; }
+    Mod+Shift+9                         { move-column-to-workspace 9; }
+
+    Mod+TAB                             { focus-workspace-previous; }
+
+    // ─── Layout & Appearance Controls ───
+    Mod+R                               { switch-preset-column-width; }
+    Mod+CTRL+F                          { expand-column-to-available-width; }
+    Mod+C                               { center-column; }
+    Mod+CTRL+C                          { center-visible-columns; }
+    Mod+Minus                           { set-column-width "-10%"; }
+    Mod+Equal                           { set-column-width "+10%"; }
+    Mod+Shift+Minus                     { set-window-height "-10%"; }
+    Mod+Shift+Equal                     { set-window-height "+10%"; }
+
+    // ─── Toggles ───
+    Mod+T                               { toggle-window-floating; }
+    Mod+F                               { fullscreen-window; }
+    Mod+W                               { toggle-column-tabbed-display; }
+    Mod+O                               repeat=false { toggle-overview; }
+
+    // ─── Screenshots ───
+    Print                               { screenshot; }
+    Mod+Shift+S                         { screenshot; }
+    Ctrl+Print                          { screenshot-screen; }
+    Alt+Print                           { screenshot-window; }
+    CTRL+Shift+1                        { screenshot; }
+    CTRL+Shift+2                        { screenshot-screen; }
+    CTRL+Shift+3                        { screenshot-window; }
+
+    // ─── System & Safety ───
+    Mod+ESCAPE                          allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    CTRL+ALT+Delete                     { quit; }
+    Mod+Shift+P                         { power-off-monitors; }
+
+    // ─── Touchpad Gestures ───
+    Mod+TouchpadScrollDown cooldown-ms=150 { focus-workspace-up; }
+    Mod+TouchpadScrollUp   cooldown-ms=150 { focus-workspace-down; }
+    Mod+TouchpadScrollRight                { focus-column-left; }
+    Mod+TouchpadScrollLeft                 { focus-column-right; }
+}

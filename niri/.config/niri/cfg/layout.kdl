@@ -1,0 +1,54 @@
+// ┌────────────────────────────────────────────────────────────────────────────┐
+// │                            LAYOUT SETTINGS                                 │
+// └────────────────────────────────────────────────────────────────────────────┘
+// Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
+
+layout {
+    // ─── Geometry ───
+    gaps 8
+    center-focused-column "never"
+    always-center-single-column // Keep single windows centered for better ergonomics
+    background-color "transparent"
+
+    // ─── Preset Dimensions ───
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    // ─── Focus & Visual Cues ───
+    focus-ring {
+        width 2
+        // Gradient for active focus, solid dark for inactive
+        active-gradient from="#80c8ff" to="#bbddff" angle=45
+        inactive-color "#505050"
+    }
+
+    // Visual hint showing where a window will land when dragged
+    insert-hint {
+        on
+        color "#ffc87f80"
+    }
+
+    // ─── Window Decorations (Niri 25.02+) ───
+    shadow {
+        on
+        softness 30
+        spread 2
+        offset x=0 y=4
+        draw-behind-window true
+        color "#00000070"
+    }
+}
+
+// ─── Overview Configuration ───
+overview {
+    workspace-shadow { off; }
+}
