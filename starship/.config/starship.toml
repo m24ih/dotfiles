@@ -22,14 +22,15 @@ $nodejs\
 $nim\
 $rust\
 $python\
-$docker_context\
 [ ](fg:#86BBD8)\
 $fill\
 $status\
 $cmd_duration\
-[](#33658A)\
+${custom.bat_good}\
+${custom.bat_warn}\
+${custom.bat_crit}\
+${custom.time_chevron}\
 $time\
-[ ](fg:#33658A)\
 \n$character\
 """
 
@@ -63,12 +64,6 @@ format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
 
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
-
 [git_branch]
 symbol = " "
 style = "bg:#4C566A fg:#ECEFF4"
@@ -93,74 +88,33 @@ symbol = " "
 style = "bg:#86BBD8 fg:#2E3440"
 format = '[ $symbol($version) ]($style)'
 
-[docker_context]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol$context ]($style)$path'
-
-[elixir]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol($version) ]($style)'
-
-[elm]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol($version) ]($style)'
-
-[golang]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol($version) ]($style)'
-
-[haskell]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol($version) ]($style)'
-
-[java]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol($version) ]($style)'
-
-[julia]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol($version) ]($style)'
-
-[nodejs]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol($version) ]($style)'
-
-[nim]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol($version) ]($style)'
-
 [python]
 symbol = " "
 style = "bg:#86BBD8 fg:#2E3440"
 format = '[ $symbol($version )(\($virtualenv\) )]($style)'
 
-[rust]
-symbol = " "
-style = "bg:#86BBD8 fg:#2E3440"
-format = '[ $symbol($version) ]($style)'
+[custom.bat_good]
+command = "cat /sys/class/power_supply/BAT*/capacity | head -n 1"
+when = 'c=$(cat /sys/class/power_supply/BAT*/capacity | head -n 1 2>/dev/null); st=$(cat /sys/class/power_supply/BAT*/status | head -n 1 2>/dev/null); [ "$st" = "Discharging" ] && [ "$c" -ge 50 ]'
+format = '[](fg:#A3BE8C)[  $output% ](bg:#A3BE8C fg:#2E3440)[](bg:#A3BE8C fg:#33658A)'
 
-[status]
-disabled = false
-format = '[$symbol$status]($style) '
-style = "fg:#E06C75"
-symbol = "✘ "
+[custom.bat_warn]
+command = "cat /sys/class/power_supply/BAT*/capacity | head -n 1"
+when = 'c=$(cat /sys/class/power_supply/BAT*/capacity | head -n 1 2>/dev/null); st=$(cat /sys/class/power_supply/BAT*/status | head -n 1 2>/dev/null); [ "$st" = "Discharging" ] && [ "$c" -ge 20 ] && [ "$c" -lt 50 ]'
+format = '[](fg:#EBCB8B)[  $output% ](bg:#EBCB8B fg:#2E3440)[](bg:#EBCB8B fg:#33658A)'
 
-[cmd_duration]
-min_time = 3000
-format = '[took $duration]($style) '
-style = "fg:#E5C07B"
+[custom.bat_crit]
+command = "cat /sys/class/power_supply/BAT*/capacity | head -n 1"
+when = 'c=$(cat /sys/class/power_supply/BAT*/capacity | head -n 1 2>/dev/null); st=$(cat /sys/class/power_supply/BAT*/status | head -n 1 2>/dev/null); [ "$st" = "Discharging" ] && [ "$c" -lt 20 ]'
+format = '[](fg:#BF616A)[  $output% ](bg:#BF616A fg:#ECEFF4)[](bg:#BF616A fg:#33658A)'
+
+[custom.time_chevron]
+command = "echo 1"
+when = 'st=$(cat /sys/class/power_supply/BAT*/status | head -n 1 2>/dev/null); [ "$st" != "Discharging" ]'
+format = '[](fg:#33658A)'
 
 [time]
 disabled = false
 time_format = "%R"
 style = "bg:#33658A fg:#ECEFF4"
-format = '[ $time ]($style)'
+format = '[ $time ]($style)[](fg:#33658A)'
