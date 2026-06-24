@@ -1,7 +1,6 @@
 7zip
 alacritty
 antigravity
-antigravity-manager-bin
 bash
 bat
 btop
@@ -55,7 +54,6 @@ headsetkontrol
 nvtop
 obs-studio
 obsidian
-octopi
 powertop
 proton-pass
 python

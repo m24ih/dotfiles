@@ -1,6 +1,6 @@
 # io.github.nozwock.Packet
-it.mijorus.gearlever
-org.videolan.VLC
+# it.mijorus.gearlever
+# org.videolan.VLC
 
 
 # ------------------------------------------- // System
@@ -9,7 +9,7 @@ io.github.flattool.Warehouse                   # Warehouse
 org.gnome.Boxes                                # Boxes
 # io.missioncenter.MissionCenter                 # MissionCenter
 io.gitlab.adhami3310.Impression                # Impression
-com.usebottles.bottles                       # Bottles
+# com.usebottles.bottles                       # Bottles
 # io.github.dimtpap.coppwr                     # Coppwr
 
 # ------------------------------------------- // Browser
@@ -41,9 +41,9 @@ io.gitlab.theevilskeleton.Upscaler             # ImageUpscaler
 #org.gnome.eog                                  # ImageViewer
 
 # ------------------------------------------- // Audio/Video
-com.spotify.Client                           # Spotify
+# com.spotify.Client                           # Spotify
 # org.kde.kdenlive                             # Kdenlive
-#com.obsproject.Studio                          # Obs
+# com.obsproject.Studio                          # Obs
 com.github.rafostar.Clapper                    # Clapper
 com.github.unrud.VideoDownloader               # VideoDownloader
 
