@@ -1,83 +1,106 @@
-source /usr/share/cachyos-fish-config/cachyos-config.fish
+# ===========================================================================
+# BAŞLATMA VE BAĞIMLILIKLAR
+# ===========================================================================
 
-# Starship ve Zoxide'ı başlat
+# CachyOS varsayılan yapılandırmasını yükle
+if test -f /usr/share/cachyos-fish-config/cachyos-config.fish
+    source /usr/share/cachyos-fish-config/cachyos-config.fish
+end
+
+# Starship ve Zoxide entegrasyonu
 starship init fish | source
 zoxide init fish | source
 
+# Quickshell sekansları
 if test -f ~/.local/state/quickshell/user/generated/terminal/sequences.txt
     cat ~/.local/state/quickshell/user/generated/terminal/sequences.txt
 end
 
-# overwrite greeting
-# potentially disabling fastfetch
-#function fish_greeting
-#    # smth smth
-#end
+# Etkileşimli kabuk ayarları (Ctrl+S / Ctrl+Q akış kontrolünü kapat)
+if status is-interactive
+    stty -ixon
+end
 
-# >>> conda initialize >>>
-# Conda'yı sadece gerektiğinde yüklemek için (Fish Shell Lazy Load)
+# ===========================================================================
+# CONDA (LAZY LOAD)
+# ===========================================================================
 function __conda_setup
-    # Conda'nın asıl başlatma komutunu çalıştır
     if test -f /home/melih/anaconda3/bin/conda
         eval /home/melih/anaconda3/bin/conda "shell.fish" hook | source
     end
 end
 
 function conda
-    # Bu geçici fonksiyonu sil
     functions --erase conda
-
-    # Asıl conda kurulumunu yap
     __conda_setup
-
-    # Şimdi gerçek conda komutunu kullanıcının argümanları ile çalıştır
     command conda $argv
 end
 
-set -x CHROME_EXECUTABLE /usr/bin/google-chrome-stable
-
+# ===========================================================================
+# ORTAM DEĞİŞKENLERİ (ENV VARS)
+# ===========================================================================
+set -gx CHROME_EXECUTABLE /usr/bin/google-chrome-stable
 set -gx XDG_DATA_HOME "$HOME/.local/share"
 set -gx XDG_CONFIG_HOME "$HOME/.config"
 set -gx XDG_STATE_HOME "$HOME/.local/state"
 set -gx XDG_CACHE_HOME "$HOME/.cache"
 set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
 
-set -gx ANDROID_HOME /opt/android-sdk
-set -gx ANDROID_AVD_HOME $HOME/.android/avd
-set -gx JAVA_HOME /usr/lib/jvm/java-25-openjdk
-set -gx FLUTTER_HOME /opt/flutter
-set -gx PUB_CACHE $HOME/.pub-cache
-fish_add_path $ANDROID_HOME/platform-tools $ANDROID_HOME/cmdline-tools/latest/bin $ANDROID_HOME/emulator $FLUTTER_HOME/bin $PUB_CACHE/bin $ANDROID_HOME/tools/bin
-
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
-if status is-interactive
-    stty -ixon
-end
+# Proton Pass Entegrasyonu
+set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
+set -gx PROTON_PASS_LINUX_KEYRING dbus
 
+# Android, Java, Flutter
+set -gx ANDROID_HOME /opt/android-sdk
+set -gx ANDROID_AVD_HOME "$HOME/.android/avd"
+set -gx JAVA_HOME /usr/lib/jvm/java-25-openjdk
+set -gx FLUTTER_HOME /opt/flutter
+set -gx PUB_CACHE "$HOME/.pub-cache"
+
+# ===========================================================================
+# PATH YÖNETİMİ
+# ===========================================================================
+fish_add_path -g \
+    "$HOME/bin" \
+    "$HOME/.local/bin" \
+    "$HOME/.cargo/bin" \
+    /var/lib/flatpak/exports/bin \
+    "$HOME/.local/share/flatpak/exports/bin" \
+    "$FLUTTER_HOME/bin" \
+    "$PUB_CACHE/bin" \
+    "$ANDROID_HOME/platform-tools" \
+    "$ANDROID_HOME/cmdline-tools/latest/bin" \
+    "$ANDROID_HOME/emulator" \
+    "$ANDROID_HOME/tools/bin"
+
+# ===========================================================================
+# ALIAS VE KISALTMALAR (ABBR)
+# ===========================================================================
+# Editör & Sistem Kısayolları
 alias spico 'sudo pico'
 alias snano 'sudo nano'
 alias vim nvim
 alias vi nvim
-alias svi 'sudo nvim' # vi'yi nvim'e yönlendirdiğimiz için svi'yi de güncelledik.
+alias svi 'sudo nvim'
 alias vis 'nvim "+set si"'
+alias efishc 'nvim ~/.config/fish/config.fish'
+alias btop 'sudo -E btop'
 
-# grep için ripgrep (rg) kontrolü
 if command -v rg >/dev/null 2>&1
     alias grep rg
 else
-    # GREP_OPTIONS artık önerilmiyor, --color=auto çoğu dağıtımda varsayılan.
     alias grep '/usr/bin/grep --color=auto'
 end
 
-# config.fish dosyasını düzenle
-alias efishc 'nvim ~/.config/fish/config.fish'
+if command -v bat >/dev/null 2>&1
+    alias cat bat
+end
 
-# Tarih alias'ı
+# Temel Sistem Komutları
 alias da 'date "+%Y-%m-%d %A %T %Z"'
-
-# Değiştirilmiş komutlar
 alias cp 'cp -i'
 alias mv 'mv -i'
 alias rm 'trash -v'
@@ -89,21 +112,18 @@ alias cls clear
 alias apt-get 'sudo apt-get'
 alias multitail 'multitail --no-repeat -c'
 alias freshclam 'sudo freshclam'
-alias yayf "yay -Slq | fzf --multi --preview 'yay -Sii {1}' --preview-window=down:75% | xargs -ro yay -S"
-alias paruf "paru -Slq | fzf --multi --preview 'paru -Sii {1}' --preview-window=down:75% | xargs -ro paru -S"
-# Dizin değiştirme alias'ları
+
+# Navigasyon
 alias home 'cd ~'
 alias cd.. 'cd ..'
 alias .. 'cd ..'
 alias ... 'cd ../..'
 alias .... 'cd ../../..'
 alias ..... 'cd ../../../..'
-alias bd 'cd $dirprev' # Fish'te OLDPWD yerine dirprev kullanılır
+alias bd 'cd $dirprev'
 
-# Dizin ve içeriğini sil
+# Dosya Yönetimi & eza
 alias rmd '/bin/rm --recursive --force --verbose'
-
-# eza (ls alternatifi) için alias'lar
 alias ls 'eza -l --icons --git --header'
 alias l 'eza --icons --git'
 alias ll 'eza -la --icons --git --header'
@@ -117,7 +137,7 @@ alias Ta 'eza --tree --level=3 -a --icons --git'
 alias lf 'eza -l --icons --git --no-dir'
 alias ldir 'eza -lD --icons --git'
 
-# chmod alias'ları
+# Yetki (Chmod)
 alias mx 'chmod a+x'
 alias 000 'chmod -R 000'
 alias 644 'chmod -R 644'
@@ -125,23 +145,21 @@ alias 666 'chmod -R 666'
 alias 755 'chmod -R 755'
 alias 777 'chmod -R 777'
 
-# Arama alias'ları
+# Arama & Bilgi
 alias h 'history | grep'
-alias p "ps aux | grep"
-alias topcpu "/bin/ps -eo pcpu,pid,user,args | sort -k 1 -r | head -10"
-alias f "find . | grep"
-
-# Diğer alias'lar
-alias checkcommand "type -t"
+alias p 'ps aux | grep'
+alias topcpu '/bin/ps -eo pcpu,pid,user,args | sort -k 1 -r | head -10'
+alias f 'find . | grep'
+alias checkcommand 'type -t'
 alias openports 'netstat -nape --inet'
-alias rebootsafe 'sudo shutdown -r now'
-alias rebootforce 'sudo shutdown -r -n now'
-alias diskspace "du -S | sort -n -r | more"
+alias diskspace 'du -S | sort -n -r | more'
 alias folders 'du -h --max-depth=1'
 alias folderssort 'find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
 alias tree 'tree -CAhF --dirsfirst'
 alias treed 'tree -CAFd'
 alias mountedinfo 'df -hT'
+
+# Arşiv
 alias mktar 'tar -cvf'
 alias mkbz2 'tar -cvjf'
 alias mkgz 'tar -cvzf'
@@ -149,43 +167,46 @@ alias untar 'tar -xvf'
 alias unbz2 'tar -xvjf'
 alias ungz 'tar -xvzf'
 alias sha1 'openssl sha1'
-#alias logs "sudo find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]\$' | xargs tail -f"
+
+# Diğer Araçlar
+alias rebootsafe 'sudo shutdown -r now'
+alias rebootforce 'sudo shutdown -r -n now'
 alias clickpaste 'sleep 3; xdotool type (xclip -o -selection clipboard)'
-alias kssh "kitty +kitten ssh"
+alias kssh 'kitty +kitten ssh'
 alias docker-clean 'docker container prune -f; docker image prune -f; docker network prune -f; docker volume prune -f'
-alias hug "systemctl --user restart hugo"
-alias lanm "systemctl --user restart lan-mouse"
+alias hug 'systemctl --user restart hugo'
+alias lanm 'systemctl --user restart lan-mouse'
 
-# Temel Komut
+# Donanım Kontrolü (Envycontrol)
+alias integrated 'sudo envycontrol -s integrated --verbose'
+alias hybrid 'sudo envycontrol -s hybrid --verbose'
+
+# Paket Yöneticisi (Paru & Yay Kısaltmaları)
 abbr --add p paru
-
-# Güncelleme (System Update)
 abbr --add pup "paru -Syu"
-
-# Kurulum (Install)
-abbr --add in "paru -S"
-
-# Silme (Remove - Bağımlılıklar ve ayar dosyalarıyla birlikte)
+abbr --add pin "paru -S"
 abbr --add prm "paru -Rns"
+abbr --add pse "paru -Ss"
+alias paruf "paru -Slq | fzf --multi --preview 'paru -Sii {1}' --preview-window=down:75% | xargs -ro paru -S"
 
-# Arama (Search - Yüklü olmayanları da bulur)
-abbr --add se "paru -Ss"
+abbr --add y yay
+abbr --add yup "yay -Syu"
+abbr --add yin "yay -S"
+abbr --add yrm "yay -Rns"
+abbr --add yse "yay -Ss"
+alias yayf "yay -Slq | fzf --multi --preview 'yay -Sii {1}' --preview-window=down:75% | xargs -ro yay -S"
 
-# Temizlik (Cache Clean - Orphan paketler ve önbellek)
-abbr --add cl "paru -Sc"
+# ===========================================================================
+# FONKSİYONLAR
+# ===========================================================================
 
-# cat'i bat olarak kullanmak için (eğer yüklüyse)
-if command -v bat >/dev/null 2>&1
-    alias cat bat
+# Dizin değiştiğinde otomatik 'ls' tetikle (chpwd yerine nizamî fish metodu)
+function __auto_ls --on-variable PWD
+    if status is-interactive
+        ls
+    end
 end
 
-#######################################################
-# FONKSİYONLAR
-#######################################################
-# Not: Fish'te fonksiyonlar `function name ...; end` bloğu ile tanımlanır.
-# Argümanlar `$1`, `$2` yerine `$argv[1]`, `$argv[2]` olarak alınır.
-
-# Arşiv çıkarma fonksiyonu
 function extract
     for archive in $argv
         if test -f "$archive"
@@ -217,12 +238,10 @@ function extract
     end
 end
 
-# Dosya içinde metin arama
 function ftext
     grep -iIHrn --color=always "$argv[1]" . | less -r
 end
 
-# İlerleme çubuğu ile dosya kopyalama
 function cpp
     set total_size (stat -c '%s' "$argv[1]")
     strace -q -ewrite cp -- "$argv[1]" "$argv[2]" 2>&1 |
@@ -240,7 +259,6 @@ function cpp
         END { print "" }'
 end
 
-# Kopyala ve o dizine git
 function cpg
     if test -d "$argv[2]"
         cp "$argv[1]" "$argv[2]"; and cd "$argv[2]"
@@ -249,7 +267,6 @@ function cpg
     end
 end
 
-# Taşı ve o dizine git
 function mvg
     if test -d "$argv[2]"
         mv "$argv[1]" "$argv[2]"; and cd "$argv[2]"
@@ -258,13 +275,11 @@ function mvg
     end
 end
 
-# Dizin oluştur ve içine gir
 function mkdirg
     mkdir -p "$argv[1]"
     cd "$argv[1]"
 end
 
-# Belirtilen sayıda yukarı dizine çık
 function up
     set -l limit $argv[1]
     if test -z "$limit"
@@ -277,110 +292,10 @@ function up
     cd $path
 end
 
-# cd komutundan sonra ls çalıştır
-function cd
-    builtin cd $argv; and ls
-end
-
-# Çalışılan dizinin son iki bölümünü göster
 function pwdtail
     pwd | awk -F/ '{nlast = NF -1;print $nlast"/"$NF}'
 end
 
-# Linux dağıtımını bul
-function distribution
-    set -l dtype unknown
-    if test -r /etc/os-release
-        source /etc/os-release
-        switch $ID
-            case fedora rhel centos
-                set dtype redhat
-            case sles "opensuse*"
-                set dtype suse
-            case ubuntu debian
-                set dtype debian
-            case gentoo
-                set dtype gentoo
-            case arch manjaro
-                set dtype arch
-            case slackware
-                set dtype slackware
-            case "*"
-                if set -q ID_LIKE
-                    switch $ID_LIKE
-                        case "*fedora*" "*rhel*" "*centos*"
-                            set dtype redhat
-                        case "*sles*" "*opensuse*"
-                            set dtype suse
-                        case "*ubuntu*" "*debian*"
-                            set dtype debian
-                        case "*gentoo*"
-                            set dtype gentoo
-                        case "*arch*"
-                            set dtype arch
-                        case "*slackware*"
-                            set dtype slackware
-                    end
-                end
-        end
-    end
-    echo $dtype
-end
-
-# İşletim sistemi versiyonunu göster
-function ver
-    set -l dtype (distribution)
-    switch $dtype
-        case redhat
-            if test -s /etc/redhat-release
-                cat /etc/redhat-release
-            else
-                cat /etc/issue
-            end
-            uname -a
-        case suse
-            cat /etc/SuSE-release
-        case debian
-            lsb_release -a
-        case gentoo
-            cat /etc/gentoo-release
-        case arch
-            cat /etc/os-release
-        case slackware
-            cat /etc/slackware-version
-        case "*"
-            if test -s /etc/issue
-                cat /etc/issue
-            else
-                echo "Hata: Bilinmeyen dağıtım"
-                return 1
-            end
-    end
-end
-
-# Gerekli destek dosyalarını kur
-function install_bashrc_support
-    set -l dtype (distribution)
-    switch $dtype
-        case redhat
-            sudo yum install multitail tree zoxide trash-cli fzf fastfetch
-        case suse
-            sudo zypper install multitail tree zoxide trash-cli fzf fastfetch
-        case debian
-            sudo apt-get install multitail tree zoxide trash-cli fzf
-            set FASTFETCH_URL (curl -s https://api.github.com/repos/fastfetch-cli/fastfetch/releases/latest | grep "browser_download_url.*linux-amd64.deb" | cut -d '"' -f 4)
-            curl -sL $FASTFETCH_URL -o /tmp/fastfetch_latest_amd64.deb
-            sudo apt-get install /tmp/fastfetch_latest_amd64.deb
-        case arch
-            sudo paru -S multitail tree zoxide trash-cli fzf fastfetch
-        case slackware
-            echo "Slackware için kurulum desteği yok"
-        case "*"
-            echo "Bilinmeyen dağıtım"
-    end
-end
-
-# IP adresi bulma
 alias whatismyip whatsmyip
 function whatsmyip
     echo -n "Dahili IP: "
@@ -389,12 +304,10 @@ function whatsmyip
     else
         ifconfig wlan0 | grep "inet " | awk '{print $2}'
     end
-
     echo -n "Harici IP: "
     curl -4 ifconfig.me
 end
 
-# GitHub Fonksiyonları
 function gcom
     git add .
     git commit -m "$argv[1]"
@@ -415,7 +328,6 @@ function hb
         echo "Dosya yolu mevcut değil."
         return 1
     end
-
     set -l uri "http://bin.christitus.com/documents"
     set -l response (curl -s -X POST -d @"$argv[1]" "$uri")
     if test $status -eq 0
@@ -426,52 +338,8 @@ function hb
     end
 end
 
-#######################################################
-# SON AYARLAMALAR VE ENTEGRASYONLAR
-#######################################################
-
-# Ctrl+f için özel tuş ataması
-# 'zi' yazıp enter'a basar (zoxide interactive)
+# ===========================================================================
+# TUŞ ATAMALARI (KEY BINDINGS)
+# ===========================================================================
+# Ctrl+f tuşuna basıldığında zoxide interaktif arama tetiklenir
 bind \cf 'commandline -i "zi"; commandline -f execute'
-
-# PATH'e eklemeler (Fish'in kendi yöntemiyle)
-fish_add_path -g "$HOME/.local/bin"
-fish_add_path -g "$HOME/.cargo/bin"
-fish_add_path -g /var/lib/flatpak/exports/bin
-fish_add_path -g "/.local/share/flatpak/exports/bin"
-
-# TTY1'de isek ve DISPLAY yoksa, grafik arayüzü başlat
-if not set -q DISPLAY; and test (tty) = /dev/tty1
-    exec startx
-end
-# --- DÜZELTİLMİŞ KOD BLOKU ---
-
-# zoxide komutlarından sonra otomatik 'ls' çalıştırmak için.
-
-# 'z' komutunu sarmalamak için
-if functions -q z
-    # Sadece '__zoxide_z' adında bir kopya HENÜZ YOKSA kopyala
-    if not functions -q __zoxide_z
-        functions --copy z __zoxide_z
-    end
-
-    # 'z' fonksiyonunu her zaman bizim versiyonumuzla yeniden tanımla
-    function z --wraps z --description "zoxide ile dizin değiştir ve listele"
-        # Orijinal fonksiyonu çağır VE başarılı olursa 'ls' çalıştır
-        __zoxide_z $argv; and ls
-    end
-end
-
-# 'zi' (interaktif) komutunu sarmalamak için
-if functions -q zi
-    # Sadece '__zoxide_zi' adında bir kopya HENÜZ YOKSA kopyala
-    if not functions -q __zoxide_zi
-        functions --copy zi __zoxide_zi
-    end
-
-    # 'zi' fonksiyonunu her zaman bizim versiyonumuzla yeniden tanımla
-    function zi --wraps zi --description "zoxide ile interaktif dizin değiştir ve listele"
-        # Orijinal fonksiyonu çağır VE başarılı olursa 'ls' çalıştır
-        __zoxide_zi $argv; and ls
-    end
-end
