@@ -181,6 +181,8 @@ alias lanm 'systemctl --user restart lan-mouse'
 alias integrated 'sudo envycontrol -s integrated --verbose'
 alias hybrid 'sudo envycontrol -s hybrid --verbose'
 
+alias glorious 'mxw report battery'
+
 # Paket Yöneticisi (Paru & Yay Kısaltmaları)
 abbr --add p paru
 abbr --add pup "paru -Syu"
