@@ -87,7 +87,6 @@ alias vi nvim
 alias svi 'sudo nvim'
 alias vis 'nvim "+set si"'
 alias efishc 'nvim ~/.config/fish/config.fish'
-alias btop 'sudo -E btop'
 
 if command -v rg >/dev/null 2>&1
     alias grep rg
@@ -159,6 +158,8 @@ alias tree 'tree -CAhF --dirsfirst'
 alias treed 'tree -CAFd'
 alias mountedinfo 'df -hT'
 
+alias rclone-status 'rclone rc core/stats --url localhost:5572'
+
 # Arşiv
 alias mktar 'tar -cvf'
 alias mkbz2 'tar -cvjf'
@@ -176,6 +177,7 @@ alias kssh 'kitty +kitten ssh'
 alias docker-clean 'docker container prune -f; docker image prune -f; docker network prune -f; docker volume prune -f'
 alias hug 'systemctl --user restart hugo'
 alias lanm 'systemctl --user restart lan-mouse'
+alias logs "sudo find /var/log -type f -exec file {} + | grep 'text' | cut -d: -f1 | xargs tail -f"
 
 # Donanım Kontrolü (Envycontrol)
 alias integrated 'sudo envycontrol -s integrated --verbose'
@@ -190,6 +192,7 @@ abbr --add pin "paru -S"
 abbr --add prm "paru -Rns"
 abbr --add pse "paru -Ss"
 alias paruf "paru -Slq | fzf --multi --preview 'paru -Sii {1}' --preview-window=down:75% | xargs -ro paru -S"
+alias parur "paru -Qq | fzf --multi --preview 'paru -Qi {1}' --preview-window=down:75% | xargs -ro paru -Rns"
 
 abbr --add y yay
 abbr --add yup "yay -Syu"
@@ -197,10 +200,24 @@ abbr --add yin "yay -S"
 abbr --add yrm "yay -Rns"
 abbr --add yse "yay -Ss"
 alias yayf "yay -Slq | fzf --multi --preview 'yay -Sii {1}' --preview-window=down:75% | xargs -ro yay -S"
+alias yayr "yay -Qq | fzf --multi --preview 'yay -Qi {1}' --preview-window=down:75% | xargs -ro yay -Rns"
 
 # ===========================================================================
 # FONKSİYONLAR
 # ===========================================================================
+
+function countfiles
+    for t in f l d
+        set name files
+        if test $t = l
+            set name links
+        end
+        if test $t = d
+            set name directories
+        end
+        echo (find . -type $t 2>/dev/null | wc -l) $name
+    end
+end
 
 # Dizin değiştiğinde otomatik 'ls' tetikle (chpwd yerine nizamî fish metodu)
 function __auto_ls --on-variable PWD
