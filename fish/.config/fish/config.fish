@@ -52,6 +52,7 @@ set -gx VISUAL nvim
 # Proton Pass Entegrasyonu
 set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
 set -gx PROTON_PASS_LINUX_KEYRING dbus
+dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK
 
 # Android, Java, Flutter
 set -gx ANDROID_HOME /opt/android-sdk
