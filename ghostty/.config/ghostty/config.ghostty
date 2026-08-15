@@ -48,7 +48,7 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
-theme = "light:Horizon Bright,dark:Broadcast"
+theme = noctalia
 background-opacity = 0.9
 confirm-close-surface = false
 font-size = 11

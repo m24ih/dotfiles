@@ -85,7 +85,9 @@ STOW_PACKAGES=(
   "nvim"
   "qt5ct"
   "qt6ct"
+  "ssh"
   "starship"
+  "systemd"
   "user-dirs"
   "wlogout"
   "zshrc.d"
@@ -102,6 +104,8 @@ stow -R -t "$HOME" "${STOW_PACKAGES[@]}"
 echo ":: 'Stow' işlemi tamamlandı."
 
 systemctl --user enable vicinae --now
+systemctl --user daemon-reload
+systemctl --user enable --now proton-pass-ssh-agent.service
 
 # -----------------------------------------------------------------
 # 6. MODÜL: Donanım Ayarlarını Uygula
@@ -144,14 +148,28 @@ echo ":: Digital Ocean Amsterdam Serverina proxy ile baglanildi."
 echo ":: Artik discord-secure yazarak veya discord iconuna tiklayarak girebilirsin"
 
 # -----------------------------------------------------------------
-# 8. MODÜL: Zapret ve DNS Ayarlama
+# 8. MODÜL: Sistem ve Kullanıcı Servislerini Otomatik Etkinleştirme
 # -----------------------------------------------------------------
-echo ":: 'ibb-login.sh' script'i symlink ile baglaniyor..."
-chmod +x "$DOTFILES_DIR/ibb-login.sh"
-# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
-sudo ln -sf "$DOTFILES_DIR/ibb-login.sh" /usr/local/bin/ibb-login
-echo ":: ibb-login symlink ile baglandi."
-echo ":: Artik ibb-login on/off yazarak zapret ve dns ayarlarini degistirebilirsin"
+echo ":: 'setup_services.sh' script'i çalıştırılıyor..."
+chmod +x "$DOTFILES_DIR/setup_services.sh"
+"$DOTFILES_DIR/setup_services.sh"
+echo ":: Sistem ve Kullanıcı Servisleri başarıyla yapılandırıldı."
+
+# -----------------------------------------------------------------
+# 9. MODÜL: UFW Güvenlik Duvarı Kurallarını Uygula
+# -----------------------------------------------------------------
+echo ":: 'setup_ufw.sh' script'i çalıştırılıyor..."
+chmod +x "$DOTFILES_DIR/setup_ufw.sh"
+"$DOTFILES_DIR/setup_ufw.sh"
+echo ":: UFW güvenlik duvarı kuralları uygulandı."
+
+# -----------------------------------------------------------------
+# 10. MODÜL: Cloudflare WARP Split Tunnel Kurallarını Uygula
+# -----------------------------------------------------------------
+echo ":: 'setup_warp.sh' script'i çalıştırılıyor..."
+chmod +x "$DOTFILES_DIR/setup_warp.sh"
+"$DOTFILES_DIR/setup_warp.sh"
+echo ":: WARP Split Tunnel kuralları uygulandı."
 
 echo "--------------------------------"
 echo "🎉 TÜM KURULUM TAMAMLANDI! 🎉"

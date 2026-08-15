@@ -5,10 +5,10 @@
 
 # ------------------------------------------- // System
 com.github.tchx84.Flatseal                     # Flatseal
-io.github.flattool.Warehouse                   # Warehouse
-org.gnome.Boxes                                # Boxes
+#io.github.flattool.Warehouse                   # Warehouse
+#org.gnome.Boxes                                # Boxes
 # io.missioncenter.MissionCenter                 # MissionCenter
-io.gitlab.adhami3310.Impression                # Impression
+#io.gitlab.adhami3310.Impression                # Impression
 # com.usebottles.bottles                       # Bottles
 # io.github.dimtpap.coppwr                     # Coppwr
 
@@ -32,7 +32,7 @@ io.gitlab.adhami3310.Impression                # Impression
 #org.kde.krita                                  # Krita
 #org.gimp.GIMP                                  # Gimp
 #org.blender.Blender                            # Blender
-io.gitlab.theevilskeleton.Upscaler             # ImageUpscaler
+#io.gitlab.theevilskeleton.Upscaler             # ImageUpscaler
 
 # ------------------------------------------- // Photography
 # org.gnome.Shotwell                           # Shotwell
@@ -44,10 +44,10 @@ io.gitlab.theevilskeleton.Upscaler             # ImageUpscaler
 # com.spotify.Client                           # Spotify
 # org.kde.kdenlive                             # Kdenlive
 # com.obsproject.Studio                          # Obs
-com.github.rafostar.Clapper                    # Clapper
-com.github.unrud.VideoDownloader               # VideoDownloader
+#com.github.rafostar.Clapper                    # Clapper
+#com.github.unrud.VideoDownloader               # VideoDownloader
 
 # ------------------------------------------- // Gaming
 # hu.kramo.Cartridges                          # Cartridges
 # com.github.Matoking.protontricks             # ProtonTricks
-net.davidotek.pupgui2                        # ProtonUp
+#net.davidotek.pupgui2                        # ProtonUp
