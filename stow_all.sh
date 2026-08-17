@@ -22,7 +22,7 @@ for pkg in */; do
     # 'scripts' gibi betik klasörlerini hariç tutabiliriz
     if [ "$pkg" != "scripts/" ]; then
       echo "  -> Bağlanıyor: ${pkg%/}" # Sonundaki / işaretini kaldır
-      stow -t "$HOME" "${pkg%/}"
+      stow -R -t "$HOME" "${pkg%/}"
     fi
   fi
 done

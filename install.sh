@@ -76,19 +76,19 @@ STOW_PACKAGES=(
   "foot"
   "fuzzel"
   "ghostty"
-  "gtk"
   "hypr"
   "kitty"
   "Kvantum"
+  "mango"
   "mpv"
   "niri"
   "nvim"
-  "qt5ct"
-  "qt6ct"
+  "quickshell"
   "ssh"
   "starship"
   "systemd"
   "user-dirs"
+  "vivaldi"
   "wlogout"
   "zshrc.d"
 )
@@ -123,12 +123,12 @@ chmod +x "$DOTFILES_DIR/setup_keychron.sh"
 echo ":: Keychron Klavye Donanım ayarları tamamlandı."
 
 # -----------------------------------------------------------------
-# 7. MODÜL: Yazilim Ayarlarını Uygula
+# 7. MODÜL: Ağ ve Ağ Sürücü Ayarlarını Uygula
 # -----------------------------------------------------------------
 echo ":: 'switch_to_iwd.sh' script'i çalıştırılıyor..."
 chmod +x "$DOTFILES_DIR/switch_to_iwd.sh"
 # Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
-"$DOTFILES_DIR/switch_to_iwd"
+"$DOTFILES_DIR/switch_to_iwd.sh"
 echo ":: Oyunlarda Jitter azaltmak icin iwd gecisi tamamlandı."
 
 echo ":: 'vivaldi_middle_click.sh' script'i çalıştırılıyor..."
@@ -138,7 +138,7 @@ chmod +x "$DOTFILES_DIR/vivaldi_middle_click.sh"
 echo ":: Vivaldi de middle click kullanarak kaydirma aktif edildi."
 
 # -----------------------------------------------------------------
-# 7. MODÜL: Yazilim Ayarlarını Uygula
+# 8. MODÜL: Discord Proxy ve Güvenli Erişim Ayarları
 # -----------------------------------------------------------------
 echo ":: 'setup_discord_proxy.sh' script'i çalıştırılıyor..."
 chmod +x "$DOTFILES_DIR/setup_discord_proxy.sh"
@@ -148,7 +148,7 @@ echo ":: Digital Ocean Amsterdam Serverina proxy ile baglanildi."
 echo ":: Artik discord-secure yazarak veya discord iconuna tiklayarak girebilirsin"
 
 # -----------------------------------------------------------------
-# 8. MODÜL: Sistem ve Kullanıcı Servislerini Otomatik Etkinleştirme
+# 9. MODÜL: Sistem ve Kullanıcı Servislerini Otomatik Etkinleştirme
 # -----------------------------------------------------------------
 echo ":: 'setup_services.sh' script'i çalıştırılıyor..."
 chmod +x "$DOTFILES_DIR/setup_services.sh"
@@ -156,7 +156,7 @@ chmod +x "$DOTFILES_DIR/setup_services.sh"
 echo ":: Sistem ve Kullanıcı Servisleri başarıyla yapılandırıldı."
 
 # -----------------------------------------------------------------
-# 9. MODÜL: UFW Güvenlik Duvarı Kurallarını Uygula
+# 10. MODÜL: UFW Güvenlik Duvarı Kurallarını Uygula
 # -----------------------------------------------------------------
 echo ":: 'setup_ufw.sh' script'i çalıştırılıyor..."
 chmod +x "$DOTFILES_DIR/setup_ufw.sh"
@@ -164,7 +164,7 @@ chmod +x "$DOTFILES_DIR/setup_ufw.sh"
 echo ":: UFW güvenlik duvarı kuralları uygulandı."
 
 # -----------------------------------------------------------------
-# 10. MODÜL: Cloudflare WARP Split Tunnel Kurallarını Uygula
+# 11. MODÜL: Cloudflare WARP Split Tunnel Kurallarını Uygula
 # -----------------------------------------------------------------
 echo ":: 'setup_warp.sh' script'i çalıştırılıyor..."
 chmod +x "$DOTFILES_DIR/setup_warp.sh"
