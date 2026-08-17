@@ -6,6 +6,11 @@ PING_URL="BURAYA_PING_URL_ADRESINI_YAPISTIR"
 SCRIPT_DIR="$HOME/Documents/scripts"
 SYSTEMD_DIR="$HOME/.config/systemd/user"
 
+if [ "$PING_URL" = "BURAYA_PING_URL_ADRESINI_YAPISTIR" ]; then
+  echo "⚠️ Lütfen script içindeki PING_URL değişkenini kendi Healthchecks.io URL'iniz ile güncelleyin!"
+  exit 1
+fi
+
 echo "Genel İnternet İzleme Sistemi kurulumu başlatılıyor..."
 
 # 1. Klasörleri oluştur

@@ -16,15 +16,21 @@ STOW_FOLDERS=(
   "alacritty"
   "btop"
   "cava"
+  "fastfetch"
   "fish"
   "foot"
   "fuzzel"
+  "ghostty"
+  "hypr"
   "kitty"
   "Kvantum"
+  "mango"
   "mpv"
+  "niri"
   "nvim"
-  "qt5ct"
-  "qt6ct"
+  "quickshell"
+  "systemd"
+  "vivaldi"
   "wlogout"
   "zshrc.d"
 )
@@ -66,7 +72,7 @@ for pkg in "${STOW_FOLDERS[@]}"; do
   # 2. Mevcut yapılandırmayı taşı
   mv "$CONFIG_DIR/$pkg" "$DOTFILES_DIR/$pkg/.config/"
   # 3. Stow et
-  stow -t "$HOME" "$pkg"
+  stow -R -t "$HOME" "$pkg"
   echo "     Başarılı: $pkg taşındı ve bağlandı."
 done
 
@@ -87,7 +93,7 @@ for file in "${STOW_FILES[@]}"; do
   # 2. Mevcut dosyayı taşı
   mv "$CONFIG_DIR/$file" "$DOTFILES_DIR/$pkg_name/.config/"
   # 3. Stow et
-  stow -t "$HOME" "$pkg_name"
+  stow -R -t "$HOME" "$pkg_name"
   echo "     Başarılı: $file taşındı ve bağlandı."
 done
 
