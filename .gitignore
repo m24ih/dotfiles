@@ -1,8 +1,30 @@
+# Neovim / Plugin kilit ve geçici dosyaları
+lazy-lock.json
+.netrwhist
+
+# Yedek ve geçici dosyalar
+*.bak
+*.tmp
+*.log
+*.swp
+*.swo
+*.swn
+*~
+
+# Python & Node / Sanal ortamlar
+__pycache__/
+*.pyc
+node_modules/
+.venv/
+
 # Gelecekte eklenebilecek potansiyel sır dosyaları
 *secret*
 *.secret
 *.env
+*.pem
+*.key
 
 # OS'e özel dosyalar
 .DS_Store
 Thumbs.db
+desktop.ini
