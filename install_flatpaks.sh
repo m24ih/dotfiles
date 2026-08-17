@@ -18,13 +18,15 @@ if ! pkg_installed flatpak; then
 fi
 
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flats=$(awk -F '#' '{print $1}' "${baseDir}/flat_packages.txt" | sed 's/ //g' | xargs)
+flats=$(awk -F '#' '{print $1}' "${baseDir}/flat_packages.txt" 2>/dev/null | sed 's/ //g' | xargs)
 
-flatpak install -y flathub ${flats}
-flatpak remove --unused
+if [ -n "${flats}" ]; then
+  flatpak install -y flathub ${flats}
+fi
+flatpak remove --unused -y
 
-gtkTheme=$(gsettings get org.gnome.desktop.interface gtk-theme | sed "s/'//g")
-gtkIcon=$(gsettings get org.gnome.desktop.interface icon-theme | sed "s/'//g")
+gtkTheme=$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null | sed "s/'//g")
+gtkIcon=$(gsettings get org.gnome.desktop.interface icon-theme 2>/dev/null | sed "s/'//g")
 
 flatpak --user override --filesystem=~/.themes
 flatpak --user override --filesystem=~/.icons
@@ -32,5 +34,9 @@ flatpak --user override --filesystem=~/.icons
 flatpak --user override --filesystem=~/.local/share/themes
 flatpak --user override --filesystem=~/.local/share/icons
 
-flatpak --user override --env=GTK_THEME=${gtkTheme}
-flatpak --user override --env=ICON_THEME=${gtkIcon}
+if [ -n "${gtkTheme}" ]; then
+  flatpak --user override --env=GTK_THEME=${gtkTheme}
+fi
+if [ -n "${gtkIcon}" ]; then
+  flatpak --user override --env=ICON_THEME=${gtkIcon}
+fi

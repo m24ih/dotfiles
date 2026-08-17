@@ -16,6 +16,30 @@ DOTFILES_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 echo "Ana Kurulum Script'i Başlıyor..."
 echo "Dotfiles Dizini: $DOTFILES_DIR"
 
+# Sub-script çalıştırma yardımcısı:
+# Hata alsa bile ana script'in durmasını engeller ve sudo gerektiren betikleri güvenle çağırır.
+run_script() {
+  local script_path="$1"
+  shift
+  chmod +x "$script_path" 2>/dev/null || true
+  if [ "$1" = "sudo" ]; then
+    shift
+    if sudo "$script_path" "$@"; then
+      return 0
+    else
+      echo "⚠️ UYARI: $(basename "$script_path") çalıştırılırken bir hata oluştu veya iptal edildi. Kurulum devam ediyor..."
+      return 0
+    fi
+  else
+    if "$script_path" "$@"; then
+      return 0
+    else
+      echo "⚠️ UYARI: $(basename "$script_path") çalıştırılırken bir hata oluştu. Kurulum devam ediyor..."
+      return 0
+    fi
+  fi
+}
+
 # -----------------------------------------------------------------
 # 1. Gerekli Temel Paketler (git ve base-devel)
 # -----------------------------------------------------------------
@@ -47,11 +71,8 @@ echo ":: Paket kurulumu tamamlandı."
 # 4. MODÜL: Flatpak Paketlerini Kur
 # -----------------------------------------------------------------
 echo ":: 'install_flatpaks.sh' script'i çalıştırılıyor..."
-# Diğer betiğe çalıştırma izni ver (gerekliyse)
-chmod +x "$DOTFILES_DIR/install_flatpaks.sh"
-# Çalıştır
-"$DOTFILES_DIR/install_flatpaks.sh"
-echo ":: Flatpak kurulumu tamamlandı."
+run_script "$DOTFILES_DIR/install_flatpaks.sh"
+echo ":: Flatpak kurulum adımı tamamlandı."
 
 # -----------------------------------------------------------------
 # 5. MODÜL: 'stow' ile Dotfile'ları Bağla (En Önemli Adım)
@@ -76,19 +97,19 @@ STOW_PACKAGES=(
   "foot"
   "fuzzel"
   "ghostty"
-  "gtk"
   "hypr"
   "kitty"
   "Kvantum"
+  "mango"
   "mpv"
   "niri"
   "nvim"
-  "qt5ct"
-  "qt6ct"
+  "quickshell"
   "ssh"
   "starship"
   "systemd"
   "user-dirs"
+  "vivaldi"
   "wlogout"
   "zshrc.d"
 )
@@ -111,64 +132,51 @@ systemctl --user enable --now proton-pass-ssh-agent.service
 # 6. MODÜL: Donanım Ayarlarını Uygula
 # -----------------------------------------------------------------
 echo ":: 'setup_fkeys.sh' script'i çalıştırılıyor..."
-chmod +x "$DOTFILES_DIR/setup_fkeys.sh"
-# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
-"$DOTFILES_DIR/setup_fkeys.sh"
+run_script "$DOTFILES_DIR/setup_fkeys.sh" sudo
 echo ":: F tuslari Donanım ayarları tamamlandı."
 
 echo ":: 'setup_keychron.sh' script'i çalıştırılıyor..."
-chmod +x "$DOTFILES_DIR/setup_keychron.sh"
-# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
-"$DOTFILES_DIR/setup_keychron.sh"
+run_script "$DOTFILES_DIR/setup_keychron.sh" sudo
 echo ":: Keychron Klavye Donanım ayarları tamamlandı."
 
 # -----------------------------------------------------------------
-# 7. MODÜL: Yazilim Ayarlarını Uygula
+# 7. MODÜL: Ağ ve Ağ Sürücü Ayarlarını Uygula
 # -----------------------------------------------------------------
 echo ":: 'switch_to_iwd.sh' script'i çalıştırılıyor..."
-chmod +x "$DOTFILES_DIR/switch_to_iwd.sh"
-# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
-"$DOTFILES_DIR/switch_to_iwd"
+run_script "$DOTFILES_DIR/switch_to_iwd.sh" sudo
 echo ":: Oyunlarda Jitter azaltmak icin iwd gecisi tamamlandı."
 
 echo ":: 'vivaldi_middle_click.sh' script'i çalıştırılıyor..."
-chmod +x "$DOTFILES_DIR/vivaldi_middle_click.sh"
-# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
-"$DOTFILES_DIR/vivaldi_middle_click.sh"
+run_script "$DOTFILES_DIR/vivaldi_middle_click.sh"
 echo ":: Vivaldi de middle click kullanarak kaydirma aktif edildi."
 
 # -----------------------------------------------------------------
-# 7. MODÜL: Yazilim Ayarlarını Uygula
+# 8. MODÜL: Discord Proxy ve Güvenli Erişim Ayarları
 # -----------------------------------------------------------------
 echo ":: 'setup_discord_proxy.sh' script'i çalıştırılıyor..."
-chmod +x "$DOTFILES_DIR/setup_discord_proxy.sh"
-# Bu betik 'sudo' komutları içeriyor, şifren zaten istendiği için sorunsuz çalışmalı.
-"$DOTFILES_DIR/setup_discord_proxy.sh"
+run_script "$DOTFILES_DIR/setup_discord_proxy.sh"
 echo ":: Digital Ocean Amsterdam Serverina proxy ile baglanildi."
 echo ":: Artik discord-secure yazarak veya discord iconuna tiklayarak girebilirsin"
 
 # -----------------------------------------------------------------
-# 8. MODÜL: Sistem ve Kullanıcı Servislerini Otomatik Etkinleştirme
+# 9. MODÜL: Sistem ve Kullanıcı Servislerini Otomatik Etkinleştirme
 # -----------------------------------------------------------------
 echo ":: 'setup_services.sh' script'i çalıştırılıyor..."
-chmod +x "$DOTFILES_DIR/setup_services.sh"
-"$DOTFILES_DIR/setup_services.sh"
+run_script "$DOTFILES_DIR/setup_services.sh"
 echo ":: Sistem ve Kullanıcı Servisleri başarıyla yapılandırıldı."
 
 # -----------------------------------------------------------------
-# 9. MODÜL: UFW Güvenlik Duvarı Kurallarını Uygula
+# 10. MODÜL: UFW Güvenlik Duvarı Kurallarını Uygula
 # -----------------------------------------------------------------
 echo ":: 'setup_ufw.sh' script'i çalıştırılıyor..."
-chmod +x "$DOTFILES_DIR/setup_ufw.sh"
-"$DOTFILES_DIR/setup_ufw.sh"
+run_script "$DOTFILES_DIR/setup_ufw.sh" sudo
 echo ":: UFW güvenlik duvarı kuralları uygulandı."
 
 # -----------------------------------------------------------------
-# 10. MODÜL: Cloudflare WARP Split Tunnel Kurallarını Uygula
+# 11. MODÜL: Cloudflare WARP Split Tunnel Kurallarını Uygula
 # -----------------------------------------------------------------
 echo ":: 'setup_warp.sh' script'i çalıştırılıyor..."
-chmod +x "$DOTFILES_DIR/setup_warp.sh"
-"$DOTFILES_DIR/setup_warp.sh"
+run_script "$DOTFILES_DIR/setup_warp.sh"
 echo ":: WARP Split Tunnel kuralları uygulandı."
 
 echo "--------------------------------"
