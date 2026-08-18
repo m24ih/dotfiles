@@ -24,6 +24,9 @@ node_modules/
 *.pem
 *.key
 
+*known_hosts*
+*proton-pass-agent.pid
+
 # OS'e özel dosyalar
 .DS_Store
 Thumbs.db

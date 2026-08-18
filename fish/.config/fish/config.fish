@@ -363,3 +363,7 @@ end
 # ===========================================================================
 # Ctrl+f tuşuna basıldığında zoxide interaktif arama tetiklenir
 bind \cf 'commandline -i "zi"; commandline -f execute'
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/home/melih/.local/bin" $PATH
