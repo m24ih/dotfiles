@@ -10,7 +10,10 @@ binds {
     Mod+M hotkey-overlay-title="Task Manager" { spawn "dms" "ipc" "call" "processlist" "focusOrToggle"; }
     Mod+N hotkey-overlay-title="Notification Center" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
     Mod+P hotkey-overlay-title="Cycle Display Profile" { spawn "dms" "ipc" "outputs" "cycleProfile"; }
+    Mod+Period hotkey-overlay-title="Emoji Picker" { spawn "dms" "ipc" "call" "spotlight" "toggleQuery" ":e "; }
+    Mod+Shift+C hotkey-overlay-title="Calculator" { spawn "dms" "ipc" "call" "spotlight" "toggleQuery" "="; }
     Mod+Shift+N hotkey-overlay-title="Notepad" { spawn "dms" "ipc" "call" "notepad" "toggle"; }
+    Mod+Shift+P hotkey-overlay-title="Power Menu: Toggle" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
     Mod+Shift+W hotkey-overlay-title="Create window rule" { spawn "dms" "ipc" "call" "window-rules" "toggle"; }
     Mod+Space hotkey-overlay-title="Application Launcher" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
     Mod+V hotkey-overlay-title="Clipboard Manager" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
@@ -24,6 +27,7 @@ binds {
     XF86AudioPlay allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
     XF86AudioPrev allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "previous"; }
     XF86AudioRaiseVolume allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "increment" "3"; }
+    XF86Calculator hotkey-overlay-title="Calculator" { spawn "dms" "ipc" "call" "spotlight" "toggleQuery" "="; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""; }
     XF86MonBrightnessUp allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5" ""; }
     Mod+1 { focus-workspace 1; }
@@ -87,7 +91,6 @@ binds {
     Mod+Home { focus-column-first; }
     Mod+Left { focus-column-left; }
     Mod+Minus { set-column-width "-10%"; }
-    Mod+Period { expel-window-from-column; }
     Mod+Q repeat=false { close-window; }
     Mod+R { switch-preset-column-width; }
     Mod+Right { focus-column-right; }
@@ -119,7 +122,6 @@ binds {
     Mod+W { toggle-column-tabbed-display; }
     Mod+WheelScrollLeft { focus-column-left; }
     Mod+WheelScrollRight { focus-column-right; }
-    Mod+Shift+P { power-off-monitors; }
     Ctrl+Print { screenshot-screen; }
     Ctrl+XF86Launch1 { screenshot-screen; }
     Print { screenshot; }

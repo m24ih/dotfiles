@@ -27,6 +27,9 @@ binds {
     Mod+Shift+N                         hotkey-overlay-title="Notepad" { spawn "dms" "ipc" "call" "notepad" "toggle"; }
     Super+X                             hotkey-overlay-title="Power Menu: Toggle" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
     Mod+P                               hotkey-overlay-title="Cycle Display Profile" { spawn "dms" "ipc" "outputs" "cycleProfile"; }
+    Mod+Period                          hotkey-overlay-title="Emoji Picker" { spawn "dms" "ipc" "call" "spotlight" "toggleQuery" ":e "; }
+    Mod+Shift+C                         hotkey-overlay-title="Calculator" { spawn "dms" "ipc" "call" "spotlight" "toggleQuery" "="; }
+    XF86Calculator                      hotkey-overlay-title="Calculator" { spawn "dms" "ipc" "call" "spotlight" "toggleQuery" "="; }
     Mod+Shift+W                         hotkey-overlay-title="Create window rule" { spawn "dms" "ipc" "call" "window-rules" "toggle"; }
     Ctrl+Shift+R                        hotkey-overlay-title="Rename Workspace" { spawn "dms" "ipc" "call" "workspace-rename" "open"; }
 
@@ -144,7 +147,6 @@ binds {
     // ─── Window & Column Manipulation ───
     Mod+BracketLeft                     { consume-or-expel-window-left; }
     Mod+BracketRight                    { consume-or-expel-window-right; }
-    Mod+Period                          { expel-window-from-column; }
     Mod+W                               { toggle-column-tabbed-display; }
     Mod+T                               { toggle-window-floating; }
     Mod+Shift+V                         { switch-focus-between-floating-and-tiling; }
@@ -165,7 +167,7 @@ binds {
     // ─── System & Safety ───
     Mod+Escape                          allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
     Mod+Shift+E                         { quit; }
-    Mod+Shift+P                         { power-off-monitors; }
+    Mod+Shift+P                         hotkey-overlay-title="Power Menu: Toggle" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
 
     // ─── Touchpad Gestures ───
     Mod+TouchpadScrollDown              cooldown-ms=150 { focus-workspace-up; }

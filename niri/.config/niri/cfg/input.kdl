@@ -33,7 +33,7 @@ input {
     }
 
     // ─── General Interaction ───
-   // warp-mouse-to-focus
+    warp-mouse-to-focus
     focus-follows-mouse
     workspace-auto-back-and-forth
 }
