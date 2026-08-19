@@ -1,4 +1,79 @@
-# OS'e göre Fastfetch logosunu dinamik bağla
+# =============================================================================
+# Fish Shell Configuration
+# =============================================================================
+
+# Load configuration snippets from conf.d directory
+# Note: The conf.d files now contain plugin migrations and theme settings
+# We source them here to ensure they're loaded before our custom config
+for conf in ~/.config/fish/conf.d/*.fish
+    if test -f "$conf"
+        source "$conf"
+    end
+end
+
+# =============================================================================
+# ENVIRONMENT VARIABLES
+# =============================================================================
+
+# XDG Base Directory
+set -gx XDG_DATA_HOME "$HOME/.local/share"
+set -gx XDG_CONFIG_HOME "$HOME/.config"
+set -gx XDG_STATE_HOME "$HOME/.local/state"
+set -gx XDG_CACHE_HOME "$HOME/.cache"
+
+# Editor
+set -gx EDITOR nvim
+set -gx VISUAL nvim
+
+# Man pages with bat
+set -gx MANROFFOPT "-c"
+if command -v bat >/dev/null 2>&1
+    set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
+end
+
+# Development environments
+set -gx ANDROID_HOME /opt/android-sdk
+set -gx ANDROID_AVD_HOME "$HOME/.android/avd"
+set -gx JAVA_HOME /usr/lib/jvm/java-25-openjdk
+set -gx FLUTTER_HOME /opt/flutter
+set -gx PUB_CACHE "$HOME/.pub-cache"
+set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
+
+# Proton Pass integration
+set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
+set -gx PROTON_PASS_KEY_PROVIDER fs
+dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK PROTON_PASS_KEY_PROVIDER
+
+# Chrome
+set -gx CHROME_EXECUTABLE /usr/bin/google-chrome-stable
+
+# =============================================================================
+# PATH MANAGEMENT
+# =============================================================================
+
+# Add custom directories to PATH
+fish_add_path -g \
+    "$HOME/bin" \
+    "$HOME/.local/bin" \
+    "$HOME/.npm-global/bin" \
+    "$HOME/.cargo/bin" \
+    /var/lib/flatpak/exports/bin \
+    "$HOME/.local/share/flatpak/exports/bin" \
+    "$FLUTTER_HOME/bin" \
+    "$PUB_CACHE/bin" \
+    "$ANDROID_HOME/platform-tools" \
+    "$ANDROID_HOME/cmdline-tools/latest/bin" \
+    "$ANDROID_HOME/emulator" \
+    "$ANDROID_HOME/tools/bin"
+
+# Added by Antigravity CLI installer
+set -gx PATH "/home/melih/.local/bin" $PATH
+
+# =============================================================================
+# FASTFETCH & GREETING
+# =============================================================================
+
+# OS-specific Fastfetch logo
 function __update_fastfetch_logo
     set -l logo_dir "$HOME/.config/fastfetch/logo"
     if not test -d "$logo_dir"
@@ -35,7 +110,7 @@ function __update_fastfetch_logo
     end
 end
 
-# Hoşgeldin mesajı / Fastfetch
+# Greeting with Fastfetch
 function fish_greeting
     if status is-interactive; and command -v fastfetch >/dev/null 2>&1
         __update_fastfetch_logo
@@ -43,29 +118,32 @@ function fish_greeting
     end
 end
 
+# =============================================================================
+# SHELL OPTIONS
+# =============================================================================
 
-# Done eklentisi bildirim ayarları
-set -g __done_min_cmd_duration 10000
-set -g __done_notification_urgency_level low
-
-
-# Starship ve Zoxide entegrasyonu
-starship init fish | source
-zoxide init fish | source
-
-# Quickshell sekansları
-if test -f ~/.local/state/quickshell/user/generated/terminal/sequences.txt
-    cat ~/.local/state/quickshell/user/generated/terminal/sequences.txt
-end
-
-# Etkileşimli kabuk ayarları (Ctrl+S / Ctrl+Q akış kontrolünü kapat)
+# Disable flow control (Ctrl+S/Q)
 if status is-interactive
     stty -ixon
 end
 
-# ===========================================================================
+# Done plugin configuration
+set -g __done_min_cmd_duration 10000
+set -g __done_notification_urgency_level low
+
+# Starship & Zoxide
+starship init fish | source
+zoxide init fish | source
+
+# Quickshell sequences
+if test -f ~/.local/state/quickshell/user/generated/terminal/sequences.txt
+    cat ~/.local/state/quickshell/user/generated/terminal/sequences.txt
+end
+
+# =============================================================================
 # CONDA (LAZY LOAD)
-# ===========================================================================
+# =============================================================================
+
 function __conda_setup
     if test -f /home/melih/anaconda3/bin/conda
         eval /home/melih/anaconda3/bin/conda "shell.fish" hook | source
@@ -73,63 +151,16 @@ function __conda_setup
 end
 
 function conda
-    functions --erase conda
+    functions -e conda
     __conda_setup
     command conda $argv
 end
 
-# ===========================================================================
-# ORTAM DEĞİŞKENLERİ (ENV VARS)
-# ===========================================================================
-set -gx CHROME_EXECUTABLE /usr/bin/google-chrome-stable
-set -gx XDG_DATA_HOME "$HOME/.local/share"
-set -gx XDG_CONFIG_HOME "$HOME/.config"
-set -gx XDG_STATE_HOME "$HOME/.local/state"
-set -gx XDG_CACHE_HOME "$HOME/.cache"
-set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
+# =============================================================================
+# ALIAS & ABBREVIATIONS
+# =============================================================================
 
-set -gx EDITOR nvim
-set -gx VISUAL nvim
-
-# Man Sayfaları Formatı (bat)
-set -gx MANROFFOPT "-c"
-if command -v bat >/dev/null 2>&1
-    set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
-end
-
-
-# Proton Pass Entegrasyonu
-set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
-set -gx PROTON_PASS_KEY_PROVIDER fs
-dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK PROTON_PASS_KEY_PROVIDER
-
-# Android, Java, Flutter
-set -gx ANDROID_HOME /opt/android-sdk
-set -gx ANDROID_AVD_HOME "$HOME/.android/avd"
-set -gx JAVA_HOME /usr/lib/jvm/java-25-openjdk
-set -gx FLUTTER_HOME /opt/flutter
-set -gx PUB_CACHE "$HOME/.pub-cache"
-
-# ===========================================================================
-# PATH YÖNETİMİ
-# ===========================================================================
-fish_add_path -g \
-    "$HOME/bin" \
-    "$HOME/.local/bin" \
-    "$HOME/.cargo/bin" \
-    /var/lib/flatpak/exports/bin \
-    "$HOME/.local/share/flatpak/exports/bin" \
-    "$FLUTTER_HOME/bin" \
-    "$PUB_CACHE/bin" \
-    "$ANDROID_HOME/platform-tools" \
-    "$ANDROID_HOME/cmdline-tools/latest/bin" \
-    "$ANDROID_HOME/emulator" \
-    "$ANDROID_HOME/tools/bin"
-
-# ===========================================================================
-# ALIAS VE KISALTMALAR (ABBR)
-# ===========================================================================
-# Editör & Sistem Kısayolları
+# Editor shortcuts
 alias spico 'sudo pico'
 alias snano 'sudo nano'
 alias vim nvim
@@ -138,6 +169,7 @@ alias svi 'sudo nvim'
 alias vis 'nvim "+set si"'
 alias efishc 'nvim ~/.config/fish/config.fish'
 
+# Search tools
 if command -v rg >/dev/null 2>&1
     alias grep rg
 else
@@ -148,7 +180,7 @@ if command -v bat >/dev/null 2>&1
     alias cat bat
 end
 
-# Temel Sistem Komutları
+# Basic system commands
 alias da 'date "+%Y-%m-%d %A %T %Z"'
 alias cp 'cp -i'
 alias mv 'mv -i'
@@ -162,7 +194,7 @@ alias apt-get 'sudo apt-get'
 alias multitail 'multitail --no-repeat -c'
 alias freshclam 'sudo freshclam'
 
-# Navigasyon
+# Navigation
 alias home 'cd ~'
 alias cd.. 'cd ..'
 alias .. 'cd ..'
@@ -171,7 +203,7 @@ alias .... 'cd ../../..'
 alias ..... 'cd ../../../..'
 alias bd 'cd $dirprev'
 
-# Dosya Yönetimi & eza
+# File management & eza
 alias rmd '/bin/rm --recursive --force --verbose'
 alias ls 'eza -l --icons --git --header'
 alias l 'eza --icons --git'
@@ -186,7 +218,7 @@ alias Ta 'eza --tree --level=3 -a --icons --git'
 alias lf 'eza -l --icons --git --no-dir'
 alias ldir 'eza -lD --icons --git'
 
-# Yetki (Chmod)
+# Permissions
 alias mx 'chmod a+x'
 alias 000 'chmod -R 000'
 alias 644 'chmod -R 644'
@@ -194,7 +226,7 @@ alias 666 'chmod -R 666'
 alias 755 'chmod -R 755'
 alias 777 'chmod -R 777'
 
-# Arama & Bilgi
+# Search & info
 alias h 'history | grep'
 alias p 'ps aux | grep'
 alias topcpu '/bin/ps -eo pcpu,pid,user,args | sort -k 1 -r | head -10'
@@ -207,10 +239,9 @@ alias folderssort 'find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -
 alias tree 'tree -CAhF --dirsfirst'
 alias treed 'tree -CAFd'
 alias mountedinfo 'df -hT'
-
 alias rclone-status 'rclone rc core/stats --url localhost:5572'
 
-# Arşiv
+# Archives
 alias mktar 'tar -cvf'
 alias mkbz2 'tar -cvjf'
 alias mkgz 'tar -cvzf'
@@ -219,7 +250,7 @@ alias unbz2 'tar -xvjf'
 alias ungz 'tar -xvzf'
 alias sha1 'openssl sha1'
 
-# Diğer Araçlar
+# Other tools
 alias rebootsafe 'sudo shutdown -r now'
 alias rebootforce 'sudo shutdown -r -n now'
 alias clickpaste 'sleep 3; xdotool type (xclip -o -selection clipboard)'
@@ -229,13 +260,12 @@ alias hug 'systemctl --user restart hugo'
 alias lanm 'systemctl --user restart lan-mouse'
 alias logs "sudo find /var/log -type f -exec file {} + | grep 'text' | cut -d: -f1 | xargs tail -f"
 
-# Donanım Kontrolü (Envycontrol)
+# Hardware control (Envycontrol)
 alias integrated 'sudo envycontrol -s integrated --verbose'
 alias hybrid 'sudo envycontrol -s hybrid --verbose'
-
 alias glorious 'mxw report battery'
 
-# Paket Yöneticisi (Paru & Yay Kısaltmaları)
+# Package managers
 abbr --add p paru
 abbr --add pup "paru -Syu"
 abbr --add pin "paru -S"
@@ -252,18 +282,21 @@ abbr --add yse "yay -Ss"
 alias yayf "yay -Slq | fzf --multi --preview 'yay -Sii {1}' --preview-window=down:75% | xargs -ro yay -S"
 alias yayr "yay -Qq | fzf --multi --preview 'yay -Qi {1}' --preview-window=down:75% | xargs -ro yay -Rns"
 
-# ===========================================================================
-# FONKSİYONLAR
-# ===========================================================================
+# =============================================================================
+# FUNCTIONS
+# =============================================================================
 
+# History with timestamp
 function history
     builtin history --show-time='%F %T ' $argv
 end
 
+# Simple backup
 function backup --argument filename
     cp $filename $filename.bak
 end
 
+# Smart copy
 function copy
     set count (count $argv | tr -d \n)
     if test "$count" = 2; and test -d "$argv[1]"
@@ -275,7 +308,7 @@ function copy
     end
 end
 
-
+# Count files, links, directories
 function countfiles
     for t in f l d
         set name files
@@ -289,13 +322,14 @@ function countfiles
     end
 end
 
-# Dizin değiştiğinde otomatik 'ls' tetikle (chpwd yerine nizamî fish metodu)
+# Auto ls on directory change
 function __auto_ls --on-variable PWD
     if status is-interactive
         ls
     end
 end
 
+# Extract archives
 function extract
     for archive in $argv
         if test -f "$archive"
@@ -327,10 +361,12 @@ function extract
     end
 end
 
+# Find text
 function ftext
     grep -iIHrn --color=always "$argv[1]" . | less -r
 end
 
+# Copy with progress bar
 function cpp
     set total_size (stat -c '%s' "$argv[1]")
     strace -q -ewrite cp -- "$argv[1]" "$argv[2]" 2>&1 |
@@ -348,6 +384,7 @@ function cpp
         END { print "" }'
 end
 
+# Copy and go to directory
 function cpg
     if test -d "$argv[2]"
         cp "$argv[1]" "$argv[2]"; and cd "$argv[2]"
@@ -356,6 +393,7 @@ function cpg
     end
 end
 
+# Move and go to directory
 function mvg
     if test -d "$argv[2]"
         mv "$argv[1]" "$argv[2]"; and cd "$argv[2]"
@@ -364,11 +402,13 @@ function mvg
     end
 end
 
+# Make directory and go inside
 function mkdirg
     mkdir -p "$argv[1]"
     cd "$argv[1]"
 end
 
+# Go up directories
 function up
     set -l limit $argv[1]
     if test -z "$limit"
@@ -381,10 +421,12 @@ function up
     cd $path
 end
 
+# Get tail of current path
 function pwdtail
     pwd | awk -F/ '{nlast = NF -1;print $nlast"/"$NF}'
 end
 
+# What's my IP
 alias whatismyip whatsmyip
 function whatsmyip
     echo -n "Dahili IP: "
@@ -397,6 +439,7 @@ function whatsmyip
     curl -4 ifconfig.me
 end
 
+# Git helpers
 function gcom
     git add .
     git commit -m "$argv[1]"
@@ -408,6 +451,7 @@ function lazyg
     git push
 end
 
+# Hastebin upload
 function hb
     if count $argv -eq 0
         echo "Dosya yolu belirtilmedi."
@@ -427,13 +471,44 @@ function hb
     end
 end
 
-# ===========================================================================
-# TUŞ ATAMALARI (KEY BINDINGS)
-# ===========================================================================
-# Ctrl+f tuşuna basıldığında zoxide interaktif arama tetiklenir
-bind \cf 'commandline -i "zi"; commandline -f execute'
+# =============================================================================
+# KEY BINDINGS & THEME
+# =============================================================================
 
-# !! ve !$ geçmiş kısayolları (Bang-bang)
+# Set fish theme (moved from fish_frozen_theme.fish)
+set --global fish_color_autosuggestion 555 brblack
+set --global fish_color_cancel -r
+set --global fish_color_command blue
+set --global fish_color_comment red
+set --global fish_color_cwd green
+set --global fish_color_cwd_root red
+set --global fish_color_end green
+set --global fish_color_error brred
+set --global fish_color_escape brcyan
+set --global fish_color_history_current --bold
+set --global fish_color_host normal
+set --global fish_color_host_remote yellow
+set --global fish_color_normal normal
+set --global fish_color_operator brcyan
+set --global fish_color_param cyan
+set --global fish_color_quote yellow
+set --global fish_color_redirection cyan --bold
+set --global fish_color_search_match --background=111
+set --global fish_color_selection white --bold --background=brblack
+set --global fish_color_status red
+set --global fish_color_user brgreen
+set --global fish_color_valid_path --underline
+set --global fish_pager_color_completion normal
+set --global fish_pager_color_description B3A06D yellow -i
+set --global fish_pager_color_prefix cyan --bold --underline
+set --global fish_pager_color_progress brwhite --background=cyan
+set --global fish_pager_color_selected_background -r
+
+# Key bindings (moved from fish_frozen_key_bindings.fish)
+# Set default key bindings to fish mode (not vi)
+set --universal fish_key_bindings fish_default_key_bindings
+
+# Bang-bang history shortcuts
 function __history_previous_command
     switch (commandline -t)
         case "!"
@@ -453,15 +528,8 @@ function __history_previous_command_arguments
     end
 end
 
-if [ "$fish_key_bindings" = fish_vi_key_bindings ]
-    bind -Minsert ! __history_previous_command
-    bind -Minsert '$' __history_previous_command_arguments
-else
-    bind ! __history_previous_command
-    bind '$' __history_previous_command_arguments
-end
+bind ! __history_previous_command
+bind '$' __history_previous_command_arguments
 
-
-
-# Added by Antigravity CLI installer
-set -gx PATH "/home/melih/.local/bin" $PATH
+# Ctrl+f -> zoxide interactive search
+bind \cf 'commandline -i "zi"; commandline -f execute'
