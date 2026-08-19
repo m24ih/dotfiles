@@ -3,7 +3,8 @@
 // └────────────────────────────────────────────────────────────────────────────┘
 // Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous#spawn-sh-at-startup
 
-// ─── Environment & Shell Initialization ───
-// Noctalia Shell is the core component of this desktop environment.
-spawn-sh-at-startup "qs -c noctalia-shell"
-spawn-at-startup "vicinae" "server"
+// ─── Startup Services & Applications ───
+// DMS is managed by systemd user service (dms.service).
+// You can add additional startup processes here:
+// spawn-at-startup "..."
+

@@ -5,7 +5,7 @@
 
 // ─── Global Window Geometry ───
 window-rule {
-    geometry-corner-radius 20
+    geometry-corner-radius 16
     clip-to-geometry true
 }
 
@@ -43,6 +43,8 @@ window-rule {
 window-rule {
     match app-id=r#"^org\.gnome\.Nautilus$"#
     match app-id=r#"^kitty$"#
+    match app-id=r#"^com\.mitchellh\.ghostty$"#
+    match app-id=r#"^ghostty$"#
     match app-id=r#"^obsidian$"#
     
     background-effect {
@@ -58,7 +60,18 @@ window-rule {
     }
 }
 
-// Floating rules (Firefox PiP).
+// Disable solid border background for modern terminals & browsers
+window-rule {
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    match app-id="Alacritty"
+    match app-id="zen"
+    match app-id="com.mitchellh.ghostty"
+    match app-id="ghostty"
+    match app-id="kitty"
+    draw-border-with-background false
+}
+
+// Floating rules (Firefox PiP & Zoom).
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     open-floating true
@@ -67,14 +80,33 @@ window-rule {
     default-floating-position x=32 y=32 relative-to="bottom-right"
 }
 
-// Vicinae Launcher
 window-rule {
-    match app-id="vicinae"
+    match app-id="zoom"
     open-floating true
-    default-column-width { proportion 0.4; }
-    background-effect {
-        blur true
-    }
+}
+
+// Standard utilities & GNOME floating rules
+window-rule {
+    match app-id=r#"^gnome-control-center$"#
+    match app-id=r#"^pavucontrol$"#
+    match app-id=r#"^nm-connection-editor$"#
+    default-column-width { proportion 0.5; }
+    open-floating false
+}
+
+window-rule {
+    match app-id=r#"^org\.gnome\.Calculator$"#
+    match app-id=r#"^gnome-calculator$"#
+    match app-id=r#"^galculator$"#
+    match app-id=r#"^blueman-manager$"#
+    match app-id=r#"^xdg-desktop-portal$"#
+    open-floating true
+}
+
+// Work around WezTerm configure bug
+window-rule {
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    default-column-width {}
 }
 
 // ─── Steam Specifics ───
@@ -95,39 +127,28 @@ window-rule {
 // └────────────────────────────────────────────────────────────────────────────┘
 // Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Layer-Rules
 
-// ─── Noctalia Shell Layers ───
-// Anchoring core UI elements to the backdrop.
+// ─── Quickshell & DMS Shell Layers ───
 layer-rule {
-    match namespace="^noctalia-(wallpaper|overview).*"
+    match namespace="^quickshell$"
     place-within-backdrop true
 }
 
-// Noctalia visual effects.
 layer-rule {
-    match namespace="^noctalia-(background|launcher-overlay|dock)-.*$"
-    background-effect {
-        xray false
-        blur true
-    }
+    match namespace="dms:blurwallpaper"
+    place-within-backdrop true
 }
 
-// UI styling for the Noctalia launcher.
 layer-rule {
-    match namespace="^noctalia-launcher-overlay.*$"
-    geometry-corner-radius 12
-    shadow {
-        on
-        softness 30
-        spread 2
-        offset x=0 y=4
-        color "#00000070"
+    exclude namespace="^dms:bar$"
+    background-effect {
+        xray false
     }
 }
 
 // ─── System & Security Layers ───
 layer-rule {
     match namespace="^notifications$"
-    match namespace="^noctalia-notifications.*$"
+    match namespace="^dms:notifications.*$"
     block-out-from "screen-capture"
 }
 
@@ -144,3 +165,4 @@ layer-rule {
         }
     }
 }
+

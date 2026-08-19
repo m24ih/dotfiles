@@ -7,6 +7,13 @@
 prefer-no-csd
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
+// ─── Gestures ───
+gestures {
+    hot-corners {
+        off
+    }
+}
+
 // ─── Background Blur ───
 blur {
     passes 2
@@ -27,7 +34,7 @@ environment {
 
 // ─── Cursor Settings ───
 cursor {
-    xcursor-theme "capitaine-cursors"
+    xcursor-theme "breeze_cursors"
     xcursor-size 24
     hide-when-typing
     hide-after-inactive-ms 2000
@@ -35,11 +42,25 @@ cursor {
 
 // ─── Debug & Specialized Logic ───
 debug {
-    // Essential for Noctalia's window activation
     honor-xdg-activation-with-invalid-serial
 }
 
-// ─── Keybinding UI ───
+// ─── Notifications & UI ───
+config-notification {
+    disable-failed
+}
+
 hotkey-overlay {
    skip-at-startup
 }
+
+// ─── Recent Windows (Alt+Tab) ───
+recent-windows {
+    binds {
+        Alt+Tab         { next-window scope="output"; }
+        Alt+Shift+Tab   { previous-window scope="output"; }
+        Alt+grave       { next-window filter="app-id"; }
+        Alt+Shift+grave { previous-window filter="app-id"; }
+    }
+}
+

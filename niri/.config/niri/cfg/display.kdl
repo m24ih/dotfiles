@@ -4,7 +4,7 @@
 // Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
 // Run `niri msg outputs` to list available names.
 
-output "eDP-1" {
+output "eDP-2" {
     // Resolution and Refresh Rate (144Hz for smoothness)
     mode "1920x1080@144.001"
     scale 1.0
@@ -14,9 +14,5 @@ output "eDP-1" {
     variable-refresh-rate on-demand=true
     focus-at-startup
     backdrop-color "#000000"
-    
-    // Quick Actions
-    hot-corners {
-        top-left
-    }
 }
+
