@@ -28,11 +28,40 @@ Format sonrası yeni bir sisteme geçtiğimde izlemem gereken adımlar:
     ./install.sh
     ```
 
+    ### Seçmeli Kurulum (Yeni Özellik)
+    `install.sh` artık modüler hâle getirilmiştir ve sadece belirli bölümleri çalıştırmak için komut satırı argümanları kabul eder:
+    ```bash
+    # Sadece temel paketleri ve yay'ı kur
+    ./install.sh base yay
+
+    # Sadece dotfile bağlantılarını oluştur
+    ./install.sh stow
+
+    # Sadece donanım ayarlarını uygula
+    ./install.sh hardware
+
+    # Tüm bölümleri (varsayılan davranış) çalıştırmak için argüman vermeyin
+    ./install.sh
+    ```
+
+    Kullanılabilir bölümler:
+    - `base` veya `packages`: git ve base-devel
+    - `yay`: yay AUR yardımcıısını kur
+    - `all`: packages.txt içindeki tüm paketleri kur
+    - `flatpak`: Flatpak paketlerini kur
+    - `stow` veya `dotfiles`: stow ile dotfile'ları bağla
+    - `hardware`: F tuşları ve Keychron donanım ayarlarını uygula
+    - `network`: Ağ ve ağ sürücü ayarlarını uygula (iwd, vivaldi middle click)
+    - `discord`: Discord proxy ayarlarını uygula
+    - `services`: Sistem ve kullanıcı servislerini yapılandır
+    - `ufw`: UFW güvenlik duvarı kurallarını uygula
+    - `warp`: Cloudflare WARP split tunnel kurallarını uygula
+
 4.  **Manuel Olarak Yapılacaklar (ÖNEMLİ):**
     Kurulum betiği bittikten sonra, **asla** bu repoya eklenmemesi gereken "sır" (secret) dosyalarını manuel olarak yerine koy:
     * `~/.config/rclone/rclone.conf` (GDrive token'ları için)
     * `~/.config/gh/hosts.yml` (GitHub CLI token'ı için)
-    * Gerekliyse `ssh` anahtarları (`~/.ssh/`).
+    * Gerekse `ssh` anahtarları (`~/.ssh/`).
     * (Bunları 1Password'den al.)
 
 5.  **Yeniden Başlat:**
@@ -99,7 +128,7 @@ Eğer `fish` veya `nvim` için bir temayı/eklentiyi `git clone` ile doğrudan `
 
 **Çözüm:** İçerideki eklenti/tema klasörünün `.git` dizinini silerek onu "düz" dosyalara dönüştür.
 ```bash
-# 1. Hatalı eklemeyi Git'in hafızasından zorla kaldır
+# 1. Hatalı eklemeyi Git'in hafıyasından zorla kaldır
 git rm --cached -f [hatali_paket_yolu]
 
 # 2. İçerideki .git klasörünü sil
@@ -107,3 +136,12 @@ rm -rf [hatali_paket_yolu]/.git
 
 # 3. Artık "düz" olan klasörü tekrar ekle
 git add [hatali_paket_yolu]
+```
+
+### 2. Seçmeli Kurulum Kullanımı
+Yeni modüler `install.sh` ile sadece ihtiyacınız olan bölümleri çalıştırabilirsiniz. Bu, mevcut bir sistemde sadece donanım ayarlarını güncellemek veya sadece yeni bir stow paketi eklemek gibi senaryolar için kullanışlıdır.
+
+Örnek kullanım senaryoları:
+- Sadece dotfile bağlantısını yenilemek: `./install.sh stow`
+- Yeni bir sistemde sadece temel paketleri ve yay'ı kurmak: `./install.sh base yay`
+- Sadece ağ ayarlarını uygulamak (örneğin, iwd'ye geçmek): `./install.sh network`
