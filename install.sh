@@ -258,6 +258,17 @@ apply_warp_settings() {
 }
 
 # -----------------------------------------------------------------
+# 12. MODÜL: Font Kurulumu
+# -----------------------------------------------------------------
+install_fonts() {
+    print_section "Font kurulumu ve yapılandırması..."
+    run_script "$DOTFILES_DIR/setup_fonts.sh"
+    echo ":: Font kurulumu tamamlandı."
+}
+
+# -----------------------------------------------------------------
+
+# -----------------------------------------------------------------
 # Ana fonksiyon - tüm bölümleri sırayla çalıştırır
 # -----------------------------------------------------------------
 main() {
@@ -278,6 +289,7 @@ main() {
         configure_services
         apply_ufw_rules
         apply_warp_settings
+        install_fonts
     else
         # Belirtilen bölümleri çalıştır
         for section in "$@"; do
@@ -293,6 +305,7 @@ main() {
                 services) configure_services ;;
                 ufw) apply_ufw_rules ;;
                 warp) apply_warp_settings ;;
+                fonts) install_fonts ;;
                 *) echo "Bilinmeyen bölüm: $section" ;;
             esac
         done

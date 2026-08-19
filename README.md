@@ -40,16 +40,20 @@ Format sonrası yeni bir sisteme geçtiğimde izlemem gereken adımlar:
     ### Seçmeli Kurulum (Yeni Özellik)
     `install.sh` artık modüler hâle getirilmiştir ve sadece belirli bölümleri çalıştırmak için komut satırı argümanları kabul eder:
     ```bash
-    # Sadece temel paketleri ve paket yöneticisini kur
-    ./install.sh base package-manager
+# Sadece temel paketleri ve paket yöneticisini kur
+./install.sh base package-manager
 
-    # Sadece dotfile bağlantılarını oluştur
-    ./install.sh stow
+# Sadece dotfile bağlantılarını oluştur
+./install.sh stow
 
-    # Sadece donanım ayarlarını uygula
-    ./install.sh hardware
+# Sadece donanım ayarlarını uygula
+./install.sh hardware
 
-    # Tüm bölümleri (varsayılan davranış) çalıştırmak için argüman vermeyin
+# Sadece yazı tiplerini kur
+./install.sh fonts
+
+# Tüm bölümleri (varsayılan davranış) çalıştırmak için argüman vermeyin
+./install.sh
     ./install.sh
     ```
 
@@ -65,7 +69,7 @@ Format sonrası yeni bir sisteme geçtiğimde izlemem gereken adımlar:
     - `services`: Sistem ve kullanıcı servislerini yapılandır
     - `ufw`: UFW güvenlik duvarı kurallarını uygula
     - `warp`: Cloudflare WARP split tunnel kurallarını uygula
-
+    - `fonts`: JetBrains Mono Nerd Font ve diğer yazı tiplerini kur
 4.  **Manuel Olarak Yapılacaklar (ÖNEMLİ):**
     Kurulum betiği bittikten sonra, **asla** bu repoya eklenmemesi gereken "sır" (secret) dosyalarını manuel olarak yerine koy:
     * `~/.config/rclone/rclone.conf` (GDrive token'ları için)
