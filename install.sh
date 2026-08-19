@@ -4,6 +4,7 @@
 # Daha modüler ve yapılandırılabilir hale getirilmiştir.
 # Her bölüm bağımsız fonksiyon olarak tanımlanmıştır ve
 # komut satırı argümanlarıyla seçively çalıştırılabilir.
+# Çeşitli Linux dağıtımlarını destekler (Arch-based ve Fedora-based)
 
 # Hata durumunda script'i durdur
 set -e
@@ -11,6 +12,13 @@ set -e
 # --- Değişkenler ---
 # Betiğin çalıştığı klasörü (yani ~/Documents/Dotfiles) bul
 DOTFILES_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+
+# OS Tespiti
+DETECTED_OS=""
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    DETECTED_OS="$ID"
+fi
 
 # Başlangıç mesajı
 print_header() {
@@ -56,23 +64,61 @@ print_section() {
 # -----------------------------------------------------------------
 install_base_packages() {
     print_section "'git' ve 'base-devel' grubu kontrol ediliyor/kuruluyor..."
-    sudo pacman -Syu --needed git base-devel --noconfirm
+    case "$DETECTED_OS" in
+        arch|manjaro|endeavouros|artix|cachyos)
+            sudo pacman -Syu --needed git base-devel --noconfirm
+            ;;
+        fedora|rhel|centos|rocky|almalinux)
+            sudo dnf install -y git @development-tools
+            ;;
+        ubuntu|debian|linuxmint|pop|elementary)
+            sudo apt update
+            sudo apt install -y git build-essential
+            ;;
+        *)
+            echo "Desteklenmeyen dağıtım: $DETECTED_OS. Arch-based paket yöneticisi kullanılıyor."
+            sudo pacman -Syu --needed git base-devel --noconfirm
+            ;;
+    esac
 }
 
 # -----------------------------------------------------------------
-# 2. 'yay' AUR Yardımcısını Kur
+# 2. Dağıtım Özel Paket Yöneticisini Kur
 # -----------------------------------------------------------------
-install_yay() {
-    print_section "'yay' AUR Yardımcısını Kur"
-    if ! command -v yay &>/dev/null; then
-        echo ":: 'yay' bulunamadı. AUR'dan kuruluyor..."
-        git clone https://aur.archlinux.org/yay.git /tmp/yay
-        (cd /tmp/yay && makepkg -si --noconfirm)
-        rm -rf /tmp/yay
-        echo ":: 'yay' başarıyla kuruldu."
-    else
-        echo ":: 'yay' zaten kurulu."
-    fi
+install_package_manager() {
+    print_section "Dağıtım Özel Paket Yöneticisini Kur"
+
+    case "$DETECTED_OS" in
+        arch|manjaro|endeavouros|artix|cachyos)
+            # Arch-based: yay (AUR helper)
+            if ! command -v yay &>/dev/null; then
+                echo ":: 'yay' bulunamadı. AUR'dan kuruluyor..."
+                git clone https://aur.archlinux.org/yay.git /tmp/yay
+                (cd /tmp/yay && makepkg -si --noconfirm)
+                rm -rf /tmp/yay
+                echo ":: 'yay' başarıyla kuruldu."
+            else
+                echo ":: 'yay' zaten kurulu."
+            fi
+            ;;
+        fedora|rhel|centos|rocky|almalinux)
+            # Fedora-based: dnf is already installed, but we can add copr if needed
+            echo ":: Fedora tabanlı sistemde dnf zaten mevcut."
+            # Optionally enable RPM Fusion or other repos if needed
+            ;;
+        ubuntu|debian|linuxmint|pop|elementary)
+            # Debian-based: apt is already installed
+            echo ":: Debian tabanlı sistemde apt zaten mevcut."
+            ;;
+        *)
+            echo "Bilinmeyen dağıtım: $DETECTED_OS. Yay kurulmayı deniyor."
+            if ! command -v yay &>/dev/null; then
+                git clone https://aur.archlinux.org/yay.git /tmp/yay
+                (cd /tmp/yay && makepkg -si --noconfirm)
+                rm -rf /tmp/yay
+            fi
+            ;;
+    esac
 }
 
 # -----------------------------------------------------------------
@@ -222,7 +268,7 @@ main() {
     if [ $# -eq 0 ]; then
         # Varsayılan: tüm bölümleri çalıştır
         install_base_packages
-        install_yay
+        install_package_manager
         install_all_packages
         install_flatpaks
         link_dotfiles
@@ -237,7 +283,7 @@ main() {
         for section in "$@"; do
             case "$section" in
                 base|packages) install_base_packages ;;
-                yay) install_yay ;;
+                package-manager|pm) install_package_manager ;;
                 all) install_all_packages ;;
                 flatpak) install_flatpaks ;;
                 stow|dotfiles) link_dotfiles ;;

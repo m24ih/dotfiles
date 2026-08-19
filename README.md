@@ -9,9 +9,17 @@ Tüm sistem `stow` kullanılarak modüler paketler halinde yönetilmektedir ve `
 Format sonrası yeni bir sisteme geçtiğimde izlemem gereken adımlar:
 
 1.  **Temel Paketleri Kur:**
-    Sisteme `git` ve `base-devel` (AUR paketlerini derlemek için) kur.
+    Sisteme gerekli paket yöneticisini ve geliştirme araçlarını kur.
     ```bash
+    # Arch-based (CachyOS, Arch, Manjaro, vb.):
     sudo pacman -Syu --needed git base-devel
+
+    # Fedora-based:
+    sudo dnf install -y git @development-tools
+
+    # Debian/Ubuntu-based:
+    sudo apt update
+    sudo apt install -y git build-essential
     ```
 
 2.  **Repoyu Klonla:**
@@ -21,18 +29,19 @@ Format sonrası yeni bir sisteme geçtiğimde izlemem gereken adımlar:
     ```
 
 3.  **Betiği Çalıştır:**
-    Ana kurulum betiğini çalıştır. Bu betik geri kalan her şeyi (yay, paketler, flatpak'ler, `stow` ile ayarların bağlanması) otomatik olarak halledecektir.
+    Ana kurulum betiğini çalıştır. Bu betik otomatik olarak dağıtımınızı tespit eder ve uygun paket yöneticisini kullanır.
     ```bash
     cd ~/Documents/Dotfiles
     chmod +x install.sh
     ./install.sh
     ```
+    Bu komut dağıtımınıza göre gerekli paket yöneticisini kurar ve tüm bileşenleri yükler.
 
     ### Seçmeli Kurulum (Yeni Özellik)
     `install.sh` artık modüler hâle getirilmiştir ve sadece belirli bölümleri çalıştırmak için komut satırı argümanları kabul eder:
     ```bash
-    # Sadece temel paketleri ve yay'ı kur
-    ./install.sh base yay
+    # Sadece temel paketleri ve paket yöneticisini kur
+    ./install.sh base package-manager
 
     # Sadece dotfile bağlantılarını oluştur
     ./install.sh stow
@@ -45,9 +54,9 @@ Format sonrası yeni bir sisteme geçtiğimde izlemem gereken adımlar:
     ```
 
     Kullanılabilir bölümler:
-    - `base` veya `packages`: git ve base-devel
-    - `yay`: yay AUR yardımcıısını kur
-    - `all`: packages.txt içindeki tüm paketleri kur
+    - `base` veya `packages`: git ve base-devel (veya dağıtım eşdeğeri)
+    - `package-manager` veya `pm`: Dağıtım özel paket yöneticisini yay (Arch) veya zaten bulunan dnf/apt (Diğerleri)
+    - `all`: packages.txt içindeki tüm paketleri kur (yay ile, Arch-based sistemlerde)
     - `flatpak`: Flatpak paketlerini kur
     - `stow` veya `dotfiles`: stow ile dotfile'ları bağla
     - `hardware`: F tuşları ve Keychron donanım ayarlarını uygula
