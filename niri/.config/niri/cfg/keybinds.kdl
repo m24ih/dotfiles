@@ -16,7 +16,7 @@ binds {
 
     // ─── Noctalia Shell Services ───
     Mod+Space                           hotkey-overlay-title="Application Launcher" { spawn-sh "noctalia msg panel-toggle launcher"; }
-    Mod+S                               hotkey-overlay-title="Control Center" { spawn-sh "noctalia msg panel-toggle control-center"; }
+    Mod+S                               hotkey-overlay-title="Open Proton Pass" { spawn "proton-pass"; }
     Mod+N                               hotkey-overlay-title="Control Center & Notifications" { spawn-sh "noctalia msg panel-toggle control-center"; }
     Mod+Comma                           hotkey-overlay-title="Noctalia Settings" { spawn-sh "noctalia msg settings-toggle"; }
     Mod+V                               hotkey-overlay-title="Clipboard Manager" { spawn-sh "noctalia msg panel-toggle clipboard"; }
