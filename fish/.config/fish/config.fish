@@ -1,11 +1,53 @@
-# ===========================================================================
-# BAŞLATMA VE BAĞIMLILIKLAR
-# ===========================================================================
+# OS'e göre Fastfetch logosunu dinamik bağla
+function __update_fastfetch_logo
+    set -l logo_dir "$HOME/.config/fastfetch/logo"
+    if not test -d "$logo_dir"
+        return
+    end
 
-# CachyOS varsayılan yapılandırmasını yükle
-if test -f /usr/share/cachyos-fish-config/cachyos-config.fish
-    source /usr/share/cachyos-fish-config/cachyos-config.fish
+    set -l os_id ""
+    if test -f /etc/os-release
+        set os_id (string lower (command grep -E '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr -d '\''))
+    end
+
+    set -l target_logo ""
+    switch "$os_id"
+        case "fedora"
+            set target_logo "$logo_dir/fedora-logo.png"
+        case "cachyos"
+            set target_logo "$logo_dir/CachyOS_Logo.png"
+        case "arch"
+            set target_logo "$logo_dir/arch-logo.png"
+        case "ubuntu"
+            set target_logo "$logo_dir/ubuntu-logo.png"
+        case "*"
+            if test -f "$logo_dir/$os_id-logo.png"
+                set target_logo "$logo_dir/$os_id-logo.png"
+            else if test -f "$logo_dir/$os_id.png"
+                set target_logo "$logo_dir/$os_id.png"
+            end
+    end
+
+    if test -n "$target_logo" -a -f "$target_logo"
+        if not test -L "$logo_dir/os-logo.png" -o (readlink "$logo_dir/os-logo.png" 2>/dev/null) != "$target_logo"
+            ln -sf "$target_logo" "$logo_dir/os-logo.png"
+        end
+    end
 end
+
+# Hoşgeldin mesajı / Fastfetch
+function fish_greeting
+    if status is-interactive; and command -v fastfetch >/dev/null 2>&1
+        __update_fastfetch_logo
+        fastfetch
+    end
+end
+
+
+# Done eklentisi bildirim ayarları
+set -g __done_min_cmd_duration 10000
+set -g __done_notification_urgency_level low
+
 
 # Starship ve Zoxide entegrasyonu
 starship init fish | source
@@ -48,6 +90,13 @@ set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
+
+# Man Sayfaları Formatı (bat)
+set -gx MANROFFOPT "-c"
+if command -v bat >/dev/null 2>&1
+    set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
+end
+
 
 # Proton Pass Entegrasyonu
 set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
@@ -207,6 +256,26 @@ alias yayr "yay -Qq | fzf --multi --preview 'yay -Qi {1}' --preview-window=down:
 # FONKSİYONLAR
 # ===========================================================================
 
+function history
+    builtin history --show-time='%F %T ' $argv
+end
+
+function backup --argument filename
+    cp $filename $filename.bak
+end
+
+function copy
+    set count (count $argv | tr -d \n)
+    if test "$count" = 2; and test -d "$argv[1]"
+        set from (echo $argv[1] | string trim -r -c /)
+        set to (echo $argv[2])
+        command cp -r $from $to
+    else
+        command cp $argv
+    end
+end
+
+
 function countfiles
     for t in f l d
         set name files
@@ -363,6 +432,35 @@ end
 # ===========================================================================
 # Ctrl+f tuşuna basıldığında zoxide interaktif arama tetiklenir
 bind \cf 'commandline -i "zi"; commandline -f execute'
+
+# !! ve !$ geçmiş kısayolları (Bang-bang)
+function __history_previous_command
+    switch (commandline -t)
+        case "!"
+            commandline -t $history[1]; commandline -f repaint
+        case "*"
+            commandline -i !
+    end
+end
+
+function __history_previous_command_arguments
+    switch (commandline -t)
+        case "!"
+            commandline -t ""
+            commandline -f history-token-search-backward
+        case "*"
+            commandline -i '$'
+    end
+end
+
+if [ "$fish_key_bindings" = fish_vi_key_bindings ]
+    bind -Minsert ! __history_previous_command
+    bind -Minsert '$' __history_previous_command_arguments
+else
+    bind ! __history_previous_command
+    bind '$' __history_previous_command_arguments
+end
+
 
 
 # Added by Antigravity CLI installer
