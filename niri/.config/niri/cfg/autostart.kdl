@@ -4,7 +4,5 @@
 // Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous#spawn-sh-at-startup
 
 // ─── Startup Services & Applications ───
-// DMS is managed by systemd user service (dms.service).
-// You can add additional startup processes here:
-// spawn-at-startup "..."
+spawn-at-startup "noctalia"
 

@@ -52,11 +52,18 @@ hotkey-overlay {
    skip-at-startup
 }
 
-// ─── Recent Windows (Alt+Tab) ───
+// ─── Switch Events (Laptop Lid) ───
+switch-events {
+    lid-close { spawn "noctalia" "msg" "session" "lock-and-suspend"; }
+}
+
+// ─── Recent Windows ───
+// Noctalia provides its own window switcher bound to Alt+Tab.
+// You can use Alt+grave for in-app window cycling or restore Alt+Tab here if preferred.
 recent-windows {
     binds {
-        Alt+Tab         { next-window scope="output"; }
-        Alt+Shift+Tab   { previous-window scope="output"; }
+        // Alt+Tab         { next-window scope="output"; }
+        // Alt+Shift+Tab   { previous-window scope="output"; }
         Alt+grave       { next-window filter="app-id"; }
         Alt+Shift+grave { previous-window filter="app-id"; }
     }

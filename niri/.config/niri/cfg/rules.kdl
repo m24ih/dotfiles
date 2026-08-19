@@ -122,33 +122,53 @@ window-rule {
     open-focused false
 }
 
+// Floating Noctalia settings window.
+window-rule {
+    match app-id="dev.noctalia.Noctalia"
+    open-floating true
+    default-column-width { fixed 1080; }
+    default-window-height { fixed 920; }
+}
+
 // ┌────────────────────────────────────────────────────────────────────────────┐
 // │                             LAYER RULES                                    │
 // └────────────────────────────────────────────────────────────────────────────┘
 // Documentation: https://github.com/YaLTeR/niri/wiki/Configuration:-Layer-Rules
 
-// ─── Quickshell & DMS Shell Layers ───
+// ─── Noctalia Shell Layers ───
 layer-rule {
-    match namespace="^quickshell$"
+    match namespace="^noctalia-backdrop"
     place-within-backdrop true
 }
 
 layer-rule {
-    match namespace="dms:blurwallpaper"
+    match namespace="^noctalia-wallpaper"
     place-within-backdrop true
 }
 
 layer-rule {
-    exclude namespace="^dms:bar$"
+    match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"
     background-effect {
         xray false
     }
 }
 
+layer-rule {
+    match namespace="noctalia-window-switcher"
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+layer-rule {
+    match namespace="^noctalia-desktop-widget-"
+}
+
 // ─── System & Security Layers ───
 layer-rule {
     match namespace="^notifications$"
-    match namespace="^dms:notifications.*$"
+    match namespace="^noctalia-notification.*$"
     block-out-from "screen-capture"
 }
 
