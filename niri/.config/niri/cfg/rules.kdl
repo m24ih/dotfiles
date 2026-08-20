@@ -85,6 +85,11 @@ window-rule {
     open-floating true
 }
 
+window-rule {
+    match app-id="windscribe"
+    open-floating true
+}
+
 // Standard utilities & GNOME floating rules
 window-rule {
     match app-id=r#"^gnome-control-center$"#
