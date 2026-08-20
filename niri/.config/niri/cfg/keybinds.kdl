@@ -10,7 +10,7 @@ binds {
 
     // ─── Basic Applications ───
     Mod+Return                          hotkey-overlay-title="Open Terminal" { spawn "ghostty"; }
-    Mod+B                               hotkey-overlay-title="Open Browser: Vivaldi" { spawn "vivaldi"; }
+    Mod+B                               hotkey-overlay-title="Open Browser: Vivaldi" { spawn-sh "gtk-launch vivaldi-stable"; }
     Mod+E                               hotkey-overlay-title="File Manager: Dolphin" { spawn "dolphin"; }
     Mod+L                               hotkey-overlay-title="Lock Screen" { spawn-sh "noctalia msg session lock"; }
 
@@ -41,7 +41,7 @@ binds {
 
     // ─── Navigation & Movement ───
     Mod+Q                               repeat=false { close-window; }
-    
+
     // Focus (Arrows)
     Mod+Left                            { focus-column-left; }
     Mod+Right                           { focus-column-right; }
@@ -97,7 +97,7 @@ binds {
     Mod+Ctrl+I                          { move-column-to-workspace-up; }
     Mod+Shift+U                         { move-workspace-down; }
     Mod+Shift+I                         { move-workspace-up; }
-    
+
     // Quick Switching (1-9)
     Mod+1                               { focus-workspace 1; }
     Mod+2                               { focus-workspace 2; }
@@ -167,4 +167,3 @@ binds {
     Mod+TouchpadScrollRight             { focus-column-left; }
     Mod+TouchpadScrollLeft              { focus-column-right; }
 }
-

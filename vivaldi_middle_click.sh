@@ -1,37 +1,51 @@
 #!/bin/bash
 
 # Değişkenler
-CONF_FILE="$HOME/.config/vivaldi-stable.conf"
 FLAG="--enable-features=MiddleClickAutoscroll"
 LOCAL_DESKTOP="$HOME/.local/share/applications/vivaldi-stable.desktop"
+SYSTEM_DESKTOP="/usr/share/applications/vivaldi-stable.desktop"
+CONF_FILE="$HOME/.config/vivaldi-stable.conf"
 
-echo "Vivaldi Autoscroll Yapılandırması Başlatılıyor..."
+echo "Vivaldi Middle Click Scroll Yapılandırması Başlatılıyor..."
 
-# 1. Eski (ve artık gereksiz) yerel desktop dosyasını temizle
-# Bu sayede sistemdeki orijinal vivaldi.desktop dosyası kullanılır,
-# parametreler conf dosyasından çekilir.
-if [ -f "$LOCAL_DESKTOP" ]; then
-  rm "$LOCAL_DESKTOP"
-  echo "Gereksiz yerel .desktop dosyası kaldırıldı."
+# 1. Sistem desktop dosyasını kopyala (eğer yerel dosya yoksa)
+if [ ! -f "$LOCAL_DESKTOP" ]; then
+  if [ -f "$SYSTEM_DESKTOP" ]; then
+    cp "$SYSTEM_DESKTOP" "$LOCAL_DESKTOP"
+    echo "✅ Sistem masaüstü dosyası yerel kopyalandı: $LOCAL_DESKTOP"
+  else
+    echo "❌ Sistem masaüstü dosyası bulunamadı: $SYSTEM_DESKTOP"
+    exit 1
+  fi
 fi
 
-# 2. Config klasörünün varlığını kontrol et
-mkdir -p "$(dirname "$CONF_FILE")"
-
-# 3. Flag kontrolü ve ekleme
-if [ -f "$CONF_FILE" ]; then
-  if grep -qF "$FLAG" "$CONF_FILE"; then
-    echo "✅ Bayrak zaten $CONF_FILE içerisinde mevcut."
+# 2. Yerel desktop dosyasındaki Exec satırlarını güncelle
+if [ -f "$LOCAL_DESKTOP" ]; then
+  # Tüm Exec satırlarının 끝에 flag ekle (eğer zaten yoksa)
+  if grep -q "^Exec=" "$LOCAL_DESKTOP"; then
+    # Her Exec satırının 끝에 flag ekle (eğer yoksa)
+    sed -i "s|^Exec=\(.*\)$|Exec=\1 $FLAG|" "$LOCAL_DESKTOP"
+    # Ardından duplicated flagları temizle (boşlukla بدأت یا�la)
+    sed -i "s|$FLAG $FLAG|$FLAG|g" "$LOCAL_DESKTOP"
+    # Başta duplicated flagı da temizle (ExecutableFlag boşluk hiçbir şey olmadan)
+    sed -i "s|^Exec=$FLAG $FLAG|^Exec=$FLAG|" "$LOCAL_DESKTOP"
+    echo "✅ tüm Exec satırları flag ile güncellendi: $FLAG"
   else
-    echo "$FLAG" >>"$CONF_FILE"
-    echo "✅ Bayrak $CONF_FILE dosyasına eklendi."
+    echo "❌ Yerel masaüstü dosyasında Exec satırı bulunamadı: $LOCAL_DESKTOP"
+    exit 1
   fi
 else
-  echo "$FLAG" >"$CONF_FILE"
-  echo "✅ Yapılandırma dosyası oluşturuldu ve bayrak eklendi."
+  echo "❌ Yerel masaüstü dosyası bulunamadı: $LOCAL_DESKTOP"
+  exit 1
 fi
+
+# 3. yapılandırma dosyasını da güncelle (geriye dönük uyumluluk ve alternatif yöntem için)
+mkdir -p "$(dirname "$CONF_FILE")"
+echo "$FLAG" > "$CONF_FILE"
+echo "✅ Yapılandırma dosyası güncellendi: $CONF_FILE"
 
 # 4. Vivaldi'nin temiz bir şekilde yeniden başlatılması için uyarı
 echo "---"
 echo "İşlem tamamlandı. Değişikliklerin aktif olması için Vivaldi'yi tamamen kapatıp açın."
 echo "Eğer çalışmazsa: 'pkill vivaldi' komutunu kullanabilirsiniz."
+echo "Not: Bu script, Vivaldi'yi komut satırı flag'ı ile başlatmak için yerel .desktop dosyasını modifier."
