@@ -1,0 +1,34 @@
+[Unit]
+Description=Rclone Mount for GDrive Full
+AssertPathIsDirectory=/mnt/GoogleDrive
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+Restart=always
+RestartSec=10
+LimitNOFILE=102400
+Environment=RCLONE_CONFIG=/home/melih/.config/rclone/rclone.conf
+
+ExecStart=/usr/bin/rclone mount gdrive:/ /mnt/GoogleDrive \
+     --allow-other \
+     --dir-cache-time 1000h \
+     --poll-interval 15s \
+     --vfs-cache-mode full \
+     --vfs-cache-max-size 50G \
+     --vfs-cache-max-age 24h \
+     --vfs-read-chunk-size 32M \
+     --vfs-read-chunk-size-limit 2G \
+     --vfs-write-back 5m \
+     --buffer-size 64M \
+     --timeout 1h \
+     --transfers 4 \
+     --log-level INFO \
+     --log-file /home/melih/logs/rclone-gdrive.log \
+     --rc --rc-addr=localhost:5572 
+
+ExecStop=-/usr/bin/fusermount3 -uz /mnt/GoogleDrive
+
+[Install]
+WantedBy=default.target

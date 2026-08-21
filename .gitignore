@@ -32,5 +32,6 @@ node_modules/
 Thumbs.db
 desktop.ini
 
-# Dynamic / generated symlinks
+# Dynamic / generated symlinks & directories
 fastfetch/.config/fastfetch/logo/os-logo.png
+*.wants/
