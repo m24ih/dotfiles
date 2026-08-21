@@ -188,6 +188,11 @@ link_dotfiles() {
 
     echo ":: 'Stow' işlemi tamamlandı."
 
+    # Fastfetch OS logosunu mevcut sisteme göre bağla
+    if [ -f "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" ]; then
+        bash "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" "$HOME/.config/fastfetch/logo"
+    fi
+
     # Servisleri başlat
     systemctl --user enable vicinae --now
     systemctl --user daemon-reload

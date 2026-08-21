@@ -76,44 +76,65 @@ set -gx PATH "/home/melih/.local/bin" $PATH
 # OS-specific Fastfetch logo
 function __update_fastfetch_logo
     set -l logo_dir "$HOME/.config/fastfetch/logo"
-    if not test -d "$logo_dir"
-        return
-    end
+    test -d "$logo_dir"; or return
+    test -f /etc/os-release; or return
 
-    set -l os_id ""
-    if test -f /etc/os-release
-        set os_id (string lower (command grep -E '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr -d '\''))
-    end
+    # Extract ID, ID_LIKE, and LOGO from /etc/os-release
+    set -l os_id (command grep -E "^ID=" /etc/os-release 2>/dev/null | head -n 1 | string replace -r "^ID=" "" | string trim -c "\"'" | string lower)
+    set -l os_like (command grep -E "^ID_LIKE=" /etc/os-release 2>/dev/null | head -n 1 | string replace -r "^ID_LIKE=" "" | string trim -c "\"'" | string lower)
+    set -l os_logo (command grep -E "^LOGO=" /etc/os-release 2>/dev/null | head -n 1 | string replace -r "^LOGO=" "" | string trim -c "\"'" | string lower)
 
-    set -l target_logo ""
-    switch "$os_id"
-        case "fedora"
-            set target_logo "$logo_dir/fedora-logo.png"
-        case "cachyos"
-            set target_logo "$logo_dir/CachyOS_Logo.png"
-        case "arch"
-            set target_logo "$logo_dir/arch-logo.png"
-        case "ubuntu"
-            set target_logo "$logo_dir/ubuntu-logo.png"
-        case "*"
-            if test -f "$logo_dir/$os_id-logo.png"
-                set target_logo "$logo_dir/$os_id-logo.png"
-            else if test -f "$logo_dir/$os_id.png"
-                set target_logo "$logo_dir/$os_id.png"
+    set -l candidates $os_id (string split " " $os_like) $os_logo
+
+    set -l found_logo ""
+    for cand in $candidates
+        test -z "$cand"; and continue
+
+        # 1. Exact match with standard patterns: cand-logo.png, cand.png, cand_logo.png
+        for pattern in "$cand-logo.png" "$cand.png" "$cand"_logo.png "$cand"
+            for file in $logo_dir/*
+                set -l fname (path basename "$file")
+                test "$fname" = "os-logo.png"; and continue
+                if test (string lower "$fname") = (string lower "$pattern")
+                    set found_logo "$file"
+                    break
+                end
             end
+            test -n "$found_logo"; and break
+        end
+        test -n "$found_logo"; and break
+
+        # 2. Case-insensitive substring match (e.g. CachyOS_Logo.png for cand="cachyos")
+        for file in $logo_dir/*
+            set -l fname (path basename "$file")
+            test "$fname" = "os-logo.png"; and continue
+            if string match -qi "*$cand*" "$fname"
+                set found_logo "$file"
+                break
+            end
+        end
+        test -n "$found_logo"; and break
     end
 
-    if test -n "$target_logo" -a -f "$target_logo"
-        if not test -L "$logo_dir/os-logo.png" -o (readlink "$logo_dir/os-logo.png" 2>/dev/null) != "$target_logo"
-            ln -sf "$target_logo" "$logo_dir/os-logo.png"
+    if test -n "$found_logo" -a -f "$found_logo"
+        set -l current_target (realpath "$logo_dir/os-logo.png" 2>/dev/null)
+        set -l desired_target (realpath "$found_logo" 2>/dev/null)
+        if test "$current_target" != "$desired_target"
+            set -l rel_target (path basename "$found_logo")
+            ln -sf "$rel_target" "$logo_dir/os-logo.png"
         end
     end
+end
+
+# Fastfetch wrapper to ensure OS logo is updated on each run
+function fastfetch --description 'Run fastfetch with auto-updated OS logo'
+    __update_fastfetch_logo
+    command fastfetch $argv
 end
 
 # Greeting with Fastfetch
 function fish_greeting
     if status is-interactive; and command -v fastfetch >/dev/null 2>&1
-        __update_fastfetch_logo
         fastfetch
     end
 end
