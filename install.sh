@@ -272,6 +272,13 @@ install_fonts() {
 }
 
 # -----------------------------------------------------------------
+# 13. MODÜL: NPM Global Dizin Yapılandırması (Sudo'suz Kurulum)
+# -----------------------------------------------------------------
+configure_npm() {
+    print_section "npm global dizin yapılandırması..."
+    run_script "$DOTFILES_DIR/setup_npm.sh"
+    echo ":: npm yapılandırması tamamlandı."
+}
 
 # -----------------------------------------------------------------
 # Ana fonksiyon - tüm bölümleri sırayla çalıştırır
@@ -295,6 +302,7 @@ main() {
         apply_ufw_rules
         apply_warp_settings
         install_fonts
+        configure_npm
     else
         # Belirtilen bölümleri çalıştır
         for section in "$@"; do
@@ -311,6 +319,7 @@ main() {
                 ufw) apply_ufw_rules ;;
                 warp) apply_warp_settings ;;
                 fonts) install_fonts ;;
+                npm) configure_npm ;;
                 *) echo "Bilinmeyen bölüm: $section" ;;
             esac
         done
