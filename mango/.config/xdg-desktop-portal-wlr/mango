@@ -1,0 +1,11 @@
+[screencast]
+chooser_type=dmenu
+chooser_cmd=zenity --list --title="Ekran Kaydı" --text="Kaydedilecek ekranı seçin:" --column="Monitör"
+
+# Slurp alternatifi (fareyle tiklayarak secim):
+# chooser_type=simple
+# chooser_cmd=slurp -f 'Monitor: %o' -or
+
+# Otomatik kayit alternatifi (hic sormadan eDP-1):
+# chooser_type=none
+# output_name=eDP-1
