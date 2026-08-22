@@ -3,7 +3,7 @@ lazy-lock.json
 .netrwhist
 
 # Yedek ve geçici dosyalar
-*.bak
+*.bak*
 *.tmp
 *.log
 *.swp
