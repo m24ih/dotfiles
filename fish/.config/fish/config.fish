@@ -55,6 +55,7 @@ set -gx CHROME_EXECUTABLE /usr/bin/google-chrome-stable
 fish_add_path -g \
     "$HOME/bin" \
     "$HOME/.local/bin" \
+    "$HOME/.grok/bin" \
     "$HOME/.npm-global/bin" \
     "$HOME/.cargo/bin" \
     /var/lib/flatpak/exports/bin \
