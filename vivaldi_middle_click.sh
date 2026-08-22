@@ -1,51 +1,63 @@
 #!/bin/bash
 
 # Değişkenler
-FLAG="--enable-features=MiddleClickAutoscroll"
-LOCAL_DESKTOP="$HOME/.local/share/applications/vivaldi-stable.desktop"
-SYSTEM_DESKTOP="/usr/share/applications/vivaldi-stable.desktop"
+DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+DOTFILES_CONF="$DOTFILES_DIR/vivaldi/.config/vivaldi-stable.conf"
 CONF_FILE="$HOME/.config/vivaldi-stable.conf"
+LOCAL_DESKTOP_DIR="$HOME/.local/share/applications"
+LOCAL_DESKTOP="$LOCAL_DESKTOP_DIR/vivaldi-stable.desktop"
+SYSTEM_DESKTOP="/usr/share/applications/vivaldi-stable.desktop"
+
+# Blink/Chromium orta tuş kaydırma (autoscroll) bayrakları
+FLAGS="--enable-blink-features=MiddleClickAutoscroll --enable-features=MiddleClickAutoscroll"
 
 echo "Vivaldi Middle Click Scroll Yapılandırması Başlatılıyor..."
 
-# 1. Sistem desktop dosyasını kopyala (eğer yerel dosya yoksa)
-if [ ! -f "$LOCAL_DESKTOP" ]; then
-  if [ -f "$SYSTEM_DESKTOP" ]; then
-    cp "$SYSTEM_DESKTOP" "$LOCAL_DESKTOP"
-    echo "✅ Sistem masaüstü dosyası yerel kopyalandı: $LOCAL_DESKTOP"
-  else
-    echo "❌ Sistem masaüstü dosyası bulunamadı: $SYSTEM_DESKTOP"
-    exit 1
+# 1. Dotfiles içindeki vivaldi-stable.conf dosyasını oluştur / güncelle
+if [ -d "$DOTFILES_DIR/vivaldi/.config" ]; then
+  cat << EOF > "$DOTFILES_CONF"
+--enable-blink-features=MiddleClickAutoscroll
+--enable-features=MiddleClickAutoscroll
+EOF
+  echo "✅ Dotfiles yapılandırma dosyası güncellendi: $DOTFILES_CONF"
+  
+  # Stow ile bağla (eğer stow mevcutsa)
+  if command -v stow &>/dev/null; then
+    (cd "$DOTFILES_DIR" && stow -R -t "$HOME" vivaldi)
+    echo "✅ Dotfiles 'stow' ile senkronize edildi."
   fi
 fi
 
-# 2. Yerel desktop dosyasındaki Exec satırlarını güncelle
-if [ -f "$LOCAL_DESKTOP" ]; then
-  # Tüm Exec satırlarının 끝에 flag ekle (eğer zaten yoksa)
-  if grep -q "^Exec=" "$LOCAL_DESKTOP"; then
-    # Her Exec satırının 끝에 flag ekle (eğer yoksa)
-    sed -i "s|^Exec=\(.*\)$|Exec=\1 $FLAG|" "$LOCAL_DESKTOP"
-    # Ardından duplicated flagları temizle (boşlukla بدأت یا�la)
-    sed -i "s|$FLAG $FLAG|$FLAG|g" "$LOCAL_DESKTOP"
-    # Başta duplicated flagı da temizle (ExecutableFlag boşluk hiçbir şey olmadan)
-    sed -i "s|^Exec=$FLAG $FLAG|^Exec=$FLAG|" "$LOCAL_DESKTOP"
-    echo "✅ tüm Exec satırları flag ile güncellendi: $FLAG"
-  else
-    echo "❌ Yerel masaüstü dosyasında Exec satırı bulunamadı: $LOCAL_DESKTOP"
-    exit 1
-  fi
-else
-  echo "❌ Yerel masaüstü dosyası bulunamadı: $LOCAL_DESKTOP"
-  exit 1
+# 2. Home dizinindeki conf dosyasını da doğrudan garantiye al
+if [ ! -L "$CONF_FILE" ]; then
+  mkdir -p "$(dirname "$CONF_FILE")"
+  cat << EOF > "$CONF_FILE"
+--enable-blink-features=MiddleClickAutoscroll
+--enable-features=MiddleClickAutoscroll
+EOF
+  echo "✅ Kullanıcı yapılandırma dosyası güncellendi: $CONF_FILE"
 fi
 
-# 3. yapılandırma dosyasını da güncelle (geriye dönük uyumluluk ve alternatif yöntem için)
-mkdir -p "$(dirname "$CONF_FILE")"
-echo "$FLAG" > "$CONF_FILE"
-echo "✅ Yapılandırma dosyası güncellendi: $CONF_FILE"
+# 3. Masaüstü (.desktop) dosyasını güncelle
+mkdir -p "$LOCAL_DESKTOP_DIR"
+if [ -f "$SYSTEM_DESKTOP" ]; then
+  cp "$SYSTEM_DESKTOP" "$LOCAL_DESKTOP"
+  
+  # Exec satırlarını bayraklarla güncelle (%U ve diğer parametrelerden önce bayrakları ekle)
+  sed -i "s|^Exec=/usr/bin/vivaldi-stable %U|Exec=/usr/bin/vivaldi-stable $FLAGS %U|" "$LOCAL_DESKTOP"
+  sed -i "s|^Exec=/usr/bin/vivaldi-stable --new-window|Exec=/usr/bin/vivaldi-stable $FLAGS --new-window|" "$LOCAL_DESKTOP"
+  sed -i "s|^Exec=/usr/bin/vivaldi-stable --incognito|Exec=/usr/bin/vivaldi-stable $FLAGS --incognito|" "$LOCAL_DESKTOP"
+  
+  echo "✅ Yerel masaüstü dosyası güncellendi: $LOCAL_DESKTOP"
+fi
 
-# 4. Vivaldi'nin temiz bir şekilde yeniden başlatılması için uyarı
+# 4. Bilgilendirme
 echo "---"
-echo "İşlem tamamlandı. Değişikliklerin aktif olması için Vivaldi'yi tamamen kapatıp açın."
-echo "Eğer çalışmazsa: 'pkill vivaldi' komutunu kullanabilirsiniz."
-echo "Not: Bu script, Vivaldi'yi komut satırı flag'ı ile başlatmak için yerel .desktop dosyasını modifier."
+echo "🎉 İşlem tamamlandı! MangoWM ve diğer masaüstü ortamlarında:"
+echo "   - 'SUPER + b' kısayolu ile açıldığında"
+echo "   - Terminal üzerinden 'vivaldi' komutuyla açıldığında"
+echo "   - Uygulama menüsünden (Noctalia vb.) açıldığında"
+echo "artık Middle Click Autoscroll otomatik olarak aktif olacaktır."
+echo ""
+echo "Değişikliklerin geçerli olması için açık olan Vivaldi pencerelerini kapatıp yeniden başlatın."
+echo "Hızlı yeniden başlatmak için: 'killall -9 vivaldi-bin vivaldi 2>/dev/null'"
