@@ -6,7 +6,7 @@ Wants=network-online.target dbus.service
 [Service]
 Type=simple
 Environment="PROTON_PASS_LINUX_KEYRING=dbus"
-ExecStart=%h/.local/bin/pass-cli ssh-agent start --socket-path %h/.ssh/proton-pass-agent.sock
+ExecStart=/usr/bin/pass-cli ssh-agent start --socket-path %h/.ssh/proton-pass-agent.sock
 Restart=on-failure
 RestartSec=3s
 
