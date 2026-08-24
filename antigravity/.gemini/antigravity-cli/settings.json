@@ -1,0 +1,53 @@
+{
+  "allowNonWorkspaceAccess": true,
+  "editor": "nvim",
+  "enableTelemetry": false,
+  "enableTerminalSandbox": true,
+  "notifications": true,
+  "permissions": {
+    "deny": [
+      "command(sudo *)",
+      "command(su *)",
+      "command(doas *)",
+      "command(rm -rf *)",
+      "command(rm -r /*)",
+      "command(rm -rf /*)",
+      "command(mkfs*)",
+      "command(dd *)",
+      "command(fdisk *)",
+      "command(parted *)",
+      "command(chmod -R 777 *)",
+      "command(chown -R *)",
+      "command(pacman *)",
+      "command(yay *)",
+      "command(paru *)",
+      "command(systemctl *)",
+      "command(journalctl --vacuum*)",
+      "command(git push --force*)",
+      "command(git push -f*)",
+      "command(git reset --hard*)",
+      "command(git clean -f*)",
+      "command(git clean -fd*)",
+      "command(git rebase *)",
+      "command(curl * | bash)",
+      "command(curl * | sh)",
+      "command(wget * | bash)",
+      "command(wget * | sh)",
+      "command(docker system prune*)",
+      "command(docker rm -f*)",
+      "command(docker volume rm*)",
+      "command(reboot)",
+      "command(shutdown*)"
+    ]
+  },
+  "showFeedbackSurvey": false,
+  "toolPermission": "always-proceed",
+  "trustedWorkspaces": [
+    "/home/melih/.config",
+    "/home/melih/Projects",
+    "/home/melih",
+    "/home/melih/.gemini/antigravity-cli",
+    "/home/melih/Downloads",
+    "/home/melih/.config/mango"
+  ]
+}
