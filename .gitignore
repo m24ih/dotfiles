@@ -35,3 +35,7 @@ desktop.ini
 # Dynamic / generated symlinks & directories
 fastfetch/.config/fastfetch/logo/os-logo.png
 *.wants/
+
+# Antigravity (settings.json haricindeki her şeyi yoksay)
+antigravity/.gemini/antigravity-cli/*
+!antigravity/.gemini/antigravity-cli/settings.json
