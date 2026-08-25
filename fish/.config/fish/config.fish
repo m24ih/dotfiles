@@ -2,15 +2,6 @@
 # Fish Shell Configuration
 # =============================================================================
 
-# Load configuration snippets from conf.d directory
-# Note: The conf.d files now contain plugin migrations and theme settings
-# We source them here to ensure they're loaded before our custom config
-for conf in ~/.config/fish/conf.d/*.fish
-    if test -f "$conf"
-        source "$conf"
-    end
-end
-
 # =============================================================================
 # ENVIRONMENT VARIABLES
 # =============================================================================
@@ -42,7 +33,9 @@ set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
 # Proton Pass integration
 set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
 set -gx PROTON_PASS_KEY_PROVIDER fs
-dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK PROTON_PASS_KEY_PROVIDER
+if status is-interactive; and command -v dbus-update-activation-environment >/dev/null 2>&1
+    dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK PROTON_PASS_KEY_PROVIDER 2>/dev/null
+end
 
 # Chrome
 set -gx CHROME_EXECUTABLE /usr/bin/google-chrome-stable
@@ -66,9 +59,6 @@ fish_add_path -g \
     "$ANDROID_HOME/cmdline-tools/latest/bin" \
     "$ANDROID_HOME/emulator" \
     "$ANDROID_HOME/tools/bin"
-
-# Added by Antigravity CLI installer
-set -gx PATH "/home/melih/.local/bin" $PATH
 
 # =============================================================================
 # FASTFETCH & GREETING
@@ -144,22 +134,27 @@ end
 # SHELL OPTIONS
 # =============================================================================
 
-# Disable flow control (Ctrl+S/Q)
-if status is-interactive
-    stty -ixon
-end
-
 # Done plugin configuration
 set -g __done_min_cmd_duration 10000
 set -g __done_notification_urgency_level low
 
-# Starship & Zoxide
-starship init fish | source
-zoxide init fish | source
+# Interactive shell integrations
+if status is-interactive
+    # Disable flow control (Ctrl+S/Q)
+    stty -ixon
 
-# Quickshell sequences
-if test -f ~/.local/state/quickshell/user/generated/terminal/sequences.txt
-    cat ~/.local/state/quickshell/user/generated/terminal/sequences.txt
+    # Starship & Zoxide
+    if command -v starship >/dev/null 2>&1
+        starship init fish | source
+    end
+    if command -v zoxide >/dev/null 2>&1
+        zoxide init fish | source
+    end
+
+    # Quickshell sequences
+    if test -f ~/.local/state/quickshell/user/generated/terminal/sequences.txt
+        cat ~/.local/state/quickshell/user/generated/terminal/sequences.txt
+    end
 end
 
 # =============================================================================
@@ -262,6 +257,7 @@ alias tree 'tree -CAhF --dirsfirst'
 alias treed 'tree -CAFd'
 alias mountedinfo 'df -hT'
 alias rclone-status 'rclone rc core/stats --url localhost:5572'
+alias watch-rclone 'watch -n 1 -c "rclone rc core/stats --url localhost:5572 | jq -C ."'
 
 # Archives
 alias mktar 'tar -cvf'
@@ -315,7 +311,11 @@ end
 
 # Simple backup
 function backup --argument filename
-    cp $filename $filename.bak
+    if test -z "$filename"
+        echo "Kullanım: backup <dosya_adı>"
+        return 1
+    end
+    cp -r "$filename" "$filename.bak"
 end
 
 # Smart copy
@@ -453,12 +453,20 @@ alias whatismyip whatsmyip
 function whatsmyip
     echo -n "Dahili IP: "
     if command -v ip >/dev/null 2>&1
-        ip addr show wlan0 | grep "inet " | awk '{print $2}' | cut -d/ -f1
+        set -l local_ip (ip route get 1.1.1.1 2>/dev/null | awk '{print $7; exit}')
+        if test -n "$local_ip"
+            echo "$local_ip"
+        else
+            ip addr show 2>/dev/null | grep -E "inet .*scope global" | awk '{print $2}' | cut -d/ -f1 | head -n 1
+        end
+    else if command -v hostname >/dev/null 2>&1
+        hostname -I 2>/dev/null | awk '{print $1}'
     else
-        ifconfig wlan0 | grep "inet " | awk '{print $2}'
+        echo "Bulunamadı"
     end
     echo -n "Harici IP: "
-    curl -4 ifconfig.me
+    curl -4s ifconfig.me
+    echo ""
 end
 
 # Git helpers
@@ -528,7 +536,7 @@ set --global fish_pager_color_selected_background -r
 
 # Key bindings (moved from fish_frozen_key_bindings.fish)
 # Set default key bindings to fish mode (not vi)
-set --universal fish_key_bindings fish_default_key_bindings
+set -g fish_key_bindings fish_default_key_bindings
 
 # Bang-bang history shortcuts
 function __history_previous_command
