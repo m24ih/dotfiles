@@ -39,3 +39,8 @@ fastfetch/.config/fastfetch/logo/os-logo.png
 # Antigravity (settings.json haricindeki her şeyi yoksay)
 antigravity/.gemini/antigravity-cli/*
 !antigravity/.gemini/antigravity-cli/settings.json
+
+# Sunshine (SSL anahtarları, cihaz eşleşme durumları ve loglar)
+sunshine/.config/sunshine/credentials/
+sunshine/.config/sunshine/sunshine_state.json
+sunshine/.config/sunshine/sunshine.log

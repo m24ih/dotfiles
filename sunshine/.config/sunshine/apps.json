@@ -1,0 +1,58 @@
+{
+    "apps": [
+        {
+            "image-path": "desktop.png",
+            "name": "Desktop",
+            "output": "Virtual-TabletEkran",
+            "prep-cmd": [
+                {
+                    "do": "sh -c \"killall -q krfb-virtualmonitor || true ; sleep 0.5 ; krfb-virtualmonitor --name 'TabletEkran' --resolution ${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT} --password '123456' --port 5900 & sleep 1.5 ; kscreen-doctor output.Virtual-TabletEkran.position.1920,0 || true\"",
+                    "undo": "killall -q krfb-virtualmonitor || true"
+                }
+            ]
+        },
+        {
+            "auto-detach": true,
+            "cmd": "",
+            "elevated": false,
+            "exclude-global-prep-cmd": false,
+            "exit-timeout": 5,
+            "image-path": "",
+            "name": "Galaxy Tab Second Screen",
+            "output": "Virtual-TabletEkran",
+            "prep-cmd": [
+                {
+                    "do": "sh -c \"killall -q krfb-virtualmonitor || true ; sleep 0.5 ; krfb-virtualmonitor --name 'TabletEkran' --resolution ${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT} --password '123456' --port 5900 & sleep 1.5 ; kscreen-doctor output.Virtual-TabletEkran.position.1920,0 || true\"",
+                    "undo": "killall -q krfb-virtualmonitor || true"
+                }
+            ],
+            "wait-all": true
+        },
+        {
+            "image-path": "desktop.png",
+            "name": "Low Res Desktop",
+            "prep-cmd": [
+                {
+                    "do": "xrandr --output HDMI-1 --mode 1920x1080",
+                    "undo": "xrandr --output HDMI-1 --mode 1920x1200"
+                }
+            ]
+        },
+        {
+            "detached": [
+                "setsid steam steam://open/bigpicture"
+            ],
+            "image-path": "steam.png",
+            "name": "Steam Big Picture",
+            "prep-cmd": [
+                {
+                    "do": "",
+                    "undo": "setsid steam steam://close/bigpicture"
+                }
+            ]
+        }
+    ],
+    "env": {
+        "PATH": "$(PATH):$(HOME)/.local/bin"
+    }
+}
