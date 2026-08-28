@@ -14,22 +14,17 @@ CONFIG_DIR="$HOME/.config"
 # ~/.config/klasor şeklinde olanlar
 STOW_FOLDERS=(
   "btop"
-  "cava"
   "fastfetch"
   "fish"
-  "foot"
-  "fuzzel"
   "ghostty"
   "hypr"
   "kitty"
-  "Kvantum"
   "mango"
   "niri"
   "nvim"
-  "quickshell"
+  "sunshine"
   "systemd"
   "vivaldi"
-  "wlogout"
   "zshrc.d"
 )
 

@@ -154,26 +154,20 @@ link_dotfiles() {
     # 'stow' edilecek tüm paketlerin (klasörlerin) listesi
     STOW_PACKAGES=(
         "btop"
-        "cava"
         "fastfetch"
         "fish"
-        "foot"
-        "fuzzel"
         "ghostty"
         "hypr"
         "kitty"
-        "Kvantum"
         "mango"
         "niri"
         "nvim"
-        "quickshell"
         "ssh"
         "starship"
         "sunshine"
         "systemd"
         "user-dirs"
         "vivaldi"
-        "wlogout"
         "zshrc.d"
     )
 
