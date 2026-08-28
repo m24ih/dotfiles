@@ -171,6 +171,7 @@ link_dotfiles() {
         "quickshell"
         "ssh"
         "starship"
+        "sunshine"
         "systemd"
         "user-dirs"
         "vivaldi"

@@ -1,160 +1,186 @@
-# Melih's Dotfiles (Gelecekteki Kendime Notlar)
+# 🪐 Melih's Dotfiles
 
-Bu repo, benim kişisel CachyOS end-4 Hyprland yapılandırma dosyalarımı (dotfiles) barındırır.
+Kişisel **CachyOS / Arch Linux**, **KDE Plasma & Hyprland** masaüstü yapılandırmalarım, donanım optimizasyonlarım ve geliştirme ortamım.
 
-Tüm sistem `stow` kullanılarak modüler paketler halinde yönetilmektedir ve `install.sh` ana betiği (script) aracılığıyla yeni bir sistem kurulumunu otomatikleştirmek için tasarlanmıştır.
-
-## 🚀 Yeni Bir Sisteme Hızlı Kurulum
-
-Format sonrası yeni bir sisteme geçtiğimde izlemem gereken adımlar:
-
-1.  **Temel Paketleri Kur:**
-    Sisteme gerekli paket yöneticisini ve geliştirme araçlarını kur.
-    ```bash
-    # Arch-based (CachyOS, Arch, Manjaro, vb.):
-    sudo pacman -Syu --needed git base-devel
-
-    # Fedora-based:
-    sudo dnf install -y git @development-tools
-
-    # Debian/Ubuntu-based:
-    sudo apt update
-    sudo apt install -y git build-essential
-    ```
-
-2.  **Repoyu Klonla:**
-    Bu `Dotfiles` reposunu, `stow` ve betiklerin beklediği `~/Documents` dizinine klonla.
-    ```bash
-    git clone https://github.com/m24ih/dotfiles.git ~/Documents/Dotfiles
-    ```
-
-3.  **Betiği Çalıştır:**
-    Ana kurulum betiğini çalıştır. Bu betik otomatik olarak dağıtımınızı tespit eder ve uygun paket yöneticisini kullanır.
-    ```bash
-    cd ~/Documents/Dotfiles
-    chmod +x install.sh
-    ./install.sh
-    ```
-    Bu komut dağıtımınıza göre gerekli paket yöneticisini kurar ve tüm bileşenleri yükler.
-
-    ### Seçmeli Kurulum (Yeni Özellik)
-    `install.sh` artık modüler hâle getirilmiştir ve sadece belirli bölümleri çalıştırmak için komut satırı argümanları kabul eder:
-    ```bash
-# Sadece temel paketleri ve paket yöneticisini kur
-./install.sh base package-manager
-
-# Sadece dotfile bağlantılarını oluştur
-./install.sh stow
-
-# Sadece donanım ayarlarını uygula
-./install.sh hardware
-
-# Sadece yazı tiplerini kur
-./install.sh fonts
-
-# Tüm bölümleri (varsayılan davranış) çalıştırmak için argüman vermeyin
-./install.sh
-    ./install.sh
-    ```
-
-    Kullanılabilir bölümler:
-    - `base` veya `packages`: git ve base-devel (veya dağıtım eşdeğeri)
-    - `package-manager` veya `pm`: Dağıtım özel paket yöneticisini yay (Arch) veya zaten bulunan dnf/apt (Diğerleri)
-    - `all`: packages.txt içindeki tüm paketleri kur (yay ile, Arch-based sistemlerde)
-    - `flatpak`: Flatpak paketlerini kur
-    - `stow` veya `dotfiles`: stow ile dotfile'ları bağla
-    - `hardware`: F tuşları ve Keychron donanım ayarlarını uygula
-    - `network`: Ağ ve ağ sürücü ayarlarını uygula (iwd, vivaldi middle click)
-    - `discord`: Discord proxy ayarlarını uygula
-    - `services`: Sistem ve kullanıcı servislerini yapılandır
-    - `ufw`: UFW güvenlik duvarı kurallarını uygula
-    - `warp`: Cloudflare WARP split tunnel kurallarını uygula
-    - `fonts`: JetBrains Mono Nerd Font ve diğer yazı tiplerini kur
-4.  **Manuel Olarak Yapılacaklar (ÖNEMLİ):**
-    Kurulum betiği bittikten sonra, **asla** bu repoya eklenmemesi gereken "sır" (secret) dosyalarını manuel olarak yerine koy:
-    * `~/.config/rclone/rclone.conf` (GDrive token'ları için)
-    * `~/.config/gh/hosts.yml` (GitHub CLI token'ı için)
-    * Gerekse `ssh` anahtarları (`~/.ssh/`).
-    * (Bunları 1Password'den al.)
-
-5.  **Yeniden Başlat:**
-    Tüm ayarların (özellikle `fkeys` gibi donanım modüllerinin) tam olarak uygulanması için sistemi yeniden başlat.
+Tüm sistem [GNU Stow](https://www.gnu.org/software/stow/) ile modüler paketler halinde yönetilmekte ve `install.sh` betiği ile yeni sistem kurulumları otomatikleştirilmektedir.
 
 ---
 
-## 🏗️ Sistem Nasıl Çalışır: `stow`
+## 📋 İçindekiler
+- [🚀 Hızlı Kurulum](#-hızlı-kurulum)
+- [🧩 Modüler Kurulum Seçenekleri](#-modüler-kurulum-seçenekleri)
+- [📦 Paket Yapısı & İçerik](#-paket-yapısı--i̇çerik)
+- [📱 Sunshine & Tablet 2. Ekran Yapılandırması](#-sunshine--tablet-2-ekran-yapılandırması)
+  - [Ekran & Çözünürlük Otomasyonu](#ekran--çözünürlük-otomasyonu)
+  - [⚡ Laptop Pil/Priz Otomasyonu (KDE Güç Yönetimi)](#-laptop-pilpriz-otomasyonu-kde-güç-yönetimi)
+- [🔐 Gizlilik & Manuel Yapılacaklar (Secrets)](#-gizlilik--manuel-yapılacaklar-secrets)
+- [🛠️ Donanım & Sistem Betikleri](#️-donanım--sistem-betikleri)
+- [🏗️ Yeni Paket Ekleme Rehberi](#️-yeni-paket-ekleme-rehberi)
 
-Bu repo, sembolik bağ (symlink) yöneticisi olan `stow`'u temel alır.
+---
 
-* `~/Documents/Dotfiles/` ana dizinimizdir.
-* İçindeki her bir klasör (`hypr`, `nvim`, `fish`, `gtk` vb.) bir "stow paketi" olarak kabul edilir.
-* Her paketin *içindeki* dosya yapısı, `~` (home) dizininin yapısını *taklit eder*.
+## 🚀 Hızlı Kurulum
 
-**Örnek:** `fastfetch` ayarlarını `~/.config/fastfetch` konumuna bağlamak için, dosyaların konumu:
-`~/Documents/Dotfiles/fastfetch/.config/fastfetch/` şeklindedir.
+Yeni formatlanmış bir sisteme geçerken:
 
-`install.sh` betiği, `STOW_PACKAGES` dizisinde listelenen tüm paketler için otomatik olarak `stow -R -t ~ [paket_adi]` komutunu çalıştırır ve tüm ayarları ana dizine bağlar.
+1. **Temel Paketleri Kur:**
+   ```bash
+   # Arch / CachyOS:
+   sudo pacman -Syu --needed git base-devel
 
-## 📦 Yeni Bir Yapılandırma Ekleme (Yeni Bir 'stow' Paketi)
+   # Fedora:
+   sudo dnf install -y git @development-tools
 
-Gelecekte `rofi` gibi yeni bir programın yapılandırmasını eklemek istediğimde:
+   # Ubuntu / Debian:
+   sudo apt update && sudo apt install -y git build-essential
+   ```
 
-1.  **Paket Klasörünü Oluştur:**
-    ```bash
-    mkdir -p ~/Documents/Dotfiles/rofi
-    ```
+2. **Repoyu Klonla:**
+   ```bash
+   git clone https://github.com/m24ih/dotfiles.git ~/Projects/dotfiles
+   ```
 
-2.  **`~` Taklit Yapısını Oluştur:**
-    `rofi` ayarları `~/.config/rofi` içinde duruyorsa, `stow` için şu yolu oluştur:
-    ```bash
-    mkdir -p ~/Documents/Dotfiles/rofi/.config
-    ```
+3. **Otomatik Kurulumu Başlat:**
+   ```bash
+   cd ~/Projects/dotfiles
+   chmod +x install.sh
+   ./install.sh
+   ```
 
-3.  **Mevcut Ayarları Taşı:**
-    Gerçek yapılandırma klasörünü (`~/.config/rofi`) bu yeni `stow` paketinin içine taşı:
-    ```bash
-    mv ~/.config/rofi ~/Documents/Dotfiles/rofi/.config/
-    ```
+---
 
-4.  **Ana Betiği Güncelle:**
-    `install.sh` dosyasını aç ve `STOW_PACKAGES` dizisine `"rofi"` kelimesini ekle.
+## 🧩 Modüler Kurulum Seçenekleri
 
-5.  **Yeni Paketi "Stow" Et:**
-    (İsteğe bağlı) Betiği tekrar çalıştırmak yerine hemen bağlamak için:
-    ```bash
-    cd ~/Documents/Dotfiles
-    stow -R -t ~ rofi
-    ```
+`install.sh` betiği bağımsız modüller halinde çalışabilir:
 
-6.  **Git'e Gönder:**
-    Yeni paketi repoya ekle.
-    ```bash
-    git add .
-    git commit -m "feat: Yeni 'rofi' paketini ekle"
-    git push
-    ```
-
-## ⚠️ Potansiyel Sorunlar ve Uyarılar
-
-### 1. Embedded Git Repository (İç İçe Git Reposu)
-Eğer `fish` veya `nvim` için bir temayı/eklentiyi `git clone` ile doğrudan `.../fish/.config/fish/` klasörünün *içine* klonlarsam, bu `Dotfiles` reposu `git add .` yaparken "warning: adding embedded git repository" uyarısı verir.
-
-**Çözüm:** İçerideki eklenti/tema klasörünün `.git` dizinini silerek onu "düz" dosyalara dönüştür.
 ```bash
-# 1. Hatalı eklemeyi Git'in hafıyasından zorla kaldır
-git rm --cached -f [hatali_paket_yolu]
+# Sadece dotfile sembolik bağlarını (stow) oluştur
+./install.sh stow
 
-# 2. İçerideki .git klasörünü sil
-rm -rf [hatali_paket_yolu]/.git
+# Sadece donanım/klavye ayarlarını uygula
+./install.sh hardware
 
-# 3. Artık "düz" olan klasörü tekrar ekle
-git add [hatali_paket_yolu]
+# Sadece sistem ve kullanıcı servislerini aktifleştir
+./install.sh services
+
+# Sadece UFW güvenlik duvarı kurallarını ayarla
+./install.sh ufw
+
+# Sadece yazı tiplerini (Nerd Fonts) kur
+./install.sh fonts
 ```
 
-### 2. Seçmeli Kurulum Kullanımı
-Yeni modüler `install.sh` ile sadece ihtiyacınız olan bölümleri çalıştırabilirsiniz. Bu, mevcut bir sistemde sadece donanım ayarlarını güncellemek veya sadece yeni bir stow paketi eklemek gibi senaryolar için kullanışlıdır.
+| Modül Argümanı | Açıklama |
+| :--- | :--- |
+| `base` / `packages` | Temel geliştirme araçları (`git`, `base-devel`) |
+| `pm` / `package-manager` | AUR yardımcısı (`yay`) veya dağıtım paket yöneticisi |
+| `all` | `packages.txt` listesindeki tüm paketleri yükler |
+| `flatpak` | `flat_packages.txt` listesindeki Flatpak'leri yükler |
+| `stow` / `dotfiles` | Tüm paketleri `stow` ile `~` dizinine bağlar |
+| `hardware` | Keychron klavye ve F tuşları modlarını uygular |
+| `network` | Ağ yapılandırmaları ve iwd optimizasyonları |
+| `services` | `setup_services.sh` ile systemd kullanıcı servislerini başlatır |
+| `ufw` | Güvenlik duvarı kurallarını (Sunshine, SSH vb.) uygular |
+| `warp` | Cloudflare WARP split tunnel yapılandırması |
+| `fonts` | JetBrains Mono Nerd Font vb. fontları yükler |
 
-Örnek kullanım senaryoları:
-- Sadece dotfile bağlantısını yenilemek: `./install.sh stow`
-- Yeni bir sistemde sadece temel paketleri ve yay'ı kurmak: `./install.sh base yay`
-- Sadece ağ ayarlarını uygulamak (örneğin, iwd'ye geçmek): `./install.sh network`
+---
+
+## 📦 Paket Yapısı & İçerik
+
+```text
+~/Projects/dotfiles/
+├── alacritty/    # Alacritty terminal yapılandırması
+├── btop/         # Sistem monitörü teması ve ayarları
+├── fastfetch/    # Sistem bilgi aracı & otomatik dağıtım logosu
+├── fish/         # Fish shell yapılandırması & alias'lar
+├── ghostty/      # Ghostty GPU terminal emülatörü
+├── hypr/         # Hyprland Wayland pencere yöneticisi & keybinds
+├── kitty/        # Kitty terminal yapılandırması
+├── mpv/          # Video oynatıcı optimizasyonları & scriptler
+├── niri/         # Niri scrollable tiling compositor
+├── nvim/         # Neovim IDE yapılandırması
+├── sunshine/     # Sunshine game streaming & sanal ekran ayarları
+├── systemd/      # Kullanıcı seviyesi systemd servisleri (sunshine.service vb.)
+├── vivaldi/      # Vivaldi tarayıcı CSS/JS modları & middle click fix
+└── ...
+```
+
+---
+
+## 📱 Sunshine & Tablet 2. Ekran Yapılandırması
+
+Sunshine ve Moonlight kullanarak Android/iPad tabletleri bağımsız bir 2. monitör olarak kullanma altyapısı entegre edilmiştir.
+
+### Ekran & Çözünürlük Otomasyonu
+* **Yakalama Yöntemi:** KWin Wayland (`capture = kwin`)
+* **Sanal Monitör:** `krfb-virtualmonitor` ile dinamik çözünürlük oluşturulur ve `kscreen-doctor` ile ana ekranın sağına konumlandırılır.
+* **Yayın Başlarken:** Moonlight istemcisinden gelen çözünürlük (`${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT}`) otomatik algılanır ve sanal ekran başlatılır.
+* **Yayın Bitince:** `undo` komutu ile sanal ekran otomatik kapatılır.
+
+### ⚡ Laptop Pil/Priz Otomasyonu (KDE Güç Yönetimi)
+Laptop pildeyken gereksiz pil tüketimini önlemek için Sunshine servisi **sadece prize takılıyken çalışacak** şekilde yapılandırılmalıdır:
+
+> [!IMPORTANT]
+> **KDE Sistem Ayarları Üzerinden Yapılacak Ayar:**
+> 1. **Sistem Ayarları** → **Güç Yönetimi (Power Management)** → **Enerji Tasarrufu (Energy Saving)** sayfasına gidin.
+> 2. **"On Battery" (Pildeyken)** sekmesi:
+>    * En alttaki **Run command or script** seçeneğinden koşulu seçin ve şu komutu girin:
+>      ```bash
+>      systemctl --user stop sunshine.service
+>      ```
+> 3. **"On AC Power" (Prizdeyken)** sekmesi:
+>    * En alttaki **Run command or script** seçeneğinden koşulu seçin ve şu komutu girin:
+>      ```bash
+>      systemctl --user start sunshine.service
+>      ```
+> 4. **Apply (Uygula)** butonuna basarak kaydedin.
+
+---
+
+## 🔐 Gizlilik & Manuel Yapılacaklar (Secrets)
+
+Kurulum sonrası **güvenlik nedeniyle depoda tutulmayan** kişisel anahtarları 1Password üzerinden manuel olarak yerine koyun:
+
+* `~/.config/rclone/rclone.conf` (Cloud / Drive token'ları)
+* `~/.config/gh/hosts.yml` (GitHub CLI oturum token'ı)
+* `~/.ssh/` (SSH özel anahtarları)
+* `~/.config/sunshine/credentials/` & `sunshine_state.json` (Sunshine SSL sertifikaları & cihaz eşleşmeleri)
+
+> [!NOTE]
+> `.gitignore` dosyası; SSL sertifikalarını (`.pem`, `.key`), Sunshine kimliklerini (`credentials/`, `sunshine_state.json`), logları (`*.log`) ve secret dosyalarını repoya dahil etmeyecek şekilde yapılandırılmıştır.
+
+---
+
+## 🛠️ Donanım & Sistem Betikleri
+
+Dotfiles deposu, donanım uyumluluğu ve ağ optimizasyonu için özel yardımcı betikler barındırır:
+
+* `setup_fkeys.sh`: Apple/Fn tuş davranışlarını F1-F12 standart düzenine çevirir.
+* `setup_keychron.sh`: Keychron kablosuz/kablolu klavye modu ve Bluetooth optimizasyonları.
+* `setup_ufw.sh`: Güvenlik duvarını (Sunshine, SSH vb. izinleri) tek komutla kurar.
+* `setup_services.sh`: Dağıtıma göre systemd servislerini devreye alır.
+* `vivaldi_middle_click.sh`: Wayland ortamında Vivaldi orta tık sekme açma davranışını düzeltir.
+
+---
+
+## 🏗️ Yeni Paket Ekleme Rehberi
+
+Yeni bir aracın (örn: `rofi`) ayarlarını dotfiles sistemine dahil etmek için:
+
+```bash
+cd ~/Projects/dotfiles
+
+# 1. Paket klasörünü ve taklit dizinini oluştur
+mkdir -p rofi/.config
+
+# 2. Mevcut yapılandırmayı taşı
+mv ~/.config/rofi rofi/.config/
+
+# 3. Stow ile bağla
+stow -R -t "$HOME" rofi
+
+# 4. install.sh içindeki STOW_PACKAGES dizisine "rofi" ekle ve commit yap
+git add .
+git commit -m "feat(rofi): add rofi configuration"
+```
