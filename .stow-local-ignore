@@ -1,0 +1,8 @@
+# GNU Stow Ignore List
+# Bu dosyadaki kalıplar 'stow' işlemi sırasında $HOME dizinine bağlanmaz.
+
+README.*
+README.md
+LICENSE.*
+*.md
+.gitignore

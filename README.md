@@ -9,10 +9,7 @@ Tüm sistem [GNU Stow](https://www.gnu.org/software/stow/) ile modüler paketler
 ## 📋 İçindekiler
 - [🚀 Hızlı Kurulum](#-hızlı-kurulum)
 - [🧩 Modüler Kurulum Seçenekleri](#-modüler-kurulum-seçenekleri)
-- [📦 Paket Yapısı & İçerik](#-paket-yapısı--i̇çerik)
-- [📱 Sunshine & Tablet 2. Ekran Yapılandırması](#-sunshine--tablet-2-ekran-yapılandırması)
-  - [Ekran & Çözünürlük Otomasyonu](#ekran--çözünürlük-otomasyonu)
-  - [⚡ Laptop Pil/Priz Otomasyonu (KDE Güç Yönetimi)](#-laptop-pilpriz-otomasyonu-kde-güç-yönetimi)
+- [📦 Paket Yapısı & Modüler Dokümantasyon](#-paket-yapısı--modüler-dokümantasyon)
 - [🔐 Gizlilik & Manuel Yapılacaklar (Secrets)](#-gizlilik--manuel-yapılacaklar-secrets)
 - [🛠️ Donanım & Sistem Betikleri](#️-donanım--sistem-betikleri)
 - [🏗️ Yeni Paket Ekleme Rehberi](#️-yeni-paket-ekleme-rehberi)
@@ -86,55 +83,25 @@ Yeni formatlanmış bir sisteme geçerken:
 
 ---
 
-## 📦 Paket Yapısı & İçerik
+## 📦 Paket Yapısı & Modüler Dokümantasyon
 
-```text
-~/Projects/dotfiles/
-├── alacritty/    # Alacritty terminal yapılandırması
-├── btop/         # Sistem monitörü teması ve ayarları
-├── fastfetch/    # Sistem bilgi aracı & otomatik dağıtım logosu
-├── fish/         # Fish shell yapılandırması & alias'lar
-├── ghostty/      # Ghostty GPU terminal emülatörü
-├── hypr/         # Hyprland Wayland pencere yöneticisi & keybinds
-├── kitty/        # Kitty terminal yapılandırması
-├── mpv/          # Video oynatıcı optimizasyonları & scriptler
-├── niri/         # Niri scrollable tiling compositor
-├── nvim/         # Neovim IDE yapılandırması
-├── sunshine/     # Sunshine game streaming & sanal ekran ayarları
-├── systemd/      # Kullanıcı seviyesi systemd servisleri (sunshine.service vb.)
-├── vivaldi/      # Vivaldi tarayıcı CSS/JS modları & middle click fix
-└── ...
-```
+Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve detaylı rehberler ilgili paketin kendi `README.md` dosyasında belgelenmiştir:
 
----
-
-## 📱 Sunshine & Tablet 2. Ekran Yapılandırması
-
-Sunshine ve Moonlight kullanarak Android/iPad tabletleri bağımsız bir 2. monitör olarak kullanma altyapısı entegre edilmiştir.
-
-### Ekran & Çözünürlük Otomasyonu
-* **Yakalama Yöntemi:** KWin Wayland (`capture = kwin`)
-* **Sanal Monitör:** `krfb-virtualmonitor` ile dinamik çözünürlük oluşturulur ve `kscreen-doctor` ile ana ekranın sağına konumlandırılır.
-* **Yayın Başlarken:** Moonlight istemcisinden gelen çözünürlük (`${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT}`) otomatik algılanır ve sanal ekran başlatılır.
-* **Yayın Bitince:** `undo` komutu ile sanal ekran otomatik kapatılır.
-
-### ⚡ Laptop Pil/Priz Otomasyonu (KDE Güç Yönetimi)
-Laptop pildeyken gereksiz pil tüketimini önlemek için Sunshine servisi **sadece prize takılıyken çalışacak** şekilde yapılandırılmalıdır:
-
-> [!IMPORTANT]
-> **KDE Sistem Ayarları Üzerinden Yapılacak Ayar:**
-> 1. **Sistem Ayarları** → **Güç Yönetimi (Power Management)** → **Enerji Tasarrufu (Energy Saving)** sayfasına gidin.
-> 2. **"On Battery" (Pildeyken)** sekmesi:
->    * En alttaki **Run command or script** seçeneğinden koşulu seçin ve şu komutu girin:
->      ```bash
->      systemctl --user stop sunshine.service
->      ```
-> 3. **"On AC Power" (Prizdeyken)** sekmesi:
->    * En alttaki **Run command or script** seçeneğinden koşulu seçin ve şu komutu girin:
->      ```bash
->      systemctl --user start sunshine.service
->      ```
-> 4. **Apply (Uygula)** butonuna basarak kaydedin.
+| Paket | Açıklama | Dokümantasyon |
+| :--- | :--- | :---: |
+| [`alacritty/`](alacritty/) | Hafif GPU hızlandırmalı terminal | - |
+| [`btop/`](btop/) | Sistem ve donanım izleme aracı | - |
+| [`fastfetch/`](fastfetch/) | Sistem bilgi aracı & otomatik dağıtım logosu | - |
+| [`fish/`](fish/) | Fish shell yapılandırması, fonksiyonlar & alias'lar | - |
+| [`ghostty/`](ghostty/) | Modern GPU terminal emülatörü | - |
+| [`hypr/`](hypr/) | Hyprland Wayland pencere yöneticisi & kısayollar | - |
+| [`kitty/`](kitty/) | Özelleştirilebilir terminal emülatörü | - |
+| [`mpv/`](mpv/) | Video oynatıcı ayarları & scriptler | - |
+| [`niri/`](niri/) | Niri scrollable tiling Wayland compositor | - |
+| [`nvim/`](nvim/) | Neovim IDE yapılandırması (Lazy.nvim) | - |
+| [`sunshine/`](sunshine/) | Sunshine GameStream, tablet 2. ekran & güç yönetimi | [📖 İncele](sunshine/README.md) |
+| [`systemd/`](systemd/) | Kullanıcı seviyesi systemd servisleri | - |
+| [`vivaldi/`](vivaldi/) | Vivaldi CSS/JS modları & orta tık sekme onarımı | - |
 
 ---
 
@@ -177,10 +144,13 @@ mkdir -p rofi/.config
 # 2. Mevcut yapılandırmayı taşı
 mv ~/.config/rofi rofi/.config/
 
-# 3. Stow ile bağla
+# 3. (Opsiyonel) Pakete özel README.md ekle
+# Not: .stow-local-ignore sayesinde README.md dosyaları $HOME dizinine bağlanmaz.
+
+# 4. Stow ile bağla
 stow -R -t "$HOME" rofi
 
-# 4. install.sh içindeki STOW_PACKAGES dizisine "rofi" ekle ve commit yap
+# 5. install.sh içindeki STOW_PACKAGES dizisine "rofi" ekle ve commit yap
 git add .
 git commit -m "feat(rofi): add rofi configuration"
 ```
