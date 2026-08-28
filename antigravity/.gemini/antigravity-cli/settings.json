@@ -1,6 +1,5 @@
 {
   "allowNonWorkspaceAccess": true,
-  "colorScheme": "tokyo night",
   "editor": "nvim",
   "enableTelemetry": false,
   "enableTerminalSandbox": true,
@@ -50,6 +49,9 @@
     "/home/melih/.gemini/antigravity-cli",
     "/home/melih/Downloads",
     "/home/melih/.config/mango",
-    "/home/melih/.gemini"
+    "/home/melih/.gemini",
+    "/home/melih/Downloads/Cemu",
+    "/home/melih/Sync/Obsidian/Personal-Obsidian",
+    "/home/melih/Documents"
   ]
 }

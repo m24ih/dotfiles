@@ -257,7 +257,19 @@ alias tree 'tree -CAhF --dirsfirst'
 alias treed 'tree -CAFd'
 alias mountedinfo 'df -hT'
 alias rclone-status 'rclone rc core/stats --url localhost:5572'
+alias rclone-vfs 'rclone rc vfs/stats --url localhost:5572'
+alias rclone-queue 'rclone rc vfs/queue --url localhost:5572'
+
+function rclone-all --description "Show both rclone core stats and VFS queue"
+    echo "=== Core Stats ==="
+    rclone rc core/stats --url localhost:5572 | jq -C .
+    echo "=== VFS Queue ==="
+    rclone rc vfs/queue --url localhost:5572 | jq -C .
+end
+
 alias watch-rclone 'watch -n 1 -c "rclone rc core/stats --url localhost:5572 | jq -C ."'
+alias watch-rclone-queue 'watch -n 1 -c "rclone rc vfs/queue --url localhost:5572 | jq -C ."'
+alias watch-rclone-all 'watch -n 1 -c "fish -c rclone-all"'
 
 # Archives
 alias mktar 'tar -cvf'
