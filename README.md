@@ -80,6 +80,7 @@ Yeni formatlanmış bir sisteme geçerken:
 | `ufw` | Güvenlik duvarı kurallarını (Sunshine, SSH vb.) uygular |
 | `warp` | Cloudflare WARP split tunnel yapılandırması |
 | `fonts` | JetBrains Mono Nerd Font vb. fontları yükler |
+| `sshd` / `ssh` | SSH sunucu güvenlik kısıtlamalarını (`setup_sshd.sh`) kurar |
 
 ---
 
@@ -97,6 +98,7 @@ Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve de
 | [`kitty/`](kitty/) | Özelleştirilebilir terminal emülatörü | - |
 | [`niri/`](niri/) | Niri scrollable tiling Wayland compositor | - |
 | [`nvim/`](nvim/) | Neovim IDE yapılandırması (Lazy.nvim) | - |
+| [`ssh/`](ssh/) | SSH istemci ayarları & sunucu ağ erişim kısıtlamaları | [📖 İncele](ssh/README.md) |
 | [`sunshine/`](sunshine/) | Sunshine GameStream, tablet 2. ekran & güç yönetimi | [📖 İncele](sunshine/README.md) |
 | [`systemd/`](systemd/) | Kullanıcı seviyesi systemd servisleri | - |
 | [`vivaldi/`](vivaldi/) | Vivaldi CSS/JS modları & orta tık sekme onarımı | - |
@@ -124,6 +126,7 @@ Dotfiles deposu, donanım uyumluluğu ve ağ optimizasyonu için özel yardımc�
 * `setup_fkeys.sh`: Apple/Fn tuş davranışlarını F1-F12 standart düzenine çevirir.
 * `setup_keychron.sh`: Keychron kablosuz/kablolu klavye modu ve Bluetooth optimizasyonları.
 * `setup_ufw.sh`: Güvenlik duvarını (Sunshine, SSH vb. izinleri) tek komutla kurar.
+* `setup_sshd.sh`: SSH sunucusuna (`sshd`) ağ erişim kısıtlamalarını (`/etc/ssh/sshd_config.d/`) kurar.
 * `setup_services.sh`: Dağıtıma göre systemd servislerini devreye alır.
 * `vivaldi_middle_click.sh`: Wayland ortamında Vivaldi orta tık sekme açma davranışını düzeltir.
 

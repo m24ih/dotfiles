@@ -274,6 +274,15 @@ configure_npm() {
 }
 
 # -----------------------------------------------------------------
+# 14. MODÜL: SSH Sunucusu Güvenlik Yapılandırması
+# -----------------------------------------------------------------
+apply_sshd_settings() {
+    print_section "SSH Sunucusu (sshd) güvenlik kısıtlamaları uygulanıyor..."
+    run_script "$DOTFILES_DIR/setup_sshd.sh"
+    echo ":: SSH sunucusu güvenlik yapılandırması tamamlandı."
+}
+
+# -----------------------------------------------------------------
 # Ana fonksiyon - tüm bölümleri sırayla çalıştırır
 # -----------------------------------------------------------------
 main() {
@@ -296,6 +305,7 @@ main() {
         apply_warp_settings
         install_fonts
         configure_npm
+        apply_sshd_settings
     else
         # Belirtilen bölümleri çalıştır
         for section in "$@"; do
@@ -313,6 +323,7 @@ main() {
                 warp) apply_warp_settings ;;
                 fonts) install_fonts ;;
                 npm) configure_npm ;;
+                sshd|ssh) apply_sshd_settings ;;
                 *) echo "Bilinmeyen bölüm: $section" ;;
             esac
         done
