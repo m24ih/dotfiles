@@ -2,69 +2,61 @@
 # ==============================================================================
 # Font Kurulumu ve Yapılandırması
 # ==============================================================================
-# Bu betik, JetBrains Mono Nerd Font gibi yazı tiplerini kurar ve font önbelleğini günceller.
-# Eğer JetBrains Mono Nerd Font zip'i ~/Downloads'ta yoksa, indirir.
+# Bu betik, JetBrains Mono Nerd Font yazı tipini kurar ve font önbelleğini günceller.
+# Arch tabanlı dağıtımlarda (CachyOS, Arch, Manjaro vb.) doğrudan resmi
+# 'extra/ttf-jetbrains-mono-nerd' paketini kurar.
+# Diğer dağıtımlarda GitHub üzerinden en güncel sürümü indirerek kurar.
 
 set -e
 
 echo ":: Font kurulumu başlıyor..."
 
-# Font dizinlerini oluştur
-FONT_DIR_LOCAL="$HOME/.local/share/fonts"
-FONT_DIR_SYSTEM="/usr/local/share/fonts"
-
-mkdir -p "$FONT_DIR_LOCAL"
-sudo mkdir -p "$FONT_DIR_SYSTEM"
-
-# JetBrains Mono Nerd Font kurulumu
-JETBRAINS_ZIP="$HOME/Downloads/JetBrainsMono.zip"
-JETBRAINS_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.0/JetBrainsMono.zip"
-
-if [ -f "$JETBRAINS_ZIP" ]; then
-    echo "-> JetBrains Mono Nerd Font önbellekte bulundu."
-else
-    echo "-> JetBrains Mono Nerd Font önbellekte bulunamadı. İndiriliyor..."
-    # Create downloads directory if it doesn't exist
-    mkdir -p "$HOME/Downloads"
-    # Download the font zip
-    if command -v curl &>/dev/null; then
-        curl -L -o "$JETBRAINS_ZIP" "$JETBRAINS_URL"
-    elif command -v wget &>/dev/null; then
-        wget -O "$JETBRAINS_ZIP" "$JETBRAINS_URL"
-    else
-        echo "Hata: İndirmek için ne curl ne de wget bulunamadı."
-        exit 1
-    fi
-    # Check if download was successful
-    if [ ! -f "$JETBRAINS_ZIP" ]; then
-        echo "Hata: JetBrains Mono Nerd Font indirilemedi."
-        exit 1
-    fi
-    echo "  -> JetBrains Mono Nerd Font indirildi."
+# OS Tespiti
+DETECTED_OS=""
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    DETECTED_OS="$ID"
 fi
 
-# Geçici dizin oluştur
-TEMP_DIR=$(mktemp -d)
+case "$DETECTED_OS" in
+    arch|manjaro|endeavouros|artix|cachyos)
+        echo "-> Arch tabanlı dağıtım tespit edildi ($DETECTED_OS)."
+        echo "-> 'extra/ttf-jetbrains-mono-nerd' paketi pacman ile kuruluyor..."
+        sudo pacman -S --needed --noconfirm ttf-jetbrains-mono-nerd
+        ;;
+    *)
+        echo "-> Dağıtım: $DETECTED_OS. GitHub üzerinden manuel indiriliyor..."
+        FONT_DIR_LOCAL="$HOME/.local/share/fonts"
+        mkdir -p "$FONT_DIR_LOCAL"
 
-# Zip dosyasını çıkar
-echo "-> Font paketi çıkarılıyor..."
-unzip -q "$JETBRAINS_ZIP" -d "$TEMP_DIR"
+        JETBRAINS_ZIP="$HOME/Downloads/JetBrainsMono.zip"
+        JETBRAINS_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.0/JetBrainsMono.zip"
 
-# TTF dosyalarını font dizinine kopyala
-echo "-> Font dosyaları kuruluyor..."
-find "$TEMP_DIR" -name "*.ttf" -exec cp {} "$FONT_DIR_LOCAL/" \;
+        if [ ! -f "$JETBRAINS_ZIP" ]; then
+            echo "-> JetBrains Mono Nerd Font indiriliyor..."
+            mkdir -p "$HOME/Downloads"
+            if command -v curl &>/dev/null; then
+                curl -L -o "$JETBRAINS_ZIP" "$JETBRAINS_URL"
+            elif command -v wget &>/dev/null; then
+                wget -O "$JETBRAINS_ZIP" "$JETBRAINS_URL"
+            else
+                echo "Hata: İndirmek için ne curl ne de wget bulunamadı."
+                exit 1
+            fi
+        else
+            echo "-> JetBrains Mono Nerd Font zip önbellekte bulundu."
+        fi
 
-# Geçici dizini temizle
-rm -rf "$TEMP_DIR"
-
-echo "  -> JetBrains Mono Nerd Font kuruldu."
-
-# Diğer yaygın Nerd Font'ler için kontrol (isteğe bağlı)
-# Bu bölüm gelecekte genişletilebilir
+        TEMP_DIR=$(mktemp -d)
+        echo "-> Font paketi çıkarılıyor ve kuruluyor..."
+        unzip -q -o "$JETBRAINS_ZIP" -d "$TEMP_DIR"
+        find "$TEMP_DIR" -name "*.ttf" -exec cp {} "$FONT_DIR_LOCAL/" \;
+        rm -rf "$TEMP_DIR"
+        ;;
+esac
 
 # Font önbelleğini güncelle
 echo ":: Font önbelleği güncelleniyor..."
-fc-cache -f -v
+fc-cache -f
 
 echo ":: Font kurulumu tamamlandı!"
-echo ":: Not: Bazı uygulamalarda font değişikliğini görmek için yeniden başlatmanız gerekebilir."
