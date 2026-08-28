@@ -1,12 +1,12 @@
 # 🐚 zshrc.d (Modüler Zsh Yapılandırma Betikleri)
 
-Zsh kabuğu başlatıldığında modüler olarak yüklenen ortam değişkenleri, kısayollar ve Hyprland entegrasyon betikleri.
+Zsh kabuğu başlatıldığında modüler olarak yüklenen tuş kısayolları, terminal renk şemaları ve TTY1 otomatik Hyprland başlatma kuralı.
 
 ---
 
-## 📦 Kurulum
+## 📦 Kurulum ve Eklentiler
 
-Eğer sisteminizde Zsh kurulu değilse şu komutla kurabilirsiniz:
+Eğer sisteminizde Zsh veya popüler eklentiler eksikse:
 
 ```bash
 # Arch / CachyOS:
@@ -23,16 +23,27 @@ yay -S --needed zsh zsh-autosuggestions zsh-syntax-highlighting
 zshrc.d/
 └── .config/
     └── zshrc.d/
-        ├── shortcuts.zsh        # Özel alias'lar ve hızlı komut kısayolları
-        ├── dots-hyprland.zsh    # Hyprland ortamına özel ortam değişkenleri
-        └── auto-Hypr.sh         # TTY1 girişinde otomatik Hyprland başlatma kuralı
+        ├── shortcuts.zsh        # Kelime silme (Ctrl+H) ve geri alma (Ctrl+Z) kısayolları
+        ├── dots-hyprland.zsh    # Terminal dinamik renk dizilimleri yükleyicisi
+        └── auto-Hypr.sh         # TTY1 girişinde otomatik Hyprland başlatıcı
 ```
 
 ---
 
-## ⚙️ Nasıl Yüklenir?
+## ⚙️ Yapılandırma Detayları
 
-`~/.zshrc` dosyanızda bu dizindeki tüm `.zsh` ve `.sh` dosyaları şu döngü ile otomatik olarak taranıp yüklenir:
+### 1. 🚀 TTY1 Otomatik Hyprland Başlatma (`auto-Hypr.sh`)
+* Sanal konsolda (`TTY1` / `$XDG_VTNR -eq 1`) kullanıcı girişi yapıldığında grafik arayüz (`start-hyprland`) otomatik olarak başlatılır ve loglar `~/.cache/hyprland.log` dosyasına yazılır. Display Manager (SDDM/GDM) olmadan doğrudan hafif Wayland oturumuna geçiş sağlar.
+
+### 2. ⌨️ Düzenleme Kısayolları (`shortcuts.zsh`)
+* `Ctrl + H`: İmlecin solundaki kelimeyi siler (`backward-kill-word`).
+* `Ctrl + Z`: Yazılan metni bir önceki adıma geri alır (`undo`).
+
+---
+
+## 🛠️ `~/.zshrc` Entegrasyonu
+
+Bu modülleri aktif etmek için `~/.zshrc` dosyanızın sonuna şu satırların eklenmesi yeterlidir:
 
 ```zsh
 for file in ~/.config/zshrc.d/*.{zsh,sh}; do

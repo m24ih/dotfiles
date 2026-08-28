@@ -1,18 +1,19 @@
 # 🪟 Hyprland (Dinamik Tiling Wayland Pencere Yöneticisi)
 
-Akıcı animasyonlar, rounded corner'lar, blur efektleri ve gelişmiş kısayol yönetimi sunan modern Wayland pencere yöneticisi.
+Akıcı animasyonlar, rounded corner'lar, blur efektleri, akıllı uygulama başlatıcı betikleri ve özelleştirilmiş kısayollar barındıran Hyprland yapılandırması.
 
 ---
 
-## 📦 Kurulum
+## 📦 Kurulum ve Temel Bileşenler
 
-Eğer sisteminizde kurulu değilse ana ve yardımcı bileşenleri şu komutla kurabilirsiniz:
+Eğer sisteminizde Hyprland ve masaüstü bileşenleri eksikse:
 
 ```bash
-# Arch / CachyOS:
-sudo pacman -S --needed hyprland hyprpaper hyprlock hypridle xdg-desktop-portal-hyprland
-# veya AUR:
-yay -S --needed hyprland hyprpaper hyprlock hypridle xdg-desktop-portal-hyprland
+# Ana Paketler (Arch / CachyOS):
+sudo pacman -S --needed hyprland hyprpaper hyprlock hypridle xdg-desktop-portal-hyprland polkit-gnome
+
+# Ekran ve Monitör Yönetimi İçin (İsteğe Bağlı GUI):
+sudo pacman -S --needed nwg-displays
 ```
 
 ---
@@ -23,21 +24,22 @@ yay -S --needed hyprland hyprpaper hyprlock hypridle xdg-desktop-portal-hyprland
 hypr/
 └── .config/
     └── hypr/
-        ├── hyprland.conf     # Ana Hyprland giriş yapılandırması
-        ├── monitors.conf     # Ekran çözünürlük, yenileme hızı ve konum ayarları
-        ├── workspaces.conf   # Çalışma alanı (Workspace) kuralları
-        ├── hypridle.conf     # Boşta kalma ve güç tasarrufu zamanlayıcısı
-        ├── hyprlock.conf     # Modern kilit ekranı yapılandırması
-        ├── custom/           # Özel tuş atamaları ve kullanıcı modülleri
-        └── hyprland/         # Modüler Hyprland alt yapılandırmaları
+        ├── hyprland.conf     # Ana Hyprland başlatıcı ve modül bağlayıcı
+        ├── monitors.conf     # Monitör çözünürlükleri (nwg-displays uyumlu)
+        ├── workspaces.conf   # Çalışma alanı kuralları ve monitör eşlemeleri
+        ├── hypridle.conf     # Boşta kalma, ekran karartma ve kilit zamanlayıcıları
+        ├── hyprlock.conf     # Modern kilit ekranı tasarımı
+        ├── custom/           # Özel tuş atamaları (keybinds.conf) ve genel kurallar
+        └── hyprland/         # HyDE / sistem alt betikleri ve kural setleri
 ```
 
 ---
 
-## ⚙️ Önemli Kısayollar
+## ⚙️ Özel Yapılandırma ve Kısayollar (`custom/keybinds.conf`)
 
-* `Super + Q`: Terminali aç
-* `Super + C`: Aktif pencereyi kapat
-* `Super + E`: Dosya yöneticisini aç (Dolphin)
-* `Super + V`: Kayan pencere (Floating) moduna geç
-* `Super + 1..9`: Çalışma alanları arasında geçiş yap
+* **`Ctrl + Shift + Esc`:** Ghostty içinde doğrudan **`btop`** kaynak izleyicisini açar (Görev Yöneticisi).
+* **`Super + W`:** Vivaldi tarayıcısını orta tık otomatik kaydırma desteğiyle (`--enable-features=MiddleClickAutoscroll`) başlatır.
+* **`Super + X`:** **Obsidian** not uygulamasını açar.
+* **`Ctrl + Super + /`:** Shell yapılandırmasını Ghostty + Neovim ile hızlıca düzenler.
+* **`Ctrl + Super + Alt + /`:** Hyprland kısayol dosyasını düzenler.
+* **`nwg-displays` Uyumu:** `monitors.conf` dosyası nwg-displays arayüzü ile ekran konumlandırmaya hazır formatta tutulur.

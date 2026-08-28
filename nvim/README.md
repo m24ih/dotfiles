@@ -1,18 +1,18 @@
 # 💤 Neovim (LazyVim Yapılandırması)
 
-Lua tabanlı, [LazyVim](https://github.com/LazyVim/LazyVim) çatısı üzerine kurulu modern, hafif ve hızlı IDE ortamı.
+Lua tabanlı, [LazyVim](https://github.com/LazyVim/LazyVim) altyapısı üzerine kurulu, Wayland sistem panosu (`wl-clipboard`), Türkçe/İngilizce yazım denetimi ve modern LSP eklentileriyle donatılmış IDE ortamı.
 
 ---
 
-## 📦 Kurulum
+## 📦 Kurulum ve Temel Bağımlılıklar
 
-Eğer sisteminizde Neovim ve derleme bağımlılıkları kurulu değilse şu komutla kurabilirsiniz:
+Neovim ve eklentilerin (Telescope, Tree-sitter, Mason, Lazygit) eksiksiz çalışabilmesi için gereken araçlar:
 
 ```bash
 # Arch / CachyOS:
-sudo pacman -S --needed neovim ripgrep fd git base-devel lazygit
+sudo pacman -S --needed neovim ripgrep fd git base-devel lazygit wl-clipboard tree-sitter-cli
 # veya AUR:
-yay -S --needed neovim ripgrep fd git base-devel lazygit
+yay -S --needed neovim ripgrep fd git base-devel lazygit wl-clipboard tree-sitter-cli
 ```
 
 ---
@@ -23,20 +23,34 @@ yay -S --needed neovim ripgrep fd git base-devel lazygit
 nvim/
 └── .config/
     └── nvim/
-        ├── init.lua          # Neovim başlatıcı dosyası
-        ├── lazyvim.json      # LazyVim ekstra eklenti durumu
+        ├── init.lua          # Neovim başlangıç noktası
+        ├── lazyvim.json      # Aktif LazyVim ekstra modülleri
         └── lua/
-            ├── config/       # Temel seçenekler (options), kısayollar (keymaps) ve autocommand'lar
-            └── plugins/      # Özel kullanıcı eklentileri (LSP, Treesitter, Tema vb.)
+            ├── config/
+            │   ├── options.lua   # Wayland panosu (wl-copy) ve Türkçe/İngilizce yazım denetimi
+            │   ├── keymaps.lua   # Özel lider tuşu kısayolları
+            │   └── autocmds.lua  # Otomatik komutlar
+            └── plugins/          # Kullanıcı tanımlı özel eklenti konfigürasyonları
 ```
 
 ---
 
-## ⚙️ Önemli Kısayollar (Keymaps)
+## ⚙️ Yapılandırma Detayları (`lua/config/options.lua`)
 
-* `<Space>`: Ana lider tuşu (Leader Key).
-* `<Space> e`: Neo-tree dosya yöneticisi ağacını aç/kapat.
-* `<Space> ff`: Dosya bulucu (Telescope file picker).
-* `<Space> sg`: Proje genelinde anlık metin arama (Live grep).
-* `<Space> gg`: Lazygit terminal arayüzünü aç.
-* `<Space> l`: Lazy.nvim eklenti yöneticisini aç.
+### 1. 📋 Wayland Yerel Pano Entegrasyonu (`wl-clipboard`)
+* `vim.g.clipboard` üzerinden `wl-copy` ve `wl-paste` tanımlanmıştır. Sistem genelindeki kopyalama/yapıştırma panosu ile Neovim içi `y` / `p` işlemleri gecikmesiz ve pürüzsüz eşzamanlanır.
+
+### 2. ✍️ Çok Dilli Yazım Denetimi (Spell Check)
+* `vim.opt.spelllang = { "en", "tr" }`: Hem Türkçe hem İngilizce kelimeleri tanıyan sözlük denetimi.
+
+---
+
+## ⌨️ Önemli Kısayollar (Keymaps)
+
+* `<Space>`: Ana Lider Tuşu (Leader Key).
+* `<Space> e`: Neo-tree dosya gezgini panelini açar/kapatır.
+* `<Space> ff`: Telescope ile proje içi dosya arama.
+* `<Space> sg`: Ripgrep ile proje genelinde anlık metin arama (Live grep).
+* `<Space> gg`: Lazygit görsel Git yönetim arayüzünü açar.
+* `<Space> l`: Lazy.nvim eklenti yönetim ekranı.
+* `<Space> cm`: Mason LSP/Formatter yönetim ekranı.

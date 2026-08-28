@@ -1,18 +1,18 @@
 # 📜 Niri (Kaydırılabilir Tiling Wayland Pencere Yöneticisi)
 
-Pencereleri sonsuz yatay bir şerit üzerinde kaydırarak yönetmenize olanak tanıyan, modern ve yenilikçi scrollable-tiling Wayland pencere yöneticisi.
+Pencereleri sonsuz yatay bir şerit üzerinde kaydırarak yönetmenize olanak tanıyan, VRR (G-Sync/FreeSync) oyun kuralları ve ekran kaydı gizlilik koruması barındıran modern Wayland pencere yöneticisi.
 
 ---
 
-## 📦 Kurulum
+## 📦 Kurulum ve Portal Bileşenleri
 
-Eğer sisteminizde kurulu değilse şu komutla kurabilirsiniz:
+Eğer sisteminizde Niri eksikse:
 
 ```bash
 # Arch / CachyOS:
-sudo pacman -S --needed niri xdg-desktop-portal-gnome
+sudo pacman -S --needed niri xdg-desktop-portal-gnome polkit-gnome
 # veya AUR:
-yay -S --needed niri
+yay -S --needed niri xdg-desktop-portal-gnome polkit-gnome
 ```
 
 ---
@@ -23,14 +23,36 @@ yay -S --needed niri
 niri/
 └── .config/
     └── niri/
-        ├── config.kdl        # Ana KDL yapılandırma dosyası
-        └── cfg/              # Modüler pencere kuralları, kısayollar ve girdi ayarları
+        ├── config.kdl        # Ana KDL başlatıcı
+        └── cfg/              # Modüler yapılandırma dosyaları
+            ├── rules.kdl     # Pencere kuralları, VRR ve gizlilik ayarları
+            ├── keybinds.kdl  # Kısayol atamaları
+            ├── layout.kdl    # Şerit ve sütun yerleşim parametreleri
+            ├── display.kdl   # Monitör çözünürlük ve ölçek ayarları
+            ├── input.kdl     # Klavye düzeni ve touchpad ayarları
+            ├── animation.kdl # Pencere kaydırma ve açılış animasyonları
+            └── autostart.kdl # Başlangıçta çalışan arka plan servisleri
 ```
 
 ---
 
-## ⚙️ Önemli Özellikler & Kısayollar
+## ⚙️ Yapılandırma ve Özel Kurallar (`cfg/rules.kdl`)
 
-* **Scrollable Layout:** Pencereler yan yana dizilir ve `Super + Sol/Sağ Ok` (veya `Super + Mouse Tekerleği`) ile yatay şeritte gezilir.
-* **Akıcı Animasyonlar:** Dahili donanım hızlandırmalı geçiş efektleri.
-* **Kolay Yeniden Boyutlandırma:** `Super + R` ile sütun genişliği ayarlama.
+### 1. 🛡️ Güvenlik ve Gizlilik (Screen-Capture Koruması)
+* **Proton Pass Koruması:** `block-out-from "screen-capture"` kuralı ile Proton Pass şifre yöneticisi ekran paylaşımı yapılırken veya video kaydı alınırken otomatik olarak gizlenir/karartılır.
+
+### 2. 🎮 Oyun & Yüksek Yenileme Hızı (VRR & 144Hz)
+* **Otomatik VRR:** `cs2`, `gamescope` ve `steam_app_*` uygulamaları açıldığında otomatik tam ekran ve Değişken Yenileme Hızı (`variable-refresh-rate true`) devreye girer.
+
+### 3. ✨ Görsel ve Estetik (Blur & Geometry)
+* **Rounded Corners:** 16 piksel yuvarlatılmış pencere köşeleri (`geometry-corner-radius 16`).
+* **Bulanıklık Efekti (Blur):** Ghostty, Kitty, Nautilus ve Obsidian için arka plan blur efektleri aktiftir.
+
+---
+
+## ⌨️ Temel Kısayollar
+
+* `Super + Sol / Sağ`: Yatay şeritte pencereler arasında gezinme.
+* `Super + Shift + Sol / Sağ`: Aktif pencereyi şeritte sağa/sola taşıma.
+* `Super + R`: Sütun genişliğini yeniden boyutlandırma.
+* `Super + F`: Tam ekran (Fullscreen) modu.

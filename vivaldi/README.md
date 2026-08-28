@@ -1,12 +1,12 @@
-# 🌐 Vivaldi (Gelişmiş Tarayıcı Özelleştirmeleri ve Modlar)
+# 🌐 Vivaldi (Gelişmiş Tarayıcı Modları ve Kaydırma Ayarları)
 
-Güçlü kullanıcılar için tasarlanmış Vivaldi tarayıcısına yönelik özel CSS/JS arayüz modları ve Wayland başlatma bayrakları.
+Vivaldi web tarayıcısına yönelik Windows tarzı orta tık otomatik kaydırma (Middle Click Autoscroll) desteği ve sekme favicon'larını temizleyen özel CSS modları.
 
 ---
 
-## 📦 Kurulum
+## 📦 Kurulum ve Medya Kodekleri
 
-Eğer sisteminizde kurulu değilse şu komutla kurabilirsiniz:
+Eğer sisteminizde Vivaldi ve tescilli video kodekleri (H.264/AAC vb.) eksikse:
 
 ```bash
 # Arch / CachyOS:
@@ -22,17 +22,19 @@ yay -S --needed vivaldi vivaldi-ffmpeg-codecs
 ```text
 vivaldi/
 └── .config/
-    ├── vivaldi-stable.conf      # Wayland yerel başlatma bayrakları (Ozone platformu)
+    ├── vivaldi-stable.conf      # Chromium/Blink bayrakları (MiddleClickAutoscroll)
     └── vivaldi-custom/
-        └── userChrome/          # Özel CSS/JS UI arayüz modifikasyonları
+        └── userChrome/
+            └── custom.css       # Sekme favicon efektlerini sıfırlayan temizlik CSS'i
 ```
 
 ---
 
-## 🛠️ Orta Tık (Middle Click) Onarımı
+## ⚙️ Yapılandırma Detayları
 
-Wayland ortamında Vivaldi'de orta tıkla yeni sekme açma davranışında sorun yaşanıyorsa ana dizindeki onarım betiğini çalıştırabilirsiniz:
+### 1. 🖱️ Orta Tık Otomatik Kaydırma (Middle Click Autoscroll)
+* `vivaldi-stable.conf` içerisindeki `--enable-blink-features=MiddleClickAutoscroll` ve `--enable-features=MiddleClickAutoscroll` bayrakları sayesinde farenin tekerlek (orta) tuşuna basıldığında sayfa fare hareket yönüne göre otomatik kaydırılır.
+* İlgili ayarı sisteme uygulamak için ana dizindeki `./vivaldi_middle_click.sh` betiği de kullanılabilir.
 
-```bash
-./vivaldi_middle_click.sh
-```
+### 2. 🎨 Favicon Arayüz Temizliği (`custom.css`)
+* Vivaldi temalarındaki sekme ikonlarının (favicon) etrafında oluşan istenmeyen gölge, kenarlık (border) ve arka plan kutucuklarını kaldırarak pürüzsüz ve modern bir görünüm sağlar.

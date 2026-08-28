@@ -1,21 +1,21 @@
 # 🚀 Starship (Çapraz Kabuk Komut Satırı İstemi)
 
-Rust ile yazılmış, minimal, aşırı hızlı ve zengin özelleştirilebilir cross-shell prompt (komut satırı göstergesi).
+Rust ile yazılmış, Tokyo Night paletiyle renklendirilmiş, donanım pil durumunu dinamik okuyan ve programlama dillerini otomatik tanıyan Powerline hap (pill) tasarımlı prompt.
 
 ---
 
-## 📦 Kurulum
+## 📦 Kurulum ve Kabuk Entegrasyonu
 
-Eğer sisteminizde kurulu değilse şu komutla kurabilirsiniz:
+Eğer sisteminizde Starship veya Nerd Font eksikse:
 
 ```bash
 # Arch / CachyOS:
-sudo pacman -S --needed starship
+sudo pacman -S --needed starship ttf-jetbrains-mono-nerd
 # veya AUR:
-yay -S --needed starship
+yay -S --needed starship ttf-jetbrains-mono-nerd
 ```
 
-Kabuğunuzda (Fish/Zsh/Bash) aktifleştirmek için:
+Kabuğunuzda aktifleştirme:
 * **Fish (`config.fish`):** `starship init fish | source`
 * **Zsh (`.zshrc`):** `eval "$(starship init zsh)"`
 
@@ -26,13 +26,27 @@ Kabuğunuzda (Fish/Zsh/Bash) aktifleştirmek için:
 ```text
 starship/
 └── .config/
-    └── starship.toml    # Prompt formatı, renkler, semboller ve modül ayarları
+    └── starship.toml    # Powerline modülleri, özel pil betikleri ve renk paletleri
 ```
 
 ---
 
-## ⚙️ Desteklenen Göstergeler
+## ⚙️ Yapılandırma ve Özel Modüller (`starship.toml`)
 
-* **Git Durumu:** Aktif branch, commit hash, staged/unstaged dosya durumu.
-* **Programlama Dilleri:** Python (venv), Node.js, Rust, Go, Java vb. aktif ortam sürümleri.
-* **Sistem Durumu:** Pil seviyesi, çalışma süresi ve komut yürütme zamanı.
+### 1. 🔋 Donanımsal Özel Pil Göstergesi (Custom Battery Pills)
+Linux `/sys/class/power_supply/BAT*/` arayüzünü doğrudan okuyan akıllı 4 aşamalı modül:
+* **`custom.bat_good` (>= %50):** Yeşil renkli ` %` hapı.
+* **`custom.bat_warn` (%20 - %50):** Sarı renkli ` %` uyarı hapı.
+* **`custom.bat_crit` (< %20):** Kırmızı renkli ` %` kritik pil hapı.
+* **`custom.bat_hidden`:** Şarj aleti takılıyken (AC prizde) pil simgesi gizlenerek satır sonu estetik şekilde kapatılır.
+
+### 2. 🎨 Tokyo Night & Catppuccin Renk Paletleri
+* Varsayılan olarak **Tokyo Night** paleti aktiftir.
+* Dosya içerisinde alternatif olarak **Catppuccin (Mocha, Frappé, Macchiato, Latte)** paletleri de hazır tanımlıdır.
+
+### 3. 🛠️ Geliştirici & Ortam Göstergeleri
+* **Diller & Çalışma Zamanları:** `Node.js`, `Bun`, `Rust`, `Go`, `Python` (ve sanal ortam adı), `Java`, `Kotlin`, `C`, `Haskell`, `PHP`.
+* **Conda Desteği:** Aktif Anaconda ortamını anında gösterir.
+* **Git Durumu:** Staged (`+`), modified (`!`), untracked (`?`), ahead (`⇡`), behind (`⇣`).
+* **Özel Klasör İkonları:** `Documents`, `Downloads`, `Pictures`, `Music` ve `Developer` klasörlerine özel Nerd Font ikonları atanmıştır.
+* **Komut Süresi:** 45 saniyeden uzun süren işlemler için süre ve bildirim göstergesi (`cmd_duration`).

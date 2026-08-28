@@ -1,12 +1,12 @@
-# 📁 XDG User Dirs (Kullanıcı Standart Dizin Yapılandırması)
+# 📁 XDG User Dirs (Standart Kullanıcı Dizinleri)
 
-Standart kullanıcı dizinlerinin (`~/Downloads`, `~/Documents`, `~/Pictures`, `~/Projects` vb.) konumlarını yöneten XDG yapılandırması.
+Kullanıcı ev dizinindeki standart klasörleri (`Desktop`, `Downloads`, `Documents`, `Projects` vb.) yöneten ve Türkçe/İngilizce sistemler arasında tutarlılık sağlayan XDG yapılandırması.
 
 ---
 
-## 📦 Kurulum
+## 📦 Kurulum ve Güncelleme
 
-Eğer sisteminizde kurulu değilse şu komutla kurabilirsiniz:
+Eğer sisteminizde `xdg-user-dirs` eksikse:
 
 ```bash
 # Arch / CachyOS:
@@ -29,3 +29,18 @@ user-dirs/
 └── .config/
     └── user-dirs.dirs    # Standart XDG klasör yollarının tanımları
 ```
+
+---
+
+## ⚙️ Tanımlı Dizinler (`user-dirs.dirs`)
+
+Sistem diline bağlı klasör adı karmaşasını (örn: `İndirilenler` vs `Downloads`) önlemek için tüm dizinler İngilizce standart isimlere sabitlenmiştir:
+
+* `~/Desktop` (Masaüstü)
+* `~/Downloads` (İndirilenler)
+* `~/Documents` (Belgeler)
+* `~/Pictures` (Resimler)
+* `~/Videos` (Videolar)
+* `~/Music` (Müzik)
+* `~/Projects` (Geliştirici Projeleri & Kod Depoları)
+* `~/Templates` & `~/Public`
