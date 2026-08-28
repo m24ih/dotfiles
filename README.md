@@ -90,18 +90,22 @@ Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve de
 
 | Paket | Açıklama | Dokümantasyon |
 | :--- | :--- | :---: |
-| [`btop/`](btop/) | Sistem ve donanım izleme aracı | - |
-| [`fastfetch/`](fastfetch/) | Sistem bilgi aracı & otomatik dağıtım logosu | - |
-| [`fish/`](fish/) | Fish shell yapılandırması, fonksiyonlar & alias'lar | - |
-| [`ghostty/`](ghostty/) | Modern GPU terminal emülatörü | - |
-| [`hypr/`](hypr/) | Hyprland Wayland pencere yöneticisi & kısayollar | - |
-| [`kitty/`](kitty/) | Özelleştirilebilir terminal emülatörü | - |
-| [`niri/`](niri/) | Niri scrollable tiling Wayland compositor | - |
-| [`nvim/`](nvim/) | Neovim IDE yapılandırması (Lazy.nvim) | - |
+| [`btop/`](btop/) | Sistem ve donanım izleme aracı | [📖 İncele](btop/README.md) |
+| [`fastfetch/`](fastfetch/) | Sistem bilgi aracı & otomatik dağıtım logosu | [📖 İncele](fastfetch/README.md) |
+| [`fish/`](fish/) | Fish shell yapılandırması, fonksiyonlar & alias'lar | [📖 İncele](fish/README.md) |
+| [`ghostty/`](ghostty/) | Modern GPU terminal emülatörü | [📖 İncele](ghostty/README.md) |
+| [`hypr/`](hypr/) | Hyprland Wayland pencere yöneticisi & kısayollar | [📖 İncele](hypr/README.md) |
+| [`kitty/`](kitty/) | Özelleştirilebilir terminal emülatörü | [📖 İncele](kitty/README.md) |
+| [`mango/`](mango/) | MangoWM hafif ve akıcı Wayland pencere yöneticisi | [📖 İncele](mango/README.md) |
+| [`niri/`](niri/) | Niri scrollable tiling Wayland compositor | [📖 İncele](niri/README.md) |
+| [`nvim/`](nvim/) | Neovim IDE yapılandırması (Lazy.nvim) | [📖 İncele](nvim/README.md) |
 | [`ssh/`](ssh/) | SSH istemci ayarları & sunucu ağ erişim kısıtlamaları | [📖 İncele](ssh/README.md) |
+| [`starship/`](starship/) | Çapraz kabuk (Cross-shell) komut istemi | [📖 İncele](starship/README.md) |
 | [`sunshine/`](sunshine/) | Sunshine GameStream, tablet 2. ekran & güç yönetimi | [📖 İncele](sunshine/README.md) |
-| [`systemd/`](systemd/) | Kullanıcı seviyesi systemd servisleri | - |
-| [`vivaldi/`](vivaldi/) | Vivaldi CSS/JS modları & orta tık sekme onarımı | - |
+| [`systemd/`](systemd/) | Kullanıcı seviyesi systemd servisleri | [📖 İncele](systemd/README.md) |
+| [`user-dirs/`](user-dirs/) | Standart XDG kullanıcı dizinleri | [📖 İncele](user-dirs/README.md) |
+| [`vivaldi/`](vivaldi/) | Vivaldi CSS/JS modları & orta tık sekme onarımı | [📖 İncele](vivaldi/README.md) |
+| [`zshrc.d/`](zshrc.d/) | Modüler Zsh yapılandırma betikleri | [📖 İncele](zshrc.d/README.md) |
 
 ---
 
