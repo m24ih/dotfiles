@@ -89,14 +89,12 @@ Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve de
 
 | Paket | Açıklama | Dokümantasyon |
 | :--- | :--- | :---: |
-| [`alacritty/`](alacritty/) | Hafif GPU hızlandırmalı terminal | - |
 | [`btop/`](btop/) | Sistem ve donanım izleme aracı | - |
 | [`fastfetch/`](fastfetch/) | Sistem bilgi aracı & otomatik dağıtım logosu | - |
 | [`fish/`](fish/) | Fish shell yapılandırması, fonksiyonlar & alias'lar | - |
 | [`ghostty/`](ghostty/) | Modern GPU terminal emülatörü | - |
 | [`hypr/`](hypr/) | Hyprland Wayland pencere yöneticisi & kısayollar | - |
 | [`kitty/`](kitty/) | Özelleştirilebilir terminal emülatörü | - |
-| [`mpv/`](mpv/) | Video oynatıcı ayarları & scriptler | - |
 | [`niri/`](niri/) | Niri scrollable tiling Wayland compositor | - |
 | [`nvim/`](nvim/) | Neovim IDE yapılandırması (Lazy.nvim) | - |
 | [`sunshine/`](sunshine/) | Sunshine GameStream, tablet 2. ekran & güç yönetimi | [📖 İncele](sunshine/README.md) |

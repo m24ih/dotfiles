@@ -153,7 +153,6 @@ link_dotfiles() {
 
     # 'stow' edilecek tüm paketlerin (klasörlerin) listesi
     STOW_PACKAGES=(
-        "alacritty"
         "btop"
         "cava"
         "fastfetch"
@@ -165,7 +164,6 @@ link_dotfiles() {
         "kitty"
         "Kvantum"
         "mango"
-        "mpv"
         "niri"
         "nvim"
         "quickshell"

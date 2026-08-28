@@ -13,7 +13,6 @@ CONFIG_DIR="$HOME/.config"
 # --- Kategori 1: Standart Klasörler ---
 # ~/.config/klasor şeklinde olanlar
 STOW_FOLDERS=(
-  "alacritty"
   "btop"
   "cava"
   "fastfetch"
@@ -25,7 +24,6 @@ STOW_FOLDERS=(
   "kitty"
   "Kvantum"
   "mango"
-  "mpv"
   "niri"
   "nvim"
   "quickshell"
