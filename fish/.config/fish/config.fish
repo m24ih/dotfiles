@@ -550,6 +550,12 @@ set --global fish_pager_color_selected_background -r
 # Set default key bindings to fish mode (not vi)
 set -g fish_key_bindings fish_default_key_bindings
 
+# İmleç Ayarları (Ghostty / VS Code uyumlu Bar imleç)
+set -g fish_cursor_default line
+set -g fish_cursor_insert line
+set -g fish_cursor_replace_one underscore
+set -g fish_cursor_visual block
+
 # Bang-bang history shortcuts
 function __history_previous_command
     switch (commandline -t)
