@@ -3,6 +3,7 @@
   "editor": "nvim",
   "enableTelemetry": false,
   "enableTerminalSandbox": true,
+  "model": "Gemini 3.1 Pro (High)",
   "notifications": true,
   "permissions": {
     "deny": [
@@ -53,6 +54,7 @@
     "/home/melih/Downloads/Cemu",
     "/home/melih/Sync/Obsidian/Personal-Obsidian",
     "/home/melih/Documents",
-    "/home/melih/Projects/dotfiles"
+    "/home/melih/Projects/dotfiles",
+    "/home/melih/Downloads/Proton Pass"
   ]
 }

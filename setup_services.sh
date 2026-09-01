@@ -34,7 +34,6 @@ echo "-> Kullanıcı servisleri denetleniyor ve aktifleştiriliyor..."
 case "$DETECTED_OS" in
     arch|manjaro|endeavouros|artix|cachyos)
         USER_SERVICES=(
-            "proton-pass-ssh-agent.service" # Proton Pass CLI SSH Agent
             "psd.service"                   # Profile Sync Daemon (Tarayıcı Profil RAM Senkronu)
             "arch-update.timer"             # Arch Güncelleme Kontrol Zamanlayıcısı
             "warp-taskbar.service"          # Cloudflare WARP Sistem Tepsi Servisi
@@ -43,7 +42,6 @@ case "$DETECTED_OS" in
         ;;
     fedora|rhel|centos|rocky|almalinux)
         USER_SERVICES=(
-            "proton-pass-ssh-agent.service" # Proton Pass CLI SSH Agent
             "psd.service"                   # Profile Sync Daemon
             "fedora-upgrade.timer"          # Fedora Güncelleme Kontrol Zamanlayıcısı
             "syncthing.service"             # Syncthing Kullanıcı Servisi
@@ -51,7 +49,6 @@ case "$DETECTED_OS" in
         ;;
     ubuntu|debian|linuxmint|pop|elementary)
         USER_SERVICES=(
-            "proton-pass-ssh-agent.service" # Proton Pass CLI SSH Agent
             "psd.service"                   # Profile Sync Daemon
             "apt-update.timer"              # APT Güncelleme Kontrol Zamanlayıcısı
             "syncthing.service"             # Syncthing Kullanıcı Servisi
@@ -60,7 +57,6 @@ case "$DETECTED_OS" in
     *)
         # Varsayılan servis listesi (Arch-based)
         USER_SERVICES=(
-            "proton-pass-ssh-agent.service" # Proton Pass CLI SSH Agent
             "psd.service"                   # Profile Sync Daemon
             "arch-update.timer"             # Güncelleme Kontrol Zamanlayıcısı
             "syncthing.service"             # Syncthing Kullanıcı Servisi

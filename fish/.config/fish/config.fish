@@ -17,7 +17,7 @@ set -gx EDITOR nvim
 set -gx VISUAL nvim
 
 # Man pages with bat
-set -gx MANROFFOPT "-c"
+set -gx MANROFFOPT -c
 if command -v bat >/dev/null 2>&1
     set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
 end
@@ -31,7 +31,7 @@ set -gx PUB_CACHE "$HOME/.pub-cache"
 set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
 
 # Proton Pass integration
-set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
+set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-ssh-agent.sock"
 set -gx PROTON_PASS_KEY_PROVIDER fs
 if status is-interactive; and command -v dbus-update-activation-environment >/dev/null 2>&1
     dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK PROTON_PASS_KEY_PROVIDER 2>/dev/null
@@ -474,7 +474,7 @@ function whatsmyip
     else if command -v hostname >/dev/null 2>&1
         hostname -I 2>/dev/null | awk '{print $1}'
     else
-        echo "Bulunamadı"
+        echo Bulunamadı
     end
     echo -n "Harici IP: "
     curl -4s ifconfig.me
@@ -560,7 +560,8 @@ set -g fish_cursor_visual block
 function __history_previous_command
     switch (commandline -t)
         case "!"
-            commandline -t $history[1]; commandline -f repaint
+            commandline -t $history[1]
+            commandline -f repaint
         case "*"
             commandline -i !
     end

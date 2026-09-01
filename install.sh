@@ -189,7 +189,6 @@ link_dotfiles() {
     # Servisleri başlat
     systemctl --user enable vicinae --now
     systemctl --user daemon-reload
-    systemctl --user enable --now proton-pass-ssh-agent.service
 }
 
 # -----------------------------------------------------------------

@@ -42,7 +42,7 @@ fish/
 * **Android & Flutter:** `ANDROID_HOME=/opt/android-sdk`, `FLUTTER_HOME=/opt/flutter`, `PUB_CACHE=~/.pub-cache`.
 * **Java:** `JAVA_HOME=/usr/lib/jvm/java-25-openjdk`.
 * **Editor:** `EDITOR=nvim`, `VISUAL=nvim`, `MANPAGER` (Bat ile syntax renklendirmeli man sayfaları).
-* **Proton Pass SSH Agent:** `SSH_AUTH_SOCK=~/.ssh/proton-pass-agent.sock` ve `dbus-update-activation-environment` ile Wayland oturumuna otomatik yetki aktarımı.
+* **Proton Pass SSH Agent:** `SSH_AUTH_SOCK=~/.ssh/proton-pass-ssh-agent.sock` ve `dbus-update-activation-environment` ile Wayland oturumuna otomatik yetki aktarımı.
 
 ### 2. ⚡ Tembel Yükleme (Lazy Load Conda)
 * `conda` komutu başlangıçta yüklenmez; kabuk anında açılır. İlk kez `conda` yazdığınızda arka plandaki `__conda_setup` tetiklenerek Anaconda ortamı devreye girer.

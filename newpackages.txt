@@ -1378,7 +1378,6 @@ protobuf-c 1.5.2-11.1
 proton-cachyos-native 1:11.0.20260602-3
 proton-cachyos-slr 1:11.0.20260602-3
 proton-pass-bin 1.37.0-1
-proton-pass-cli-bin 2.1.4-1
 protonplus 0.5.20-1
 protontricks 1.14.1-1
 protonup-qt 2.15.0-1

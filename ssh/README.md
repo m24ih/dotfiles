@@ -22,7 +22,7 @@ ssh/
 ```ssh
 # Tüm SSH bağlantıları için varsayılan Proton Pass SSH Agent kullanımı
 Host *
-    IdentityAgent ~/.ssh/proton-pass-agent.sock
+    IdentityAgent ~/.ssh/proton-pass-ssh-agent.sock
 
 # Özel Sunucu Kısayolu
 Host sunucum
@@ -34,7 +34,7 @@ Host yusuf
     User yusuf
 ```
 
-* **Proton Pass Entegrasyonu:** SSH anahtarları yerel diskte şifresiz tutulmaz; Proton Pass masaüstü uygulamasının sunduğu agent soketi (`~/.ssh/proton-pass-agent.sock`) üzerinden doğrulanır.
+* **Proton Pass Entegrasyonu:** SSH anahtarları yerel diskte şifresiz tutulmaz; Proton Pass masaüstü uygulamasının sunduğu agent soketi (`~/.ssh/proton-pass-ssh-agent.sock`) üzerinden doğrulanır.
 * **Sunucu Kısayolları:** `ssh sunucum` veya `ssh yusuf` şeklinde hızlı bağlantı sağlar.
 
 ---

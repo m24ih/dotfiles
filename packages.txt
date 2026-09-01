@@ -1192,7 +1192,6 @@ protobuf
 protobuf-c
 proton-cachyos-slr
 proton-pass
-proton-pass-cli-bin
 protontricks
 psmisc
 pulseaudio-qt

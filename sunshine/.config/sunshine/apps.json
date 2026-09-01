@@ -22,7 +22,7 @@
             "output": "Virtual-TabletEkran",
             "prep-cmd": [
                 {
-                    "do": "sh -c \"killall -q krfb-virtualmonitor || true ; sleep 0.5 ; krfb-virtualmonitor --name 'TabletEkran' --resolution ${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT} --password '123456' --port 5900 & sleep 1.5 ; kscreen-doctor output.Virtual-TabletEkran.position.1920,0 output.Virtual-TabletEkran.mode.${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT}@${SUNSHINE_CLIENT_FPS} || true\"",
+                    "do": "sh -c \"killall -q krfb-virtualmonitor || true ; sleep 0.5 ; krfb-virtualmonitor --name 'TabletEkran' --resolution 1920x1080 --password '123456' --port 5900 & sleep 1.5 ; kscreen-doctor output.Virtual-TabletEkran.position.1920,0 output.Virtual-TabletEkran.mode.1920x1080@${SUNSHINE_CLIENT_FPS} || true\"",
                     "undo": "killall -q krfb-virtualmonitor || true"
                 }
             ],

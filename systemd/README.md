@@ -12,7 +12,7 @@ Bu pakette yönetilen kullanıcı servisleri ve araçlar için:
 # Sunshine (GameStream & İkinci Ekran Sunucusu):
 yay -S --needed sunshine
 
-# Proton Pass CLI (Şifre & SSH Yönetimi):
+# Proton Pass Masaüstü (Şifre & SSH Yönetimi):
 yay -S --needed proton-pass-bin
 ```
 
