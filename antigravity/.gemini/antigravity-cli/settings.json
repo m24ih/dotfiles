@@ -3,7 +3,7 @@
   "editor": "nvim",
   "enableTelemetry": false,
   "enableTerminalSandbox": true,
-  "model": "Gemini 3.1 Pro (High)",
+  "model": "Gemini 3.7 Flash (High)",
   "notifications": true,
   "permissions": {
     "deny": [
@@ -55,6 +55,7 @@
     "/home/melih/Sync/Obsidian/Personal-Obsidian",
     "/home/melih/Documents",
     "/home/melih/Projects/dotfiles",
-    "/home/melih/Downloads/Proton Pass"
+    "/home/melih/Downloads/Proton Pass",
+    "/home/melih/.config/ghostty"
   ]
 }
