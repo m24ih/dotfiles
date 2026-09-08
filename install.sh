@@ -74,6 +74,7 @@ DEFAULT_MODULES=(
 )
 
 SELECTED_MODULES=()
+DRY_RUN=false
 
 contains_element() {
     local match="$1"
@@ -232,6 +233,36 @@ ask_yn() {
         [yY]|[yY][eE][sS]) return 0 ;;
         *) return 1 ;;
     esac
+}
+
+show_help() {
+    echo -e "${BOLD}${CYAN}Melih's Dotfiles Installer${NC}"
+    echo -e "Kullanım:"
+    echo -e "  $0 [SEÇENEKLER] [MODÜLLER...]\n"
+    echo -e "${BOLD}SEÇENEKLER:${NC}"
+    echo -e "  ${GREEN}-n, --dry-run${NC}      Simülasyon modu. Hiçbir değişiklik yapmadan yapılacak işlemleri gösterir."
+    echo -e "  ${GREEN}-d, --default${NC}      Soru sormadan varsayılan modülleri kurar."
+    echo -e "  ${GREEN}-a, --all${NC}          Soru sormadan tüm modülleri kurar."
+    echo -e "  ${GREEN}-h, --help${NC}         Bu yardım mesajını gösterir ve çıkar.\n"
+    echo -e "${BOLD}KULLANILABİLİR MODÜLLER:${NC}"
+    echo -e "  ${PURPLE}Masaüstü & Pencere Yöneticileri:${NC}"
+    echo -e "    hypr, niri, mango"
+    echo -e "  ${PURPLE}Terminal Emülatörleri:${NC}"
+    echo -e "    ghostty, kitty"
+    echo -e "  ${PURPLE}Kabuk, Editör & CLI:${NC}"
+    echo -e "    fish, nvim, base_cli"
+    echo -e "  ${PURPLE}Uygulamalar & Üretkenlik:${NC}"
+    echo -e "    browser, social, dev, productivity, media, networking, sunshine, flatpak"
+    echo -e "  ${PURPLE}Donanım, Sistem & Fontlar:${NC}"
+    echo -e "    hardware, keychron, fkeys, iwd, services, fonts\n"
+    echo -e "${BOLD}ÖRNEKLER:${NC}"
+    echo -e "  $0                             # İnteraktif kurulum sihirbazını başlatır"
+    echo -e "  $0 --dry-run                   # İnteraktif seçimlerle simülasyon çalıştırır"
+    echo -e "  $0 --dry-run --default         # Varsayılan modüller için simülasyon çıktısı üretir"
+    echo -e "  $0 -d                          # Varsayılan modülleri hemen kurar"
+    echo -e "  $0 -a                          # Tüm modülleri hemen kurar"
+    echo -e "  $0 hypr fish ghostty           # Sadece belirtilen modülleri kurar"
+    echo -e "  $0 --dry-run hypr mango        # Belirtilen modüller için simülasyon çalıştırır"
 }
 
 # Sub-script çalıştırma yardımcısı:
@@ -613,45 +644,271 @@ apply_1password_settings() {
 }
 
 # -----------------------------------------------------------------
-# Ana fonksiyon - sihirbazı veya belirtilen bölümleri çalıştırır
+# Sıralı Yürütme Motoru (Execution Engine) & Dry-Run
 # -----------------------------------------------------------------
-main() {
-    print_header
-
-    # Komut satırı argümanları kontrolü
-    # Eğer argüman verilmediyse interaktif sihirbazı çalıştır
-    if [ $# -eq 0 ]; then
-        run_wizard
-        show_summary_and_confirm
-        echo -e "${GREEN}Kurulum planı onaylandı. (Yürütme motoru Task 4 ile bağlanacaktır.)${NC}"
-        return 0
-    else
-        # Belirtilen bölümleri çalıştır (Task 4'te CLI ayrıştırıcı ile genişletilecek)
-        for section in "$@"; do
-            case "$section" in
-                base|packages) install_base_packages ;;
-                package-manager|pm) install_package_manager ;;
-                all) install_all_packages ;;
-                flatpak) install_flatpaks ;;
-                stow|dotfiles) link_dotfiles ;;
-                hardware) apply_hardware_settings ;;
-                network) apply_network_settings ;;
-                discord) apply_discord_settings ;;
-                services) configure_services ;;
-                ufw) apply_ufw_rules ;;
-                warp) apply_warp_settings ;;
-                fonts) install_fonts ;;
-                npm) configure_npm ;;
-                sshd|ssh) apply_sshd_settings ;;
-                1password|onepassword) apply_1password_settings ;;
-                *) echo "Bilinmeyen bölüm: $section" ;;
-            esac
-        done
+execute_plan() {
+    # 1. Paket listelerini topla ve birleştir
+    local pkg_files=()
+    if [ -f "$DOTFILES_DIR/packages/base.txt" ]; then
+        pkg_files+=("$DOTFILES_DIR/packages/base.txt")
     fi
 
-    echo "--------------------------------"
-    echo "🎉 TÜM KURULUM TAMAMLANDI! 🎉"
-    echo "Değişikliklerin tamamının etkili olması için sistemi yeniden başlatman gerekebilir."
+    for mod in "${SELECTED_MODULES[@]}"; do
+        local pf
+        pf=$(get_module_package_file "$mod")
+        if [ -n "$pf" ] && [[ "$pf" == packages/*.txt ]] && [ -f "$DOTFILES_DIR/$pf" ]; then
+            if ! contains_element "$DOTFILES_DIR/$pf" "${pkg_files[@]}"; then
+                pkg_files+=("$DOTFILES_DIR/$pf")
+            fi
+        fi
+    done
+
+    local combined_packages=()
+    if [ ${#pkg_files[@]} -gt 0 ]; then
+        mapfile -t combined_packages < <(
+            sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' "${pkg_files[@]}" | \
+            grep -v '^$' | \
+            sort -u
+        )
+    fi
+
+    # 2. Stow hedeflerini topla
+    local stow_targets=()
+    for mod in "${SELECTED_MODULES[@]}"; do
+        local spkgs
+        spkgs=$(get_module_stow_packages "$mod")
+        for sp in $spkgs; do
+            if ! contains_element "$sp" "${stow_targets[@]}"; then
+                stow_targets+=("$sp")
+            fi
+        done
+    done
+
+    # 3. Sistem & ayar betiklerini topla
+    local script_targets=()
+    for mod in "${SELECTED_MODULES[@]}"; do
+        local scripts
+        scripts=$(get_module_scripts "$mod")
+        for sc in $scripts; do
+            # Flatpak paket kurulumu Faz 2'de ele alınır
+            if [ "$sc" = "scripts/install_flatpaks.sh" ]; then
+                continue
+            fi
+            if ! contains_element "$sc" "${script_targets[@]}"; then
+                script_targets+=("$sc")
+            fi
+        done
+    done
+
+    # -------------------------------------------------------------
+    # Dry-Run (Simülasyon Modu) Kontrolü
+    # -------------------------------------------------------------
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "\n${CYAN}================================================================${NC}"
+        echo -e "${BOLD}${YELLOW}🔍 [DRY-RUN SIMULASYON MODU]${NC}"
+        echo -e "${PURPLE}Hiçbir sistem değişikliği yapılmayacak. Planlanan adımlar simüle ediliyor.${NC}"
+        echo -e "${CYAN}================================================================${NC}"
+
+        # Faz 1 Simülasyonu
+        echo -e "\n${BOLD}${BLUE}:: [FAZ 1/4] Temel Sistem Bootstrap (Simülasyon)${NC}"
+        echo -e "   ${CYAN}•${NC} Temel Paketler (pacman): git, base-devel, stow"
+        echo -e "   ${CYAN}•${NC} Paket Yöneticisi Kontrolü: yay (AUR yardımcısı)"
+        if [ -f "$DOTFILES_DIR/packages/base.txt" ]; then
+            local base_list
+            base_list=$(sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' "$DOTFILES_DIR/packages/base.txt" | grep -v '^$' | tr '\n' ' ')
+            echo -e "   ${CYAN}•${NC} packages/base.txt paketleri: $base_list"
+        fi
+
+        # Faz 2 Simülasyonu
+        echo -e "\n${BOLD}${BLUE}:: [FAZ 2/4] Toplu Paket Kurulumu (Simülasyon)${NC}"
+        echo -e "   ${BOLD}Dahil edilen paket dosyaları:${NC}"
+        for pf in "${pkg_files[@]}"; do
+            echo -e "   ${CYAN}•${NC} ${pf#$DOTFILES_DIR/}"
+        done
+        echo -e "\n   ${BOLD}Yay ile kurulacak paket listesi (${#combined_packages[@]} adet):${NC}"
+        echo -e "   ${CYAN}${combined_packages[*]}${NC}"
+        if contains_element "flatpak" "${SELECTED_MODULES[@]}"; then
+            echo -e "\n   ${BOLD}Flatpak Durumu:${NC} 'scripts/install_flatpaks.sh' betiği çalıştırılacak (flat_packages.txt)"
+        else
+            echo -e "\n   ${BOLD}Flatpak Durumu:${NC} Seçilmedi (atlanıyor)"
+        fi
+
+        # Faz 3 Simülasyonu
+        echo -e "\n${BOLD}${BLUE}:: [FAZ 3/4] Dotfiles Bağlama (Stow Simülasyonu)${NC}"
+        if [ ${#stow_targets[@]} -gt 0 ]; then
+            echo -e "   ${BOLD}stow_all.sh ile bağlanacak dotfiles paketleri (${#stow_targets[@]} adet):${NC}"
+            echo -e "   ${CYAN}•${NC} ${stow_targets[*]}"
+            echo -e "   ${BOLD}Çalıştırılacak komut:${NC} $DOTFILES_DIR/stow_all.sh ${stow_targets[*]}"
+        else
+            echo -e "   ${YELLOW}• Hiçbir stow hedefi seçilmedi.${NC}"
+        fi
+
+        # Faz 4 Simülasyonu
+        echo -e "\n${BOLD}${BLUE}:: [FAZ 4/4] Ayar ve Sistem Betikleri (Simülasyon)${NC}"
+        if [ ${#script_targets[@]} -gt 0 ]; then
+            echo -e "   ${BOLD}Çalıştırılacak betikler (${#script_targets[@]} adet):${NC}"
+            for sc in "${script_targets[@]}"; do
+                if is_sudo_script "$sc"; then
+                    echo -e "   ${CYAN}•${NC} $sc ${PURPLE}(sudo ile)${NC}"
+                else
+                    echo -e "   ${CYAN}•${NC} $sc ${GREEN}(kullanıcı haklarıyla)${NC}"
+                fi
+            done
+        else
+            echo -e "   ${YELLOW}• Hiçbir betik seçilmedi.${NC}"
+        fi
+
+        echo -e "\n${CYAN}================================================================${NC}"
+        echo -e "${BOLD}${GREEN}✅ Simülasyon tamamlandı. Hiçbir sistem değişikliği yapılmadı.${NC}"
+        echo -e "${CYAN}================================================================${NC}\n"
+        exit 0
+    fi
+
+    # -------------------------------------------------------------
+    # Gerçek Yürütme (Faz 1 - Faz 4)
+    # -------------------------------------------------------------
+
+    # Faz 1: Temel Bootstrap
+    print_section "[FAZ 1/4] Temel Sistem Bootstrap..."
+    install_base_packages
+    install_package_manager
+    if [ -f "$DOTFILES_DIR/packages/base.txt" ]; then
+        case "$DETECTED_OS" in
+            arch|manjaro|endeavouros|artix|cachyos)
+                local base_pkgs
+                base_pkgs=$(sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' "$DOTFILES_DIR/packages/base.txt" | grep -v '^$' | tr '\n' ' ')
+                if [ -n "$base_pkgs" ]; then
+                    echo ":: packages/base.txt içerisindeki temel paketler kuruluyor..."
+                    sudo pacman -S --needed --noconfirm $base_pkgs
+                fi
+                ;;
+        esac
+    fi
+
+    # Faz 2: Toplu Paket Kurulumu
+    print_section "[FAZ 2/4] Toplu Paket Kurulumu..."
+    case "$DETECTED_OS" in
+        arch|manjaro|endeavouros|artix|cachyos)
+            if [ ${#combined_packages[@]} -gt 0 ]; then
+                local tmp_pkg_list="/tmp/selected_packages.txt"
+                printf '%s\n' "${combined_packages[@]}" > "$tmp_pkg_list"
+                echo ":: Toplam ${#combined_packages[@]} paket 'yay' ile kuruluyor..."
+                yay -Syu --needed --noconfirm - < "$tmp_pkg_list" || {
+                    rm -f "$tmp_pkg_list"
+                    exit 1
+                }
+                rm -f "$tmp_pkg_list"
+            else
+                echo ":: Kurulacak paket seçilmedi."
+            fi
+            ;;
+        *)
+            echo -e "${YELLOW}⚠️ Paketler Arch Linux / AUR formatındadır ($DETECTED_OS). Paket kurulum adımı atlanıyor.${NC}"
+            ;;
+    esac
+
+    if contains_element "flatpak" "${SELECTED_MODULES[@]}"; then
+        install_flatpaks
+    fi
+
+    # Faz 3: Dotfiles Bağlama
+    print_section "[FAZ 3/4] Dotfiles 'stow' ile ana dizine bağlanıyor..."
+    if [ ${#stow_targets[@]} -gt 0 ]; then
+        run_script "$DOTFILES_DIR/stow_all.sh" "${stow_targets[@]}"
+    else
+        echo ":: Bağlanacak dotfiles paketi seçilmedi, atlanıyor."
+    fi
+
+    # Faz 4: Ayar ve Sistem Betikleri
+    print_section "[FAZ 4/4] Sistem ve Yapılandırma Betikleri Çalıştırılıyor..."
+    for sc in "${script_targets[@]}"; do
+        if is_sudo_script "$sc"; then
+            run_script "$DOTFILES_DIR/$sc" sudo
+        else
+            run_script "$DOTFILES_DIR/$sc"
+        fi
+    done
+
+    echo -e "\n${CYAN}----------------------------------------------------------------${NC}"
+    echo -e "${BOLD}${GREEN}🎉 TÜM KURULUM TAMAMLANDI! 🎉${NC}"
+    echo -e "Değişikliklerin tamamının etkili olması için sistemi yeniden başlatman gerekebilir.\n"
+}
+
+# -----------------------------------------------------------------
+# Ana Fonksiyon (CLI Parser & Akış Yönetimi)
+# -----------------------------------------------------------------
+main() {
+    DRY_RUN=false
+    local mode=""
+    local positional_modules=()
+
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -n|--dry-run)
+                DRY_RUN=true
+                ;;
+            -d|--default)
+                mode="default"
+                ;;
+            -a|--all)
+                mode="all"
+                ;;
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            -*)
+                echo -e "${RED}Hata: Bilinmeyen seçenek '$1'${NC}" >&2
+                echo "Yardım için: $0 --help" >&2
+                exit 1
+                ;;
+            *)
+                positional_modules+=("$1")
+                ;;
+        esac
+        shift
+    done
+
+    # Modül seçimlerini çözümle
+    if [ ${#positional_modules[@]} -gt 0 ]; then
+        SELECTED_MODULES=()
+        for mod in "${positional_modules[@]}"; do
+            if ! contains_element "$mod" "${ALL_MODULES[@]}"; then
+                echo -e "${RED}Hata: Geçersiz modül adı: '$mod'${NC}" >&2
+                echo -e "Kullanılabilir modüller: ${ALL_MODULES[*]}" >&2
+                exit 1
+            fi
+            if ! contains_element "$mod" "${SELECTED_MODULES[@]}"; then
+                SELECTED_MODULES+=("$mod")
+            fi
+        done
+    elif [ "$mode" = "default" ]; then
+        SELECTED_MODULES=("${DEFAULT_MODULES[@]}")
+    elif [ "$mode" = "all" ]; then
+        SELECTED_MODULES=("${ALL_MODULES[@]}")
+    fi
+
+    # Başlığı yazdır
+    print_header
+
+    # Yürütme moduna karar ver
+    if [ -z "$mode" ] && [ ${#positional_modules[@]} -eq 0 ]; then
+        # Hiçbir mod veya argüman verilmedi (veya sadece --dry-run verildi)
+        if [ "$DRY_RUN" = true ]; then
+            # Sadece --dry-run: Soruları interaktif sor, onay istemeden simülasyonu çalıştır
+            run_wizard
+            execute_plan
+        else
+            # Varsayılan interaktif akış: Soru -> Özet/Onay -> Yürütme
+            run_wizard
+            show_summary_and_confirm
+            execute_plan
+        fi
+    else
+        # --default, --all veya pozisyonel modüller verildi:
+        # Soru sormadan hemen yürüt (veya simülasyonu çalıştır)
+        execute_plan
+    fi
 }
 
 # Script doğrudan çalıştırılıyorsa main fonksiyonunu çağır
