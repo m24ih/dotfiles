@@ -30,16 +30,18 @@ Bu paket, **Sunshine** ve **KDE Plasma (Wayland)** kullanarak Android/iPad table
 [ Bağımsız 120Hz 2. Ekran Görüntüsü ]
 ```
 
-### 1. Dinamik Çözünürlük ve 120Hz Desteği
+### 1. Dinamik Çözünürlük, 120Hz ve HiDPI Ölçeklendirme
 Sunshine, Moonlight istemcisinden gelen çözünürlük ve FPS talebini ortam değişkeni olarak iletir (`${SUNSHINE_CLIENT_WIDTH}`, `${SUNSHINE_CLIENT_HEIGHT}`, `${SUNSHINE_CLIENT_FPS}`).
 
-`apps.json` içerisindeki `do` komutu:
+`apps.json` içerisindeki `Galaxy Tab Second Screen` profilinin `do` komutu:
 ```bash
-sh -c "killall -q krfb-virtualmonitor || true ; sleep 0.5 ; krfb-virtualmonitor --name 'TabletEkran' --resolution ${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT} --password '123456' --port 5900 & sleep 1.5 ; kscreen-doctor output.Virtual-TabletEkran.position.1920,0 output.Virtual-TabletEkran.mode.${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT}@${SUNSHINE_CLIENT_FPS} || true"
+sh -c "killall -q krfb-virtualmonitor || true ; sleep 0.5 ; krfb-virtualmonitor --name 'TabletEkran' --resolution ${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT} --password '123456' --port 5900 & sleep 1.5 ; kscreen-doctor output.Virtual-TabletEkran.position.1920,0 output.Virtual-TabletEkran.mode.${SUNSHINE_CLIENT_WIDTH}x${SUNSHINE_CLIENT_HEIGHT}@${SUNSHINE_CLIENT_FPS} output.Virtual-TabletEkran.scale.1.5 || true"
 ```
-1. Eski süreçleri temizler (`killall`).
+1. Eski sanal ekran süreçlerini temizler (`killall`).
 2. Tabletin çözünürlüğünde sanal ekranı açar (`krfb-virtualmonitor`).
-3. Sanal ekranı ana monitörün sağına yerleştirir ve 120Hz moduna geçirir (`kscreen-doctor`).
+3. Sanal ekranı ana monitörün sağına yerleştirir, 120Hz moduna geçirir ve 1.5x HiDPI ölçekleme uygular (`kscreen-doctor`).
+
+> **Not:** `Desktop` profili doğrudan fiziksel/aktif ana ekranı yansıtır (sanal ekran oluşturmaz). Sadece `Galaxy Tab Second Screen` profili seçildiğinde bağımsız sanal 2. ekran açılır.
 
 ---
 
