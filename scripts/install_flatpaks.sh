@@ -11,8 +11,7 @@ set -e
 echo ":: Flatpak kurulumu ve yapılandırması başlıyor..."
 
 # Dizini bul
-baseDir=$(dirname "$(realpath "$0")")
-scrDir=$(dirname "$(dirname "$(realpath "$0")")")
+DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)"
 
 # OS Tespiti
 DETECTED_OS=""
@@ -74,8 +73,8 @@ echo ":: Flathub deposu ekleniyor..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # flat_packages.txt dosyasından paket listesini al
-if [ -f "${baseDir}/flat_packages.txt" ]; then
-    flats=$(awk -F '#' '{print $1}' "${baseDir}/flat_packages.txt" 2>/dev/null | sed 's/ //g' | xargs)
+if [ -f "${DOTFILES_DIR}/flat_packages.txt" ]; then
+    flats=$(awk -F '#' '{print $1}' "${DOTFILES_DIR}/flat_packages.txt" 2>/dev/null | sed 's/ //g' | xargs)
     if [ -n "${flats}" ]; then
         echo ":: Flatpak paketleri kuruluyor: $flats"
         flatpak install -y flathub ${flats}
