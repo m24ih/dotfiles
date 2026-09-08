@@ -4,7 +4,7 @@
 # Daha modüler ve yapılandırılabilir hale getirilmiştir.
 # Her bölüm bağımsız fonksiyon olarak tanımlanmıştır ve
 # komut satırı argümanlarıyla seçively çalıştırılabilir.
-# Çeşitli Linux dağıtımlarını destekler (Arch-based ve Fedora-based)
+# Çeşitli Linux dağıtımlarını destekler (Arch-based, Fedora-based ve Debian-based)
 
 # Hata durumunda script'i durdur
 set -e
@@ -63,7 +63,7 @@ print_section() {
 # 1. Gerekli Temel Paketler (git ve base-devel)
 # -----------------------------------------------------------------
 install_base_packages() {
-    print_section "'git' ve 'base-devel' grubu kontrol ediliyor/kuruluyor..."
+    print_section "'git' ve temel geliştirme paketleri kontrol ediliyor..."
     case "$DETECTED_OS" in
         arch|manjaro|endeavouros|artix|cachyos)
             sudo pacman -Syu --needed git base-devel --noconfirm
@@ -72,12 +72,11 @@ install_base_packages() {
             sudo dnf install -y git @development-tools
             ;;
         ubuntu|debian|linuxmint|pop|elementary)
-            sudo apt update
-            sudo apt install -y git build-essential
+            sudo apt update && sudo apt install -y git build-essential
             ;;
         *)
-            echo "Desteklenmeyen dağıtım: $DETECTED_OS. Arch-based paket yöneticisi kullanılıyor."
-            sudo pacman -Syu --needed git base-devel --noconfirm
+            echo "Desteklenmeyen dağıtım: $DETECTED_OS. pacman deneniyor..."
+            sudo pacman -Syu --needed git base-devel --noconfirm 2>/dev/null || true
             ;;
     esac
 }
@@ -86,11 +85,9 @@ install_base_packages() {
 # 2. Dağıtım Özel Paket Yöneticisini Kur
 # -----------------------------------------------------------------
 install_package_manager() {
-    print_section "Dağıtım Özel Paket Yöneticisini Kur"
-
+    print_section "Paket Yöneticisi Kontrolü..."
     case "$DETECTED_OS" in
         arch|manjaro|endeavouros|artix|cachyos)
-            # Arch-based: yay (AUR helper)
             if ! command -v yay &>/dev/null; then
                 echo ":: 'yay' bulunamadı. AUR'dan kuruluyor..."
                 git clone https://aur.archlinux.org/yay.git /tmp/yay
@@ -102,21 +99,13 @@ install_package_manager() {
             fi
             ;;
         fedora|rhel|centos|rocky|almalinux)
-            # Fedora-based: dnf is already installed, but we can add copr if needed
-            echo ":: Fedora tabanlı sistemde dnf zaten mevcut."
-            # Optionally enable RPM Fusion or other repos if needed
+            echo ":: Fedora tabanlı sistemde dnf hazır."
             ;;
         ubuntu|debian|linuxmint|pop|elementary)
-            # Debian-based: apt is already installed
-            echo ":: Debian tabanlı sistemde apt zaten mevcut."
+            echo ":: Debian tabanlı sistemde apt hazır."
             ;;
         *)
-            echo "Bilinmeyen dağıtım: $DETECTED_OS. Yay kurulmayı deniyor."
-            if ! command -v yay &>/dev/null; then
-                git clone https://aur.archlinux.org/yay.git /tmp/yay
-                (cd /tmp/yay && makepkg -si --noconfirm)
-                rm -rf /tmp/yay
-            fi
+            echo ":: Dağıtım: $DETECTED_OS"
             ;;
     esac
 }
@@ -126,8 +115,15 @@ install_package_manager() {
 # -----------------------------------------------------------------
 install_all_packages() {
     print_section "'packages.txt' dosyasındaki tüm paketler kuruluyor..."
-    yay -Syu --needed - <"$DOTFILES_DIR/packages.txt"
-    echo ":: Paket kurulumu tamamlandı."
+    case "$DETECTED_OS" in
+        arch|manjaro|endeavouros|artix|cachyos)
+            yay -Syu --needed - <"$DOTFILES_DIR/packages.txt"
+            echo ":: Paket kurulumu tamamlandı."
+            ;;
+        *)
+            echo "⚠️ 'packages.txt' Arch Linux / pacman paket formatındadır. Farklı bir dağıtımda olduğunuz için paket kurulum adımı atlanıyor."
+            ;;
+    esac
 }
 
 # -----------------------------------------------------------------
@@ -135,7 +131,7 @@ install_all_packages() {
 # -----------------------------------------------------------------
 install_flatpaks() {
     print_section "'install_flatpaks.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/install_flatpaks.sh"
+    run_script "$DOTFILES_DIR/scripts/install_flatpaks.sh"
     echo ":: Flatpak kurulum adımı tamamlandı."
 }
 
@@ -144,51 +140,8 @@ install_flatpaks() {
 # -----------------------------------------------------------------
 link_dotfiles() {
     print_section "'stow' ile dotfile'lar ana dizine bağlanıyor..."
-
-    # 'stow' paketinin kurulu olduğundan emin ol
-    if ! command -v stow &>/dev/null; then
-        echo "Uyarı: 'stow' kurulu değil. 'yay -S stow' ile kuruluyor..."
-        yay -S --needed stow --noconfirm
-    fi
-
-    # 'stow' edilecek tüm paketlerin (klasörlerin) listesi
-    STOW_PACKAGES=(
-        "btop"
-        "fastfetch"
-        "fish"
-        "ghostty"
-        "hypr"
-        "kitty"
-        "mango"
-        "niri"
-        "nvim"
-        "ssh"
-        "starship"
-        "sunshine"
-        "systemd"
-        "user-dirs"
-        "vivaldi"
-        "zshrc.d"
-    )
-
-    # Betiğin bulunduğu (Dotfiles) dizine git
-    cd "$DOTFILES_DIR"
-
-    echo "  -> Şu paketler bağlanacak: ${STOW_PACKAGES[*]}"
-    # -R (Re-stow): Mevcut linkleri (varsa) kaldırır ve yeniden bağlar.
-    # -t (Target): Hedef dizin, yani senin home dizinin ($HOME)
-    stow -R -t "$HOME" "${STOW_PACKAGES[@]}"
-
+    run_script "$DOTFILES_DIR/stow_all.sh"
     echo ":: 'Stow' işlemi tamamlandı."
-
-    # Fastfetch OS logosunu mevcut sisteme göre bağla
-    if [ -f "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" ]; then
-        bash "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" "$HOME/.config/fastfetch/logo"
-    fi
-
-    # Servisleri başlat
-    systemctl --user enable vicinae --now
-    systemctl --user daemon-reload
 }
 
 # -----------------------------------------------------------------
@@ -196,11 +149,11 @@ link_dotfiles() {
 # -----------------------------------------------------------------
 apply_hardware_settings() {
     print_section "'setup_fkeys.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/setup_fkeys.sh" sudo
+    run_script "$DOTFILES_DIR/scripts/setup_fkeys.sh" sudo
     echo ":: F tuslari Donanım ayarları tamamlandı."
 
     echo ":: 'setup_keychron.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/setup_keychron.sh" sudo
+    run_script "$DOTFILES_DIR/scripts/setup_keychron.sh" sudo
     echo ":: Keychron Klavye Donanım ayarları tamamlandı."
 }
 
@@ -209,11 +162,11 @@ apply_hardware_settings() {
 # -----------------------------------------------------------------
 apply_network_settings() {
     print_section "'switch_to_iwd.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/switch_to_iwd.sh" sudo
+    run_script "$DOTFILES_DIR/scripts/switch_to_iwd.sh" sudo
     echo ":: Oyunlarda Jitter azaltmak icin iwd gecisi tamamlandı."
 
     echo ":: 'vivaldi_middle_click.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/vivaldi_middle_click.sh"
+    run_script "$DOTFILES_DIR/scripts/vivaldi_middle_click.sh"
     echo ":: Vivaldi de middle click kullanarak kaydirma aktif edildi."
 }
 
@@ -222,7 +175,7 @@ apply_network_settings() {
 # -----------------------------------------------------------------
 apply_discord_settings() {
     print_section "'setup_discord_proxy.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/setup_discord_proxy.sh"
+    run_script "$DOTFILES_DIR/scripts/setup_discord_proxy.sh"
     echo ":: Digital Ocean Amsterdam Serverina proxy ile baglanildi."
     echo ":: Artik discord-secure yazarak veya discord iconuna tiklayarak girebilirsin"
 }
@@ -232,7 +185,7 @@ apply_discord_settings() {
 # -----------------------------------------------------------------
 configure_services() {
     print_section "'setup_services.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/setup_services.sh"
+    run_script "$DOTFILES_DIR/scripts/setup_services.sh"
     echo ":: Sistem ve Kullanıcı Servisleri başarıyla yapılandırıldı."
 }
 
@@ -241,7 +194,7 @@ configure_services() {
 # -----------------------------------------------------------------
 apply_ufw_rules() {
     print_section "'setup_ufw.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/setup_ufw.sh" sudo
+    run_script "$DOTFILES_DIR/scripts/setup_ufw.sh" sudo
     echo ":: UFW güvenlik duvarı kuralları uygulandı."
 }
 
@@ -250,7 +203,7 @@ apply_ufw_rules() {
 # -----------------------------------------------------------------
 apply_warp_settings() {
     print_section "'setup_warp.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/setup_warp.sh"
+    run_script "$DOTFILES_DIR/scripts/setup_warp.sh"
     echo ":: WARP Split Tunnel kuralları uygulandı."
 }
 
@@ -259,7 +212,7 @@ apply_warp_settings() {
 # -----------------------------------------------------------------
 install_fonts() {
     print_section "Font kurulumu ve yapılandırması..."
-    run_script "$DOTFILES_DIR/setup_fonts.sh"
+    run_script "$DOTFILES_DIR/scripts/setup_fonts.sh"
     echo ":: Font kurulumu tamamlandı."
 }
 
@@ -268,7 +221,7 @@ install_fonts() {
 # -----------------------------------------------------------------
 configure_npm() {
     print_section "npm global dizin yapılandırması..."
-    run_script "$DOTFILES_DIR/setup_npm.sh"
+    run_script "$DOTFILES_DIR/scripts/setup_npm.sh"
     echo ":: npm yapılandırması tamamlandı."
 }
 
@@ -277,8 +230,17 @@ configure_npm() {
 # -----------------------------------------------------------------
 apply_sshd_settings() {
     print_section "SSH Sunucusu (sshd) güvenlik kısıtlamaları uygulanıyor..."
-    run_script "$DOTFILES_DIR/setup_sshd.sh"
+    run_script "$DOTFILES_DIR/scripts/setup_sshd.sh"
     echo ":: SSH sunucusu güvenlik yapılandırması tamamlandı."
+}
+
+# -----------------------------------------------------------------
+# 15. MODÜL: 1Password Özel Tarayıcı İzinleri Yapılandırması
+# -----------------------------------------------------------------
+apply_1password_settings() {
+    print_section "1Password özel tarayıcı izinleri yapılandırılıyor..."
+    run_script "$DOTFILES_DIR/scripts/setup_1password.sh" sudo
+    echo ":: 1Password yapılandırması tamamlandı."
 }
 
 # -----------------------------------------------------------------
@@ -290,7 +252,7 @@ main() {
     # Komut satırı argümanları kontrolü
     # Eğer belirli bölümler verildiyse sadece onları çalıştır, yoksa tümünü çalıştır
     if [ $# -eq 0 ]; then
-        # Varsayılan: tüm bölümleri çalıştır
+        # Varsayılan: tüm bölümleri çalıştır (1password hariç - isteğe bağlı)
         install_base_packages
         install_package_manager
         install_all_packages
@@ -323,6 +285,7 @@ main() {
                 fonts) install_fonts ;;
                 npm) configure_npm ;;
                 sshd|ssh) apply_sshd_settings ;;
+                1password|onepassword) apply_1password_settings ;;
                 *) echo "Bilinmeyen bölüm: $section" ;;
             esac
         done
