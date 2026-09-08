@@ -40,6 +40,7 @@ ALL_MODULES=(
     ghostty
     kitty
     fish
+    zsh
     nvim
     base_cli
     browser
@@ -61,6 +62,7 @@ ALL_MODULES=(
 DEFAULT_MODULES=(
     ghostty
     fish
+    zsh
     nvim
     base_cli
     browser
@@ -74,6 +76,7 @@ DEFAULT_MODULES=(
 )
 
 SELECTED_MODULES=()
+TARGET_SHELL_BIN=""
 DRY_RUN=false
 
 contains_element() {
@@ -94,6 +97,7 @@ get_module_title() {
         ghostty)      echo "Ghostty Terminal Emülatörü" ;;
         kitty)        echo "Kitty Terminal Emülatörü" ;;
         fish)         echo "Fish Kabuğu & Starship Prompt" ;;
+        zsh)          echo "Zsh Kabuğu & Oh My Zsh Ortamı" ;;
         nvim)         echo "Neovim Editör" ;;
         base_cli)     echo "Temel CLI Araçları" ;;
         browser)      echo "Vivaldi Tarayıcı" ;;
@@ -122,6 +126,7 @@ get_module_package_file() {
         ghostty)      echo "packages/ghostty.txt" ;;
         kitty)        echo "packages/kitty.txt" ;;
         fish)         echo "packages/fish.txt" ;;
+        zsh)          echo "packages/zsh.txt" ;;
         nvim)         echo "packages/nvim.txt" ;;
         base_cli)     echo "packages/base_cli.txt" ;;
         browser)      echo "packages/browser.txt" ;;
@@ -145,6 +150,7 @@ get_module_stow_packages() {
         ghostty)      echo "ghostty" ;;
         kitty)        echo "kitty" ;;
         fish)         echo "fish starship" ;;
+        zsh)          echo "zsh" ;;
         nvim)         echo "nvim" ;;
         base_cli)     echo "btop fastfetch user-dirs" ;;
         browser)      echo "vivaldi" ;;
@@ -157,6 +163,7 @@ get_module_stow_packages() {
 
 get_module_scripts() {
     case "$1" in
+        zsh)          echo "scripts/setup_zsh.sh" ;;
         browser)      echo "scripts/vivaldi_middle_click.sh" ;;
         social)       echo "scripts/setup_discord_proxy.sh" ;;
         dev)          echo "scripts/setup_npm.sh" ;;
@@ -250,7 +257,7 @@ show_help() {
     echo -e "  ${PURPLE}Terminal Emülatörleri:${NC}"
     echo -e "    ghostty, kitty"
     echo -e "  ${PURPLE}Kabuk, Editör & CLI:${NC}"
-    echo -e "    fish, nvim, base_cli"
+    echo -e "    fish, zsh, nvim, base_cli"
     echo -e "  ${PURPLE}Uygulamalar & Üretkenlik:${NC}"
     echo -e "    browser, social, dev, productivity, media, networking, sunshine, flatpak"
     echo -e "  ${PURPLE}Donanım, Sistem & Fontlar:${NC}"
@@ -261,7 +268,9 @@ show_help() {
     echo -e "  $0 --dry-run --default         # Varsayılan modüller için simülasyon çıktısı üretir"
     echo -e "  $0 -d                          # Varsayılan modülleri hemen kurar"
     echo -e "  $0 -a                          # Tüm modülleri hemen kurar"
+    echo -e "  $0 zsh                         # Sadece Zsh modülünü kurar"
     echo -e "  $0 hypr fish ghostty           # Sadece belirtilen modülleri kurar"
+    echo -e "  $0 --dry-run zsh               # Zsh modülü için simülasyon çalıştırır"
     echo -e "  $0 --dry-run hypr mango        # Belirtilen modüller için simülasyon çalıştırır"
 }
 
@@ -286,6 +295,49 @@ run_script() {
         else
             echo -e "${YELLOW}⚠️ UYARI: $(basename "$script_path") çalıştırılırken bir hata oluştu. Kurulum devam ediyor...${NC}"
             return 0
+        fi
+    fi
+}
+
+# -----------------------------------------------------------------
+# Varsayılan Kabuk Seçicisi (Default Shell Selector)
+# -----------------------------------------------------------------
+prompt_default_shell() {
+    local current_sh
+    current_sh="$(basename "$SHELL" 2>/dev/null || echo "bash")"
+
+    echo -e "\n${PURPLE}┌──────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}│${NC} ${BOLD}${CYAN}[Kabuk Tercihi]${NC} ${BOLD}Varsayılan Oturum Kabuğu (Default Login Shell)${NC}"
+    echo -e "${PURPLE}└──────────────────────────────────────────────────────────────┘${NC}"
+    echo -e "Mevcut kabuğunuz: ${BOLD}${GREEN}$current_sh${NC} ($SHELL)\n"
+    echo -e "Kullanılabilir Seçenekler:"
+    echo -e "  ${CYAN}1) fish${NC} : Modern, zengin otomatik tamamlama ve renklendirme"
+    echo -e "  ${CYAN}2) zsh${NC}  : Güçlü, POSIX uyumlu, Oh My Zsh ve zengin eklenti ekosistemi"
+    echo -e "  ${CYAN}3) bash${NC} : Standart sistem kabuğu"
+    echo -e "  ${CYAN}4) atla${NC} : Mevcut kabuğu koru (Değişiklik yapma)\n"
+
+    local choice
+    read -r -p "$(echo -e "${CYAN}?${NC} Varsayılan kabuğunuz hangisi olsun? ${YELLOW}[1/2/3/4 veya fish/zsh/bash/atla]${NC} (Varsayılan: atla): ")" choice
+    choice="${choice:-atla}"
+    choice="$(echo "$choice" | tr '[:upper:]' '[:lower:]')"
+
+    local selected_name=""
+    case "$choice" in
+        1|fish) selected_name="fish" ;;
+        2|zsh)  selected_name="zsh" ;;
+        3|bash) selected_name="bash" ;;
+        4|atla|skip|none) selected_name="" ;;
+        *)
+            echo -e "${YELLOW}⚠️ Geçersiz seçim yapıldı. Mevcut kabuk korunuyor.${NC}"
+            selected_name=""
+            ;;
+    esac
+
+    if [ -n "$selected_name" ]; then
+        local target_bin
+        target_bin="$(command -v "$selected_name" 2>/dev/null || which "$selected_name" 2>/dev/null || echo "/usr/bin/$selected_name")"
+        if [ "$target_bin" != "$SHELL" ] && [ "$(basename "$target_bin")" != "$(basename "$SHELL")" ]; then
+            TARGET_SHELL_BIN="$target_bin"
         fi
     fi
 }
@@ -324,12 +376,16 @@ run_wizard() {
     if ask_yn "Fish kabuğu ve Starship prompt kurulsun mu?" "Y"; then
         SELECTED_MODULES+=("fish")
     fi
+    if ask_yn "Zsh kabuğu ve Oh My Zsh ortamı kurulsun mu?" "Y"; then
+        SELECTED_MODULES+=("zsh")
+    fi
     if ask_yn "Neovim modern metin editörü kurulsun mu?" "Y"; then
         SELECTED_MODULES+=("nvim")
     fi
     if ask_yn "Temel CLI araçları (bat, zoxide, btop, fastfetch vb.) kurulsun mu?" "Y"; then
         SELECTED_MODULES+=("base_cli")
     fi
+    prompt_default_shell
 
     # Kategori 4: Uygulamalar & Üretkenlik
     print_category "4" "Uygulamalar & Üretkenlik"
@@ -442,6 +498,11 @@ show_summary_and_confirm() {
         for s in "${selected_scripts[@]}"; do
             echo -e "   ${CYAN}•${NC} $s"
         done
+    fi
+
+    if [ -n "$TARGET_SHELL_BIN" ]; then
+        echo -e "\n${BOLD}${PURPLE}🐚 Varsayılan Oturum Kabuğu:${NC}"
+        echo -e "   ${CYAN}•${NC} $SHELL -> ${GREEN}$TARGET_SHELL_BIN${NC} (chsh -s ile değiştirilecek)"
     fi
 
     echo -e "\n${CYAN}================================================================${NC}\n"
@@ -629,6 +690,9 @@ execute_plan() {
         else
             echo -e "   ${YELLOW}• Hiçbir betik seçilmedi.${NC}"
         fi
+        if [ -n "$TARGET_SHELL_BIN" ]; then
+            echo -e "   ${CYAN}•${NC} Varsayılan kabuk değiştirilecek: $SHELL -> $TARGET_SHELL_BIN (chsh -s $TARGET_SHELL_BIN)"
+        fi
 
         echo -e "\n${CYAN}================================================================${NC}"
         echo -e "${BOLD}${GREEN}✅ Simülasyon tamamlandı. Hiçbir sistem değişikliği yapılmadı.${NC}"
@@ -707,6 +771,32 @@ execute_plan() {
             run_script "$DOTFILES_DIR/$sc"
         fi
     done
+
+    # Varsayılan Oturum Kabuğu (Default Shell) Ayarı
+    if [ -n "$TARGET_SHELL_BIN" ]; then
+        print_section "Varsayılan Oturum Kabuğu Ayarlanıyor..."
+        local final_target="$TARGET_SHELL_BIN"
+        local sh_name
+        sh_name="$(basename "$TARGET_SHELL_BIN")"
+        if [ ! -x "$final_target" ]; then
+            final_target="$(command -v "$sh_name" 2>/dev/null || echo "$TARGET_SHELL_BIN")"
+        fi
+
+        if [ -f /etc/shells ] && ! grep -qxF "$final_target" /etc/shells; then
+            echo -e "${YELLOW}⚠️ UYARI: $final_target /etc/shells dosyasında tanımlı değil.${NC}"
+            if command -v sudo &>/dev/null; then
+                echo ":: $final_target /etc/shells dosyasına ekleniyor..."
+                echo "$final_target" | sudo tee -a /etc/shells >/dev/null || true
+            fi
+        fi
+
+        echo ":: Varsayılan kabuk $final_target olarak ayarlanıyor (chsh -s)..."
+        if chsh -s "$final_target"; then
+            echo -e "${GREEN}✅ Varsayılan kabuk başarıyla $final_target olarak ayarlandı.${NC}"
+        else
+            echo -e "${YELLOW}⚠️ Varsayılan kabuk otomatik olarak değiştirilemedi. Manuel olarak 'chsh -s $final_target' çalıştırabilirsiniz.${NC}"
+        fi
+    fi
 
     echo -e "\n${CYAN}----------------------------------------------------------------${NC}"
     echo -e "${BOLD}${GREEN}🎉 TÜM KURULUM TAMAMLANDI! 🎉${NC}"
