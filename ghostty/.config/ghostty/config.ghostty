@@ -59,6 +59,9 @@ font-family = "JetBrains Mono"
 cursor-style = bar
 shell-integration-features = no-cursor
 
+custom-shader = ~/.config/ghostty/shaders/ghostty-cursor-shaders/cursor_sweep.glsl
+custom-shader-animation = always
+
 scrollbar = system
 
 notify-on-command-finish = always
