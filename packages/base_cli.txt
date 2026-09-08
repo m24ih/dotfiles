@@ -1,0 +1,14 @@
+bat
+zoxide
+tree
+trash-cli
+duf
+jq
+unzip
+unrar
+7zip
+rsync
+topgrade
+multitail
+btop
+fastfetch

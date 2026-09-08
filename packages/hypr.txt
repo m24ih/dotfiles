@@ -1,0 +1,10 @@
+hyprland
+hyprpaper
+hyprlock
+hypridle
+xdg-desktop-portal-hyprland
+polkit-gnome
+nwg-displays
+waybar
+brightnessctl
+wl-clipboard

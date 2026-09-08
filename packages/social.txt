@@ -1,0 +1,4 @@
+vesktop
+telegram-desktop
+signal-desktop
+teams-for-linux

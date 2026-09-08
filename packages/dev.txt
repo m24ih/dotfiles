@@ -1,0 +1,9 @@
+code
+docker
+docker-compose
+docker-buildx
+lazydocker
+dbeaver
+github-cli
+nodejs
+npm

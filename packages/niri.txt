@@ -1,0 +1,4 @@
+niri
+xdg-desktop-portal-gnome
+polkit-gnome
+fuzzel

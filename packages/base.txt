@@ -1,0 +1,9 @@
+git
+base-devel
+stow
+which
+curl
+wget
+bash-completion
+sudo
+xdg-user-dirs

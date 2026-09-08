@@ -1,0 +1,4 @@
+fish
+fisher
+starship
+cachyos-fish-config

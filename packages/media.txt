@@ -1,0 +1,7 @@
+haruna
+obs-studio
+kdenlive
+qbittorrent
+freedownloadmanager
+jdownloader2
+gwenview

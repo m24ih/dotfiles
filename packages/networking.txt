@@ -1,0 +1,7 @@
+tailscale
+cloudflare-warp-bin
+cloudflare-speed-cli
+syncthing
+rclone
+rustdesk-bin
+termius
