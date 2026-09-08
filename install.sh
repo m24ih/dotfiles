@@ -66,17 +66,17 @@ install_base_packages() {
     print_section "'git' ve temel geliştirme paketleri kontrol ediliyor..."
     case "$DETECTED_OS" in
         arch|manjaro|endeavouros|artix|cachyos)
-            sudo pacman -Syu --needed git base-devel --noconfirm
+            sudo pacman -Syu --needed git base-devel stow --noconfirm
             ;;
         fedora|rhel|centos|rocky|almalinux)
-            sudo dnf install -y git @development-tools
+            sudo dnf install -y git @development-tools stow
             ;;
         ubuntu|debian|linuxmint|pop|elementary)
-            sudo apt update && sudo apt install -y git build-essential
+            sudo apt update && sudo apt install -y git build-essential stow
             ;;
         *)
             echo "Desteklenmeyen dağıtım: $DETECTED_OS. pacman deneniyor..."
-            sudo pacman -Syu --needed git base-devel --noconfirm 2>/dev/null || true
+            sudo pacman -Syu --needed git base-devel stow --noconfirm 2>/dev/null || true
             ;;
     esac
 }

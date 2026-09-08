@@ -6,7 +6,26 @@ cd "$DOTFILES_DIR"
 
 if ! command -v stow &>/dev/null; then
     echo "⚠️ 'stow' bulunamadı. Kuruluyor..."
-    sudo pacman -S --needed --noconfirm stow
+    DETECTED_OS=""
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        DETECTED_OS="$ID"
+    fi
+    case "$DETECTED_OS" in
+        arch|manjaro|endeavouros|artix|cachyos)
+            sudo pacman -S --needed --noconfirm stow
+            ;;
+        fedora|rhel|centos|rocky|almalinux)
+            sudo dnf install -y stow
+            ;;
+        ubuntu|debian|linuxmint|pop|elementary)
+            sudo apt update && sudo apt install -y stow
+            ;;
+        *)
+            echo "⚠️ Dağıtım için otomatik stow kurulumu desteklenmiyor ($DETECTED_OS). Lütfen 'stow' paketini manuel kurun."
+            exit 1
+            ;;
+    esac
 fi
 
 PACKAGES=(
