@@ -1,0 +1,6 @@
+zsh
+fzf
+zsh-completions
+zsh-autosuggestions
+zsh-syntax-highlighting
+eza
