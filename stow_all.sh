@@ -1,33 +1,38 @@
 #!/bin/bash
-#
-# install_dotfiles.sh
-# YENİ bir sistemde tüm dotfiles'ları "stow" ile bağlar.
-# Dotfiles klasörünün içindeyken çalıştırılmalıdır.
+set -e
 
-echo "Tüm dotfiles'lar 'stow' ile ana dizine bağlanıyor..."
+DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+cd "$DOTFILES_DIR"
 
-# Stow komutunun kendisi modülerdir.
-# Dotfiles klasöründeki *her* alt klasörü (hypr, nvim, fish, gtk...)
-# tek tek paket olarak görür ve -t ~ hedefine bağlar.
+if ! command -v stow &>/dev/null; then
+    echo "⚠️ 'stow' bulunamadı. Kuruluyor..."
+    sudo pacman -S --needed --noconfirm stow
+fi
 
-# '*' (yıldız) bu dizindeki tüm klasörleri (paketleri) al demektir.
-# Betiklerimizi (install.sh vb.) ve text dosyalarını (packages.txt)
-# görmezden gelmesi için basit bir filtreleme yapabiliriz.
+PACKAGES=(
+    btop
+    fastfetch
+    fish
+    ghostty
+    hypr
+    kitty
+    mango
+    niri
+    nvim
+    ssh
+    starship
+    sunshine
+    systemd
+    user-dirs
+    vivaldi
+    zshrc.d
+)
 
-# Sadece klasör olanları "stow" et
-for pkg in */; do
-  # Eğer gerçekten bir 'stow' paketi ise (içinde .config gibi yapılar varsa)
-  # veya daha basitçe: betik dosyası değilse
-  if [ -d "$pkg" ]; then
-    # 'scripts' gibi betik klasörlerini hariç tutabiliriz
-    if [ "$pkg" != "scripts/" ]; then
-      echo "  -> Bağlanıyor: ${pkg%/}" # Sonundaki / işaretini kaldır
-      stow -R -t "$HOME" "${pkg%/}"
-    fi
-  fi
-done
+echo ":: Dotfiles 'stow' ile ana dizine bağlanıyor ($HOME)..."
+stow -R -t "$HOME" "${PACKAGES[@]}"
 
-# VEYA DAHA BASİT YÖNTEM (Eğer Dotfiles'da sadece paketler varsa):
-# stow -t "$HOME" *
+if [ -f "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" ]; then
+    bash "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" "$HOME/.config/fastfetch/logo" 2>/dev/null || true
+fi
 
-echo "✅ 'Stow' işlemi tamamlandı."
+echo "✅ 'stow' işlemi tamamlandı."
