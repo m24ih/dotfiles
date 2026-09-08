@@ -76,11 +76,12 @@ Yeni formatlanmış bir sisteme geçerken:
 | `stow` / `dotfiles` | Tüm paketleri `stow` ile `~` dizinine bağlar |
 | `hardware` | Keychron klavye ve F tuşları modlarını uygular |
 | `network` | Ağ yapılandırmaları ve iwd optimizasyonları |
-| `services` | `setup_services.sh` ile systemd kullanıcı servislerini başlatır |
+| `services` | `scripts/setup_services.sh` ile systemd kullanıcı servislerini başlatır |
 | `ufw` | Güvenlik duvarı kurallarını (Sunshine, SSH vb.) uygular |
 | `warp` | Cloudflare WARP split tunnel yapılandırması |
 | `fonts` | JetBrains Mono Nerd Font vb. fontları yükler |
-| `sshd` / `ssh` | SSH sunucu güvenlik kısıtlamalarını (`setup_sshd.sh`) kurar |
+| `sshd` / `ssh` | SSH sunucu güvenlik kısıtlamalarını (`scripts/setup_sshd.sh`) kurar |
+| `1password` | 1Password için özel tarayıcı izinlerini (`scripts/setup_1password.sh`) uygular |
 
 ---
 
@@ -127,12 +128,16 @@ Kurulum sonrası **güvenlik nedeniyle depoda tutulmayan** kişisel anahtarları
 
 Dotfiles deposu, donanım uyumluluğu ve ağ optimizasyonu için özel yardımcı betikler barındırır:
 
-* `setup_fkeys.sh`: Apple/Fn tuş davranışlarını F1-F12 standart düzenine çevirir.
-* `setup_keychron.sh`: Keychron kablosuz/kablolu klavye modu ve Bluetooth optimizasyonları.
-* `setup_ufw.sh`: Güvenlik duvarını (Sunshine, SSH vb. izinleri) tek komutla kurar.
-* `setup_sshd.sh`: SSH sunucusuna (`sshd`) ağ erişim kısıtlamalarını (`/etc/ssh/sshd_config.d/`) kurar.
-* `setup_services.sh`: Dağıtıma göre systemd servislerini devreye alır.
-* `vivaldi_middle_click.sh`: Wayland ortamında Vivaldi orta tık sekme açma davranışını düzeltir.
+* `scripts/setup_fkeys.sh`: Apple/Fn tuş davranışlarını F1-F12 standart düzenine çevirir.
+* `scripts/setup_keychron.sh`: Keychron kablosuz/kablolu klavye modu ve Bluetooth optimizasyonları.
+* `scripts/setup_ufw.sh`: Güvenlik duvarını (Sunshine, SSH vb. izinleri) tek komutla kurar.
+* `scripts/setup_sshd.sh`: SSH sunucusuna (`sshd`) ağ erişim kısıtlamalarını (`/etc/ssh/sshd_config.d/`) kurar.
+* `scripts/setup_services.sh`: Dağıtıma göre systemd servislerini devreye alır.
+* `scripts/vivaldi_middle_click.sh`: Wayland ortamında Vivaldi orta tık sekme açma davranışını düzeltir.
+* `scripts/setup_1password.sh`: 1Password için özel tarayıcı izinlerini (`/etc/1password/custom_allowed_browsers`) yapılandırır.
+* `scripts/setup_discord_proxy.sh`: Discord proxy ve güvenli erişim ayarlarını kurar.
+* `scripts/setup_warp.sh`: Cloudflare WARP split tunnel kurallarını uygular.
+* `scripts/switch_to_iwd.sh`: NetworkManager için iwd Wi-Fi backend geçişi sağlar.
 
 ---
 

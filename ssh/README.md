@@ -55,9 +55,9 @@ AllowUsers melih@192.168.1.* melih@192.168.0.* melih@100.*.*.* melih@127.0.0.1
    * `127.0.0.1` (Yerel makine)
 
 ### Otomatik Kurulum:
-Bu kuralı sisteme uygulamak için ana dizindeki betiği çalıştırmak yeterlidir:
+Bu kuralı sisteme uygulamak için betiği çalıştırmak yeterlidir:
 ```bash
-./setup_sshd.sh
+./scripts/setup_sshd.sh
 # veya
 ./install.sh sshd
 ```
