@@ -44,3 +44,6 @@ antigravity/.gemini/antigravity-cli/*
 sunshine/.config/sunshine/credentials/
 sunshine/.config/sunshine/sunshine_state.json
 sunshine/.config/sunshine/sunshine.log
+
+# Superpowers SDD workspace
+.superpowers/
