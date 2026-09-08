@@ -2,7 +2,7 @@
 # ==============================================================================
 # UFW GÜVENLİK DUVARI KURALLARI
 # ==============================================================================
-# Bu betik, sistem servislerinin (KDE Connect, Syncthing, Jellyfin, SSH, Sunshine)
+# Bu betik, sistem servislerinin (KDE Connect, Syncthing, Jellyfin, SSH, Sunshine, Steam)
 # yerel ağda sorunsuz çalışabilmesi için gerekli port kurallarını tanımlar.
 
 set -e
@@ -37,6 +37,12 @@ sudo ufw allow 5353/udp comment 'mDNS / Sunshine Discovery'
 sudo ufw allow 47998:48000/udp comment 'Sunshine Video/Control Stream'
 sudo ufw allow 48002/udp comment 'Sunshine Audio Stream'
 sudo ufw allow 48010/udp comment 'Sunshine Mic Stream'
+
+# 6. Steam Yerel Ağ Oyun Dosyası Aktarımı (Local Network Game Transfers)
+# 27040 TCP: Oyun dosyalarının eşler arası aktarımı (veri transferi)
+# 27031-27036 UDP: Yerel ağdaki cihazların birbirini keşfetmesi (Steam Discovery)
+sudo ufw allow 27040/tcp comment 'Steam Local Transfer'
+sudo ufw allow 27031:27036/udp comment 'Steam Discovery'
 
 # UFW'yi etkinleştir ve yeniden yükle
 sudo ufw --force enable

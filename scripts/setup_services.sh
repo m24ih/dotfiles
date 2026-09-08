@@ -103,52 +103,41 @@ case "$DETECTED_OS" in
     fedora|rhel|centos|rocky|almalinux)
         SYSTEM_SERVICES=(
             "bluetooth.service"             # Bluetooth Servisi
-            "firewalld.service"             # Firewall Servisi (Fedora farklı firewall kullanır)
+            "firewalld.service"             # Firewall Servisi
             "avahi-daemon.service"          # Yerel Ağ Cihaz Keşif Servisi (mDNS)
-            " tuned.service"                # Sistem Performans Tuning Servisi
+            "tuned.service"                 # Sistem Performans Tuning Servisi
             "bpftune.service"               # BPF Otomatik Ağ Optimizasyon Servisi
             "warp-svc.service"              # Cloudflare WARP Daemon Servisi
             "docker.service"                # Docker Konteyner Servisi
             "tailscaled.service"            # Tailscale VPN Servisi
             "fstrim.timer"                  # SSD TRIM Otomatik Bakım Zamanlayıcısı
             "dnf-makecache.timer"           # DNF Önbellek Güncelleme Zamanlayıcısı
-            "snapper-cleanup.timer"         # Btrfs Snapper Temizlik Zamanlayıcısı (eğer Btrfs kullanılıyorsa)
+            "snapper-cleanup.timer"         # Btrfs Snapper Temizlik Zamanlayıcısı
             "grubby.service"                # GRUB Yapılandırma Aracı
-            " ModemManager.service"         # Modem Yönetimi Servisi
         )
         ;;
     ubuntu|debian|linuxmint|pop|elementary)
         SYSTEM_SERVICES=(
             "bluetooth.service"             # Bluetooth Servisi
-            "ufw.service"                   # UFW Güvenlik Duvarı (Varsayılan)
+            "ufw.service"                   # UFW Güvenlik Duvarı
             "avahi-daemon.service"          # Yerel Ağ Cihaz Keşif Servisi (mDNS)
-            "timered.service"               # Sistem Saati Servisi
-            "bolt.service"                  # Thunderbolt Güvenlik Servisi
             "warp-svc.service"              # Cloudflare WARP Daemon Servisi
             "docker.service"                # Docker Konteyner Servisi
             "tailscaled.service"            # Tailscale VPN Servisi
             "fstrim.timer"                  # SSD TRIM Otomatik Bakım Zamanlayıcısı
             "apt-daily.timer"               # Günlük APT Güncelleme Zamanlayıcısı
             "apt-daily-upgrade.timer"       # Günlük APT Yükseltme Zamanlayıcısı
-            "snapd.service"                 # Snap Daemon
-            " ModemManager.service"         # Modem Yönetimi Servisi
         )
         ;;
     *)
-        # Varsayılan sistem servis listesi (Arch-based olarak kalacak)
         SYSTEM_SERVICES=(
-            "bluetooth.service"             # Bluetooth Servisi
-            "ufw.service"                   # UFW Güvenlik Duvarı
-            "avahi-daemon.service"          # Yerel Ağ Cihaz Keşif Servisi (mDNS)
-            "ananicy-cpp.service"           # Otomatik Süreç Önceliklendirici (Performans/Oyun)
-            "bpftune.service"               # BPF Otomatik Ağ Optimizasyon Servisi
-            "warp-svc.service"              # Cloudflare WARP Daemon Servisi
-            "docker.service"                # Docker Konteyner Servisi
-            "tailscaled.service"            # Tailscale VPN Servisi
-            "fstrim.timer"                  # SSD TRIM Otomatik Bakım Zamanlayıcısı
-            "snapper-cleanup.timer"         # Btrfs Snapper Temizlik Zamanlayıcısı
-            "grub-btrfs-snapper.path"       # Btrfs GRUB Yansıma Güncelleyici
-            "cachyos-iw-set-regdomain.path" # Kablosuz Ağ Bölge Ayarı Servisi
+            "bluetooth.service"
+            "ufw.service"
+            "avahi-daemon.service"
+            "warp-svc.service"
+            "docker.service"
+            "tailscaled.service"
+            "fstrim.timer"
         )
         ;;
 esac

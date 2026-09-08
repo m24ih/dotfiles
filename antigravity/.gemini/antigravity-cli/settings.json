@@ -3,7 +3,7 @@
   "editor": "nvim",
   "enableTelemetry": false,
   "enableTerminalSandbox": true,
-  "model": "Gemini 3.7 Flash (High)",
+  "model": "Gemini 3.8 Flash (High)",
   "notifications": true,
   "permissions": {
     "deny": [
@@ -56,6 +56,9 @@
     "/home/melih/Documents",
     "/home/melih/Projects/dotfiles",
     "/home/melih/Downloads/Proton Pass",
-    "/home/melih/.config/ghostty"
+    "/home/melih/.config/ghostty",
+    "/home/melih/Sync/Obsidian/Personal-Obsidian/02-University Notes/Semester 8/Internship II",
+    "/home/melih/Sync/Obsidian/Personal-Obsidian/99-index/Templates",
+    "/home/melih/Projects/bookorbit"
   ]
 }

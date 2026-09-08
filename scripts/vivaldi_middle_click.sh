@@ -1,9 +1,7 @@
 #!/bin/bash
 
 # Değişkenler
-DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
-DOTFILES_CONF="$DOTFILES_DIR/vivaldi/.config/vivaldi-stable.conf"
-CONF_FILE="$HOME/.config/vivaldi-stable.conf"
+
 LOCAL_DESKTOP_DIR="$HOME/.local/share/applications"
 LOCAL_DESKTOP="$LOCAL_DESKTOP_DIR/vivaldi-stable.desktop"
 SYSTEM_DESKTOP="/usr/share/applications/vivaldi-stable.desktop"
@@ -13,32 +11,7 @@ FLAGS="--enable-blink-features=MiddleClickAutoscroll --enable-features=MiddleCli
 
 echo "Vivaldi Middle Click Scroll Yapılandırması Başlatılıyor..."
 
-# 1. Dotfiles içindeki vivaldi-stable.conf dosyasını oluştur / güncelle
-if [ -d "$DOTFILES_DIR/vivaldi/.config" ]; then
-  cat << EOF > "$DOTFILES_CONF"
---enable-blink-features=MiddleClickAutoscroll
---enable-features=MiddleClickAutoscroll
-EOF
-  echo "✅ Dotfiles yapılandırma dosyası güncellendi: $DOTFILES_CONF"
-  
-  # Stow ile bağla (eğer stow mevcutsa)
-  if command -v stow &>/dev/null; then
-    (cd "$DOTFILES_DIR" && stow -R -t "$HOME" vivaldi)
-    echo "✅ Dotfiles 'stow' ile senkronize edildi."
-  fi
-fi
-
-# 2. Home dizinindeki conf dosyasını da doğrudan garantiye al
-if [ ! -L "$CONF_FILE" ]; then
-  mkdir -p "$(dirname "$CONF_FILE")"
-  cat << EOF > "$CONF_FILE"
---enable-blink-features=MiddleClickAutoscroll
---enable-features=MiddleClickAutoscroll
-EOF
-  echo "✅ Kullanıcı yapılandırma dosyası güncellendi: $CONF_FILE"
-fi
-
-# 3. Masaüstü (.desktop) dosyasını güncelle
+# Masaüstü (.desktop) dosyasını güncelle
 mkdir -p "$LOCAL_DESKTOP_DIR"
 if [ -f "$SYSTEM_DESKTOP" ]; then
   cp "$SYSTEM_DESKTOP" "$LOCAL_DESKTOP"
