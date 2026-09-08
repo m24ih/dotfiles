@@ -10,7 +10,7 @@ Tüm sistem [GNU Stow](https://www.gnu.org/software/stow/) ile modüler paketler
 - [🚀 Hızlı Kurulum](#-hızlı-kurulum)
 - [🧩 Modüler Kurulum Seçenekleri](#-modüler-kurulum-seçenekleri)
   - [Komut Satırı Bayrakları (CLI Flags)](#komut-satırı-bayrakları-cli-flags)
-  - [Desteklenen Modüller (22 Adet)](#desteklenen-modüller-22-adet)
+  - [Desteklenen Modüller (23 Adet)](#desteklenen-modüller-23-adet)
 - [📦 Modüler Paket Yapısı (packages/)](#-modüler-paket-yapısı-packages)
 - [📂 Dotfiles Dizin Yapısı & GNU Stow](#-dotfiles-dizin-yapısı--gnu-stow)
 - [🔐 Gizlilik & Manuel Yapılacaklar (Secrets)](#-gizlilik--manuel-yapılacaklar-secrets)
@@ -73,10 +73,10 @@ Yeni formatlanmış bir sisteme geçerken:
 # 2. Güvenli Simülasyon Modu (Hiçbir sistem değişikliği yapmaz)
 ./install.sh --dry-run
 
-# 3. Hızlı Varsayılan Kurulum (Soru sormadan 12 varsayılan [Y] bileşeni kurar)
+# 3. Hızlı Varsayılan Kurulum (Soru sormadan 13 varsayılan [Y] bileşeni kurar)
 ./install.sh --default
 
-# 4. Tam Kurulum (Soru sormadan tüm 22 bileşeni kurar)
+# 4. Tam Kurulum (Soru sormadan tüm 23 bileşeni kurar)
 ./install.sh --all
 
 # 5. Seçici Modül Kurulumu (Yalnızca belirtilen modülleri kurar)
@@ -94,14 +94,14 @@ Yeni formatlanmış bir sisteme geçerken:
 | Bayrak | Kısa | Açıklama |
 | :--- | :---: | :--- |
 | `--dry-run` | `-n` | **Simülasyon Modu:** Hiçbir paket kurmaz, dosya bağlamaz veya betik çalıştırmaz; 4 fazlı yürütme planını detaylı olarak ekrana yazdırır. |
-| `--default` | `-d` | **Varsayılan Mod:** Soru sormadan onaylanan 12 varsayılan modülü (`ghostty`, `fish`, `nvim`, `browser`, `social`, `dev`, `productivity`, `media`, `networking`, `services`, `fonts`, `base_cli`) doğrudan kurar. |
-| `--all` | `-a` | **Tam Mod:** Soru sormadan sistemdeki tüm 22 modülü eksiksiz olarak kurar. |
+| `--default` | `-d` | **Varsayılan Mod:** Soru sormadan onaylanan 13 varsayılan modülü (`ghostty`, `fish`, `zsh`, `nvim`, `browser`, `social`, `dev`, `productivity`, `media`, `networking`, `services`, `fonts`, `base_cli`) doğrudan kurar. |
+| `--all` | `-a` | **Tam Mod:** Soru sormadan sistemdeki tüm 23 modülü eksiksiz olarak kurar. |
 | `--help` | `-h` | **Yardım:** Kullanım yönergelerini, tüm bayrakları ve desteklenen modül listesini yazdırır. |
 | `<modül...>` | - | **Pozisyonel Modül Argümanları:** Sihirbazı atlayarak yalnızca argüman olarak verilen modülleri kurar (`--dry-run` ile birleştirilebilir). |
 
-### Desteklenen Modüller (22 Adet)
+### Desteklenen Modüller (23 Adet)
 
-Kurulum motoru 5 ana kategoride toplam 22 modül destekler:
+Kurulum motoru 5 ana kategoride toplam 23 modül destekler:
 
 | Kategori | Modül | Varsayılan | Açıklama | Paket Listesi | Stow Paketi |
 | :--- | :--- | :---: | :--- | :--- | :--- |
@@ -111,6 +111,7 @@ Kurulum motoru 5 ana kategoride toplam 22 modül destekler:
 | **Terminal Emülatörleri** | `ghostty` | `[Y/n]` | Ghostty modern GPU hızlandırmalı terminal | `packages/ghostty.txt` | `ghostty` |
 | | `kitty` | `[y/N]` | Kitty GPU hızlandırmalı terminal emülatörü | `packages/kitty.txt` | `kitty` |
 | **Kabuk, Editör & CLI** | `fish` | `[Y/n]` | Fish kabuğu ve Starship çapraz komut istemi | `packages/fish.txt` | `fish`, `starship` |
+| | `zsh` | `[Y/n]` | Zsh kabuğu ve Oh My Zsh geliştirme ortamı | `packages/zsh.txt` | `zsh` |
 | | `nvim` | `[Y/n]` | Neovim modern metin editörü (Lazy.nvim ekosistemi) | `packages/nvim.txt` | `nvim` |
 | | `base_cli` | `[Y/n]` | Temel modern CLI araçları (`bat`, `zoxide`, `btop`, `fastfetch` vb.) | `packages/base_cli.txt` | `btop`, `fastfetch`, `user-dirs` |
 | **Uygulamalar & Üretkenlik** | `browser` | `[Y/n]` | Vivaldi web tarayıcısı ve ortam iyileştirmeleri | `packages/browser.txt` | `vivaldi` |
@@ -131,6 +132,9 @@ Kurulum motoru 5 ana kategoride toplam 22 modül destekler:
 > [!NOTE]
 > Temel sistem paketlerini barındıran `packages/base.txt` (`git`, `base-devel`, `stow`, `sudo`, `curl` vb.), modül seçiminden bağımsız olarak her kurulum işleminde zorunlu temel katman olarak otomatik dahil edilir.
 
+> [!TIP]
+> **Etkileşimli Varsayılan Kabuk Seçici (`prompt_default_shell`):** Kurulum sihirbazı sırasında Kabuk & Editör kategorisinin ardından varsayılan oturum kabuğu tercihi (`fish`, `zsh`, `bash` veya mevcut olanı koruma) sorulur. Seçilen kabuk kurulup doğrulandıktan sonra `chsh -s` ile otomatik olarak varsayılan oturum kabuğu olarak atanır ve gerekirse `/etc/shells` dosyasına eklenir.
+
 ---
 
 ## 📦 Modüler Paket Yapısı (`packages/`)
@@ -142,7 +146,7 @@ Eski sistemdeki 1660 satırlık hantal, bakım zorluğu yaratan ve alt kütüpha
 - **Seçici ve Esnek Kurulum:** Tüm yazılımları zorunlu olarak kurmak yerine kullanıcı sadece ihtiyaç duyduğu kategorileri (örneğin sadece `hypr` veya `dev`) seçebilir.
 - **Toplu ve Optimize Yürütme:** `install.sh`, seçilen tüm modüllerin `.txt` dosyalarını otomatik olarak birleştirir (`sort -u`) ve tek seferde `yay` çağrısı yaparak paketleri mükerrer işlem yapmadan kurar.
 
-### `packages/` Dizinindeki Paket Dosyaları (17 Adet)
+### `packages/` Dizinindeki Paket Dosyaları (18 Adet)
 
 | Paket Dosyası | Temsil Ettiği Kategori / Alan | Başlıca / Örnek Paketler |
 | :--- | :--- | :--- |
@@ -163,6 +167,7 @@ Eski sistemdeki 1660 satırlık hantal, bakım zorluğu yaratan ve alt kütüpha
 | [`packages/productivity.txt`](packages/productivity.txt) | **Üretkenlik & Parola Yönetimi** | `obsidian`, `proton-pass`, `proton-pass-cli-bin`, `calibre`, `keepassxc` |
 | [`packages/social.txt`](packages/social.txt) | **İletişim & Sosyal Medya** | `vesktop`, `telegram-desktop`, `signal-desktop`, `teams-for-linux` |
 | [`packages/sunshine.txt`](packages/sunshine.txt) | **Sunshine GameStream Sunucusu** | `sunshine` |
+| [`packages/zsh.txt`](packages/zsh.txt) | **Zsh Kabuğu & Eklentiler** | Zsh kabuğu, tamamlama ve eklentiler (`zsh`, `fzf`, `zsh-completions`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `eza`) |
 
 ---
 
@@ -187,7 +192,7 @@ Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve de
 | [`systemd/`](systemd/) | Kullanıcı seviyesi systemd servisleri | [📖 İncele](systemd/README.md) |
 | [`user-dirs/`](user-dirs/) | Standart XDG kullanıcı dizinleri | [📖 İncele](user-dirs/README.md) |
 | [`vivaldi/`](vivaldi/) | Vivaldi CSS/JS modları & orta tık sekme onarımı | [📖 İncele](vivaldi/README.md) |
-| [`zshrc.d/`](zshrc.d/) | Modüler Zsh yapılandırma betikleri | [📖 İncele](zshrc.d/README.md) |
+| [`zsh/`](zsh/) | Zsh kabuğu (`~/.zshrc` ve `~/.config/zshrc.d/` modüler betikleri) | [📖 İncele](zsh/) |
 
 ---
 
@@ -215,6 +220,7 @@ Dotfiles deposu, donanım uyumluluğu ve ağ optimizasyonu için özel yardımc�
 * `scripts/setup_sshd.sh`: SSH sunucusuna (`sshd`) ağ erişim kısıtlamalarını (`/etc/ssh/sshd_config.d/`) kurar.
 * `scripts/setup_services.sh`: Dağıtıma göre systemd servislerini devreye alır.
 * `scripts/setup_fonts.sh`: Nerd Font ve sistem yazı tiplerini kurar ve font önbelleğini günceller.
+* `scripts/setup_zsh.sh`: Oh My Zsh ve 5 eklentiyi otomatik kurar.
 * `scripts/setup_npm.sh`: Global npm dizini izinlerini ve ortam yolu yapılandırmasını ayarlar.
 * `scripts/setup_1password.sh`: 1Password için özel tarayıcı izinlerini (`/etc/1password/custom_allowed_browsers`) yapılandırır.
 * `scripts/setup_discord_proxy.sh`: Discord proxy ve güvenli erişim ayarlarını kurar.
