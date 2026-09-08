@@ -252,6 +252,7 @@ alias ls='eza -l --icons --git --header'
 alias l='eza --icons --git'
 alias ll='eza -la --icons --git --header'
 alias la='eza -la --icons --git --header'
+alias lsize='eza -la --icons --git --header --total-size'  # Klasör boyutlarıyla (yavaş)
 alias l.='eza -laD --icons --git --header'
 alias lt='eza -la --sort=modified --reverse --icons --git --header'
 alias lS='eza -la --sort=size --reverse --icons --git --header'
@@ -289,7 +290,7 @@ alias rclone-vfs='rclone rc vfs/stats --url localhost:5572'
 alias rclone-queue='rclone rc vfs/queue --url localhost:5572'
 alias watch-rclone='watch -n 1 -c "rclone rc core/stats --url localhost:5572 | jq -C ."'
 alias watch-rclone-queue='watch -n 1 -c "rclone rc vfs/queue --url localhost:5572 | jq -C ."'
-alias watch-rclone-all='watch -n 1 -c "zsh -c rclone-all"'
+alias watch-rclone-all='watch -n 1 -c "rclone rc core/stats --url localhost:5572 | jq -C . && echo && echo \"=== VFS Queue ===\" && rclone rc vfs/queue --url localhost:5572 | jq -C ."'
 
 # Arşivler
 alias mktar='tar -cvf'

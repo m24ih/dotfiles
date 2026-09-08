@@ -67,7 +67,25 @@ zsh/
 * **Editör & Sayfalayıcı:** `EDITOR=nvim`, `VISUAL=nvim`, `MANPAGER` (`bat` ile renklendirilmiş yardım sayfaları).
 
 ### 4. ⚡ Zengin Alias (Kısayol) Kütüphanesi
-* **Modern Dosya Listeleme (`eza`):** `ls`, `l`, `ll`, `la`, `tree` ikon ve git durumu destekli.
+* **Modern Dosya Listeleme (`eza`):** İkon, git durumu ve başlık desteğiyle zenginleştirilmiş alias'lar.
+
+#### 📋 Liste Komutları
+
+| Alias | Komut | Açıklama |
+|-------|-------|----------|
+| `ls` | `eza -l --icons --git --header` | Uzun format, ikonlar, git durumu ve başlık |
+| `l` | `eza --icons --git` | Kısa format, ikonlar ve git durumu |
+| `ll` | `eza -la --icons --git --header` | Gizli dosyalar dahil uzun format |
+| `la` | `eza -la --icons --git --header` | `ll` ile aynı — gizli dosyalar dahil |
+| `lsize` | `eza -la --icons --git --header --total-size` | Klasör boyutlarıyla (recursive hesaplar, yavaş olabilir) |
+| `l.` | `eza -laD --icons --git --header` | Yalnızca gizli dizinleri göster |
+| `lt` | `eza -la --sort=modified --reverse ...` | Değiştirilme tarihine göre sırala (en yeni önce) |
+| `lS` | `eza -la --sort=size --reverse ...` | Boyuta göre sırala (en büyük önce) |
+| `lx` | `eza -la --sort=ext ...` | Uzantıya göre sırala |
+| `lf` | `eza -l --icons --git --no-dir` | Yalnızca dosyaları listele (dizinler hariç) |
+| `ldir` | `eza -lD --icons --git` | Yalnızca dizinleri listele |
+| `T` | `eza --tree --level=3 --icons --git` | 3 seviye derinliğe kadar ağaç görünümü |
+| `Ta` | `eza --tree --level=3 -a --icons --git` | Gizli dosyalar dahil ağaç görünümü |
 * **Navigasyon:** `..`, `...`, `....` hızlı üst dizinler.
 * **Paket Yöneticisi:** `pacman`, `yay`, `cleanup`, `orphan` kısayolları.
 * **Git & Docker:** `g`, `ga`, `gc`, `gp`, `gl`, `gst`, `dps`, `dstop` vb.
