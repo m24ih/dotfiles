@@ -116,7 +116,7 @@ Kurulum motoru 5 ana kategoride toplam 23 modül destekler:
 | | `base_cli` | `[Y/n]` | Temel modern CLI araçları (`bat`, `zoxide`, `btop`, `fastfetch` vb.) | `packages/base_cli.txt` | `btop`, `fastfetch`, `user-dirs` |
 | **Uygulamalar & Üretkenlik** | `browser` | `[Y/n]` | Vivaldi web tarayıcısı ve ortam iyileştirmeleri | `packages/browser.txt` | `vivaldi` |
 | | `social` | `[Y/n]` | İletişim araçları (Vesktop, Telegram, Signal, Teams) | `packages/social.txt` | - |
-| | `dev` | `[Y/n]` | Geliştirici ortamı (VS Code, Docker, DBeaver, Node.js) | `packages/dev.txt` | - |
+| | `dev` | `[Y/n]` | Geliştirici ortamı (VS Code, Docker, Node.js & Antigravity CLI) | `packages/dev.txt` | `antigravity` |
 | | `productivity` | `[Y/n]` | Üretkenlik & parola yönetimi (Obsidian, Proton Pass, KeePassXC) | `packages/productivity.txt` | - |
 | | `media` | `[Y/n]` | Medya & indirme araçları (Haruna, OBS Studio, qBittorrent, Kdenlive) | `packages/media.txt` | - |
 | | `networking` | `[Y/n]` | Ağ & VPN araçları (Tailscale, Cloudflare WARP, Syncthing, RustDesk) | `packages/networking.txt` | `ssh` |
@@ -177,6 +177,7 @@ Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve de
 
 | Paket | Açıklama | Dokümantasyon |
 | :--- | :--- | :---: |
+| [`antigravity/`](antigravity/) | Google Antigravity CLI (`agy`) ayarları & güvenlik politikası | [📖 İncele](antigravity/README.md) |
 | [`btop/`](btop/) | Sistem ve donanım izleme aracı | [📖 İncele](btop/README.md) |
 | [`fastfetch/`](fastfetch/) | Sistem bilgi aracı & otomatik dağıtım logosu | [📖 İncele](fastfetch/README.md) |
 | [`fish/`](fish/) | Fish shell yapılandırması, fonksiyonlar & alias'lar | [📖 İncele](fish/README.md) |

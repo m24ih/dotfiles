@@ -44,6 +44,7 @@ if [ $# -gt 0 ]; then
     fi
 else
     TARGET_PACKAGES=(
+        antigravity
         btop
         fastfetch
         fish

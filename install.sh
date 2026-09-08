@@ -157,6 +157,7 @@ get_module_stow_packages() {
         networking)   echo "ssh" ;;
         sunshine)     echo "sunshine" ;;
         services)     echo "systemd" ;;
+        dev)          echo "antigravity" ;;
         *)            echo "" ;;
     esac
 }
