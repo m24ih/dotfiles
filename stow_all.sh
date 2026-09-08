@@ -59,7 +59,7 @@ else
         systemd
         user-dirs
         vivaldi
-        zshrc.d
+        zsh
     )
 fi
 
