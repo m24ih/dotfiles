@@ -139,7 +139,7 @@ Kurulum motoru 5 ana kategoride toplam 23 modül destekler:
 
 ## 📦 Modüler Paket Yapısı (`packages/`)
 
-Eski sistemdeki 1660 satırlık hantal, bakım zorluğu yaratan ve alt kütüphane bağımlılıklarıyla şişmiş monolitik `packages.txt` dosyası tamamen kaldırılarak yerine **modüler ve temiz `packages/*.txt` dizin mimarisine** geçilmiştir.
+Eski sistemdeki 1660 satırlık hantal, bakım zorluğu yaratan ve alt kütüphane bağımlılıklarıyla şişmiş monolitik `packages.txt` dosyası tamamen kaldırılarak yerine **modüler ve temiz `packages/*.txt` dizin mimarisine** geçilmiştir. Detaylı mimari açıklamalar ve paket ekleme kuralları için [`packages/README.md`](packages/README.md) kılavuzunu inceleyebilirsiniz.
 
 ### Neden Modüler Yapı?
 - **Bağımlılık Temizliği:** Dağıtım paket yöneticilerinin (`pacman` / `yay`) dinamik olarak çözebildiği yüzlerce ikincil kütüphane ve `lib*` bağımlılığı listelerden temizlenmiş, yalnızca **kullanıcı odaklı birincil uygulamalar** tutulmuştur.
@@ -192,7 +192,7 @@ Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve de
 | [`systemd/`](systemd/) | Kullanıcı seviyesi systemd servisleri | [📖 İncele](systemd/README.md) |
 | [`user-dirs/`](user-dirs/) | Standart XDG kullanıcı dizinleri | [📖 İncele](user-dirs/README.md) |
 | [`vivaldi/`](vivaldi/) | Vivaldi CSS/JS modları & orta tık sekme onarımı | [📖 İncele](vivaldi/README.md) |
-| [`zsh/`](zsh/) | Zsh kabuğu (`~/.zshrc` ve `~/.config/zshrc.d/` modüler betikleri) | [📖 İncele](zsh/) |
+| [`zsh/`](zsh/) | Zsh kabuğu (`~/.zshrc` ve `~/.config/zshrc.d/` modüler betikleri) | [📖 İncele](zsh/README.md) |
 
 ---
 
@@ -212,7 +212,7 @@ Kurulum sonrası **güvenlik nedeniyle depoda tutulmayan** kişisel anahtarları
 
 ## 🛠️ Donanım & Sistem Betikleri
 
-Dotfiles deposu, donanım uyumluluğu ve ağ optimizasyonu için özel yardımcı betikler barındırır:
+Dotfiles deposu, donanım uyumluluğu ve ağ optimizasyonu için özel yardımcı betikler barındırır (tüm betiklerin yetki ve parametre detayları için [`scripts/README.md`](scripts/README.md) belgesini inceleyin):
 
 * `scripts/setup_fkeys.sh`: Apple/Fn tuş davranışlarını F1-F12 standart düzenine çevirir.
 * `scripts/setup_keychron.sh`: Keychron kablosuz/kablolu klavye modu ve Bluetooth optimizasyonları.
