@@ -507,140 +507,12 @@ install_package_manager() {
 }
 
 # -----------------------------------------------------------------
-# 3. Tüm Paketleri 'yay' ile Kur
-# -----------------------------------------------------------------
-install_all_packages() {
-    print_section "Paketler kuruluyor..."
-    case "$DETECTED_OS" in
-        arch|manjaro|endeavouros|artix|cachyos)
-            if [ -f "$DOTFILES_DIR/packages.txt" ]; then
-                yay -Syu --needed - <"$DOTFILES_DIR/packages.txt"
-            else
-                echo "⚠️ 'packages.txt' bulunamadı. Modüler paket listeleri kullanılmalıdır."
-            fi
-            echo ":: Paket kurulumu tamamlandı."
-            ;;
-        *)
-            echo "⚠️ Paketler Arch Linux / pacman formatındadır. Farklı bir dağıtımda olduğunuz için paket kurulum adımı atlanıyor."
-            ;;
-    esac
-}
-
-# -----------------------------------------------------------------
-# 4. MODÜL: Flatpak Paketlerini Kur
+# 3. Flatpak Paketlerini Kur
 # -----------------------------------------------------------------
 install_flatpaks() {
     print_section "'install_flatpaks.sh' script'i çalıştırılıyor..."
     run_script "$DOTFILES_DIR/scripts/install_flatpaks.sh"
     echo ":: Flatpak kurulum adımı tamamlandı."
-}
-
-# -----------------------------------------------------------------
-# 5. MODÜL: 'stow' ile Dotfile'ları Bağla (En Önemli Adım)
-# -----------------------------------------------------------------
-link_dotfiles() {
-    print_section "'stow' ile dotfile'lar ana dizine bağlanıyor..."
-    run_script "$DOTFILES_DIR/stow_all.sh"
-    echo ":: 'Stow' işlemi tamamlandı."
-}
-
-# -----------------------------------------------------------------
-# 6. MODÜL: Donanım Ayarlarını Uygula
-# -----------------------------------------------------------------
-apply_hardware_settings() {
-    print_section "'setup_fkeys.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/scripts/setup_fkeys.sh" sudo
-    echo ":: F tuslari Donanım ayarları tamamlandı."
-
-    echo ":: 'setup_keychron.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/scripts/setup_keychron.sh" sudo
-    echo ":: Keychron Klavye Donanım ayarları tamamlandı."
-}
-
-# -----------------------------------------------------------------
-# 7. MODÜL: Ağ ve Ağ Sürücü Ayarlarını Uygula
-# -----------------------------------------------------------------
-apply_network_settings() {
-    print_section "'switch_to_iwd.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/scripts/switch_to_iwd.sh" sudo
-    echo ":: Oyunlarda Jitter azaltmak icin iwd gecisi tamamlandı."
-
-    echo ":: 'vivaldi_middle_click.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/scripts/vivaldi_middle_click.sh"
-    echo ":: Vivaldi de middle click kullanarak kaydirma aktif edildi."
-}
-
-# -----------------------------------------------------------------
-# 8. MODÜL: Discord Proxy ve Güvenli Erişim Ayarları
-# -----------------------------------------------------------------
-apply_discord_settings() {
-    print_section "'setup_discord_proxy.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/scripts/setup_discord_proxy.sh"
-    echo ":: Digital Ocean Amsterdam Serverina proxy ile baglanildi."
-    echo ":: Artik discord-secure yazarak veya discord iconuna tiklayarak girebilirsin"
-}
-
-# -----------------------------------------------------------------
-# 9. MODÜL: Sistem ve Kullanıcı Servislerini Otomatik Etkinleştirme
-# -----------------------------------------------------------------
-configure_services() {
-    print_section "'setup_services.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/scripts/setup_services.sh"
-    echo ":: Sistem ve Kullanıcı Servisleri başarıyla yapılandırıldı."
-}
-
-# -----------------------------------------------------------------
-# 10. MODÜL: UFW Güvenlik Duvarı Kurallarını Uygula
-# -----------------------------------------------------------------
-apply_ufw_rules() {
-    print_section "'setup_ufw.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/scripts/setup_ufw.sh" sudo
-    echo ":: UFW güvenlik duvarı kuralları uygulandı."
-}
-
-# -----------------------------------------------------------------
-# 11. MODÜL: Cloudflare WARP Split Tunnel Kurallarını Uygula
-# -----------------------------------------------------------------
-apply_warp_settings() {
-    print_section "'setup_warp.sh' script'i çalıştırılıyor..."
-    run_script "$DOTFILES_DIR/scripts/setup_warp.sh"
-    echo ":: WARP Split Tunnel kuralları uygulandı."
-}
-
-# -----------------------------------------------------------------
-# 12. MODÜL: Font Kurulumu
-# -----------------------------------------------------------------
-install_fonts() {
-    print_section "Font kurulumu ve yapılandırması..."
-    run_script "$DOTFILES_DIR/scripts/setup_fonts.sh"
-    echo ":: Font kurulumu tamamlandı."
-}
-
-# -----------------------------------------------------------------
-# 13. MODÜL: NPM Global Dizin Yapılandırması (Sudo'suz Kurulum)
-# -----------------------------------------------------------------
-configure_npm() {
-    print_section "npm global dizin yapılandırması..."
-    run_script "$DOTFILES_DIR/scripts/setup_npm.sh"
-    echo ":: npm yapılandırması tamamlandı."
-}
-
-# -----------------------------------------------------------------
-# 14. MODÜL: SSH Sunucusu Güvenlik Yapılandırması
-# -----------------------------------------------------------------
-apply_sshd_settings() {
-    print_section "SSH Sunucusu (sshd) güvenlik kısıtlamaları uygulanıyor..."
-    run_script "$DOTFILES_DIR/scripts/setup_sshd.sh"
-    echo ":: SSH sunucusu güvenlik yapılandırması tamamlandı."
-}
-
-# -----------------------------------------------------------------
-# 15. MODÜL: 1Password Özel Tarayıcı İzinleri Yapılandırması
-# -----------------------------------------------------------------
-apply_1password_settings() {
-    print_section "1Password özel tarayıcı izinleri yapılandırılıyor..."
-    run_script "$DOTFILES_DIR/scripts/setup_1password.sh" sudo
-    echo ":: 1Password yapılandırması tamamlandı."
 }
 
 # -----------------------------------------------------------------
@@ -775,11 +647,14 @@ execute_plan() {
     if [ -f "$DOTFILES_DIR/packages/base.txt" ]; then
         case "$DETECTED_OS" in
             arch|manjaro|endeavouros|artix|cachyos)
-                local base_pkgs
-                base_pkgs=$(sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' "$DOTFILES_DIR/packages/base.txt" | grep -v '^$' | tr '\n' ' ')
-                if [ -n "$base_pkgs" ]; then
+                local base_pkgs=()
+                mapfile -t base_pkgs < <(
+                    sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' "$DOTFILES_DIR/packages/base.txt" | \
+                    grep -v '^$'
+                )
+                if [ ${#base_pkgs[@]} -gt 0 ]; then
                     echo ":: packages/base.txt içerisindeki temel paketler kuruluyor..."
-                    sudo pacman -S --needed --noconfirm $base_pkgs
+                    sudo pacman -S --needed --noconfirm "${base_pkgs[@]}"
                 fi
                 ;;
         esac
@@ -790,14 +665,18 @@ execute_plan() {
     case "$DETECTED_OS" in
         arch|manjaro|endeavouros|artix|cachyos)
             if [ ${#combined_packages[@]} -gt 0 ]; then
-                local tmp_pkg_list="/tmp/selected_packages.txt"
+                local tmp_pkg_list
+                tmp_pkg_list=$(mktemp)
+                trap 'rm -f "$tmp_pkg_list"' EXIT INT TERM
                 printf '%s\n' "${combined_packages[@]}" > "$tmp_pkg_list"
                 echo ":: Toplam ${#combined_packages[@]} paket 'yay' ile kuruluyor..."
                 yay -Syu --needed --noconfirm - < "$tmp_pkg_list" || {
                     rm -f "$tmp_pkg_list"
+                    trap - EXIT INT TERM
                     exit 1
                 }
                 rm -f "$tmp_pkg_list"
+                trap - EXIT INT TERM
             else
                 echo ":: Kurulacak paket seçilmedi."
             fi
