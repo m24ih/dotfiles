@@ -28,30 +28,52 @@ if ! command -v stow &>/dev/null; then
     esac
 fi
 
-PACKAGES=(
-    btop
-    fastfetch
-    fish
-    ghostty
-    hypr
-    kitty
-    mango
-    niri
-    nvim
-    ssh
-    starship
-    sunshine
-    systemd
-    user-dirs
-    vivaldi
-    zshrc.d
-)
+# Eğer dışarıdan argüman verilmişse sadece o paketleri bağla, verilmemişse varsayılan tüm paketleri bağla
+if [ $# -gt 0 ]; then
+    TARGET_PACKAGES=()
+    for pkg in "$@"; do
+        if [ -d "$DOTFILES_DIR/$pkg" ]; then
+            TARGET_PACKAGES+=("$pkg")
+        else
+            echo "⚠️ Uyarı: '$pkg' dotfiles paketi bulunamadı, atlanıyor."
+        fi
+    done
+    if [ ${#TARGET_PACKAGES[@]} -eq 0 ]; then
+        echo "⚠️ Bağlanacak geçerli dotfiles paketi bulunamadı."
+        exit 0
+    fi
+else
+    TARGET_PACKAGES=(
+        btop
+        fastfetch
+        fish
+        ghostty
+        hypr
+        kitty
+        mango
+        niri
+        nvim
+        ssh
+        starship
+        sunshine
+        systemd
+        user-dirs
+        vivaldi
+        zshrc.d
+    )
+fi
 
 echo ":: Dotfiles 'stow' ile ana dizine bağlanıyor ($HOME)..."
-stow -R -t "$HOME" "${PACKAGES[@]}"
+echo "   Bağlanan paketler: ${TARGET_PACKAGES[*]}"
+stow -R -t "$HOME" "${TARGET_PACKAGES[@]}"
 
-if [ -f "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" ]; then
-    bash "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" "$HOME/.config/fastfetch/logo" 2>/dev/null || true
-fi
+for pkg in "${TARGET_PACKAGES[@]}"; do
+    if [ "$pkg" = "fastfetch" ]; then
+        if [ -f "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" ]; then
+            bash "$DOTFILES_DIR/fastfetch/.config/fastfetch/update-logo.sh" "$HOME/.config/fastfetch/logo" 2>/dev/null || true
+        fi
+        break
+    fi
+done
 
 echo "✅ 'stow' işlemi tamamlandı."
