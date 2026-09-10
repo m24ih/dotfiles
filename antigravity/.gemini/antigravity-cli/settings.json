@@ -3,7 +3,7 @@
   "editor": "nvim",
   "enableTelemetry": false,
   "enableTerminalSandbox": true,
-  "model": "Claude Sonnet 4.6 (Thinking)",
+  "model": "Gemini 3.8 Flash (High)",
   "notifications": true,
   "permissions": {
     "deny": [
@@ -59,6 +59,8 @@
     "/home/melih/.config/ghostty",
     "/home/melih/Sync/Obsidian/Personal-Obsidian/02-University Notes/Semester 8/Internship II",
     "/home/melih/Sync/Obsidian/Personal-Obsidian/99-index/Templates",
-    "/home/melih/Projects/bookorbit"
+    "/home/melih/Projects/bookorbit",
+    "/home/melih/Projects/Fladder",
+    "/home/melih/Projects/n8n"
   ]
 }
