@@ -23,10 +23,10 @@ if command -v bat >/dev/null 2>&1
 end
 
 # Development environments
-set -gx ANDROID_HOME /opt/android-sdk
+set -gx ANDROID_HOME "$HOME/Android/Sdk"
 set -gx ANDROID_AVD_HOME "$HOME/.android/avd"
-set -gx JAVA_HOME /usr/lib/jvm/java-25-openjdk
-set -gx FLUTTER_HOME /opt/flutter
+set -gx JAVA_HOME /usr/lib/jvm/default
+set -gx FLUTTER_HOME /home/melih/fvm/versions/3.35.7
 set -gx PUB_CACHE "$HOME/.pub-cache"
 set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
 

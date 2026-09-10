@@ -87,10 +87,10 @@ if command -v bat &>/dev/null; then
 fi
 
 # Geliştirme Ortamları
-export ANDROID_HOME="/opt/android-sdk"
+export ANDROID_HOME="$HOME/Android/Sdk"
 export ANDROID_AVD_HOME="$HOME/.android/avd"
-export JAVA_HOME="/usr/lib/jvm/java-25-openjdk"
-export FLUTTER_HOME="/opt/flutter"
+export JAVA_HOME="/usr/lib/jvm/default"
+export FLUTTER_HOME="/home/melih/fvm/versions/3.35.7"
 export PUB_CACHE="$HOME/.pub-cache"
 export CHROME_EXECUTABLE="/usr/bin/google-chrome-stable"
 
