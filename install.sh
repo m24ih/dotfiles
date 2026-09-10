@@ -158,6 +158,7 @@ get_module_stow_packages() {
         sunshine)     echo "sunshine" ;;
         services)     echo "systemd" ;;
         dev)          echo "antigravity" ;;
+        hardware)     echo "power-management" ;;
         *)            echo "" ;;
     esac
 }
@@ -172,7 +173,7 @@ get_module_scripts() {
         networking)   echo "scripts/setup_warp.sh scripts/setup_sshd.sh" ;;
         sunshine)     echo "scripts/setup_ufw.sh" ;;
         flatpak)      echo "scripts/install_flatpaks.sh" ;;
-        hardware)     echo "scripts/setup_ufw.sh" ;;
+        hardware)     echo "scripts/setup_ufw.sh scripts/setup_power_management.sh" ;;
         keychron)     echo "scripts/setup_keychron.sh" ;;
         fkeys)        echo "scripts/setup_fkeys.sh" ;;
         iwd)          echo "scripts/switch_to_iwd.sh" ;;
@@ -417,7 +418,7 @@ run_wizard() {
 
     # Kategori 5: Donanım & Sistem Ayarları
     print_category "5" "Donanım & Sistem Ayarları"
-    if ask_yn "Donanım & Güç Yönetimi (TLP) ve UFW güvenlik duvarı kurulsun mu?" "N"; then
+    if ask_yn "Donanım & Güç Yönetimi (TLP, Dinamik Pil Tasarrufu) ve UFW güvenlik duvarı kurulsun mu?" "N"; then
         SELECTED_MODULES+=("hardware")
     fi
     if ask_yn "Keychron klavye ayarları uygulansın mı?" "N"; then

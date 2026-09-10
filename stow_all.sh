@@ -54,6 +54,7 @@ else
         mango
         niri
         nvim
+        power-management
         ssh
         starship
         sunshine

@@ -122,7 +122,7 @@ Kurulum motoru 5 ana kategoride toplam 23 modül destekler:
 | | `networking` | `[Y/n]` | Ağ & VPN araçları (Tailscale, Cloudflare WARP, Syncthing, RustDesk) | `packages/networking.txt` | `ssh` |
 | | `sunshine` | `[y/N]` | Sunshine GameStream oyun ve ekran yayını sunucusu | `packages/sunshine.txt` | `sunshine` |
 | | `flatpak` | `[y/N]` | Flatpak paketleri kurulumu | `flat_packages.txt` | - |
-| **Donanım, Sistem & Fontlar** | `hardware` | `[y/N]` | TLP güç yönetimi ve UFW güvenlik duvarı yapılandırması | `packages/hardware.txt` | - |
+| **Donanım, Sistem & Fontlar** | `hardware` | `[y/N]` | TLP güç yönetimi, dinamik pil tasarrufu ve UFW güvenlik duvarı | `packages/hardware.txt` | `power-management` |
 | | `keychron` | `[y/N]` | Keychron mekanik klavye Bluetooth & F-tuş optimizasyonları | - | - |
 | | `fkeys` | `[y/N]` | Apple klavye Fn/F-tuş davranış modu (F1-F12 standart düzen) | - | - |
 | | `iwd` | `[y/N]` | NetworkManager için iwd Wi-Fi backend geçişi (düşük jitter) | - | - |
@@ -187,6 +187,7 @@ Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve de
 | [`mango/`](mango/) | MangoWM hafif ve akıcı Wayland pencere yöneticisi | [📖 İncele](mango/README.md) |
 | [`niri/`](niri/) | Niri scrollable tiling Wayland compositor | [📖 İncele](niri/README.md) |
 | [`nvim/`](nvim/) | Neovim IDE yapılandırması (Lazy.nvim) | [📖 İncele](nvim/README.md) |
+| [`power-management/`](power-management/) | KDE Plasma dinamik güç tasarruf betikleri (Sunshine & Baloo yönetimi) | [📖 İncele](power-management/README.md) |
 | [`ssh/`](ssh/) | SSH istemci ayarları & sunucu ağ erişim kısıtlamaları | [📖 İncele](ssh/README.md) |
 | [`starship/`](starship/) | Çapraz kabuk (Cross-shell) komut istemi | [📖 İncele](starship/README.md) |
 | [`sunshine/`](sunshine/) | Sunshine GameStream, tablet 2. ekran & güç yönetimi | [📖 İncele](sunshine/README.md) |
