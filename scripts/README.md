@@ -4,7 +4,7 @@ Bu dizin, donanım optimizasyonları, ağ yapılandırmaları, güvenlik ayarlar
 
 ---
 
-## 📋 Betik Kataloğu (15 Adet)
+## 📋 Betik Kataloğu (14 Adet)
 
 | Betik | Yetki | Açıklama |
 | :--- | :---: | :--- |
@@ -20,9 +20,8 @@ Bu dizin, donanım optimizasyonları, ağ yapılandırmaları, güvenlik ayarlar
 | [`setup_fkeys.sh`](setup_fkeys.sh) | `sudo` | Apple / Mac düzenli klavyelerde Fn tuşlarının varsayılan olarak F1-F12 gibi davranmasını sağlar. |
 | [`switch_to_iwd.sh`](switch_to_iwd.sh) | `sudo` | NetworkManager için wpa_supplicant yerine daha düşük gecikmeli ve kararlı `iwd` Wi-Fi motoruna geçiş sağlar. |
 | [`setup_warp.sh`](setup_warp.sh) | Kullanıcı | Cloudflare WARP istemcisi için split-tunneling ve yerel ağ rotalama ayarlarını yapar. |
-| [`setup_discord_proxy.sh`](setup_discord_proxy.sh) | Kullanıcı | Discord için güvenli proxy ve bağlantı tünelini yapılandırır. |
 | [`vivaldi_middle_click.sh`](vivaldi_middle_click.sh) | Kullanıcı | Wayland oturumunda Vivaldi tarayıcısında fare orta tuşu ile kaydırma (auto-scroll) desteğini etkinleştirir. |
-| [`install_flatpaks.sh`](install_flatpaks.sh) | Kullanıcı | Kök dizindeki `flat_packages.txt` dosyasında listelenen tüm Flatpak uygulamalarını Flathub üzerinden kurar. |
+| [`install_flatpaks.sh`](install_flatpaks.sh) | Kullanıcı | `packages/flatpak.txt` dosyasında listelenen tüm Flatpak uygulamalarını Flathub üzerinden kurar. |
 
 ---
 

@@ -20,22 +20,22 @@ Bu sayede:
 | Dosya | Kategori / Açıklama | Başlıca Paketler |
 | :--- | :--- | :--- |
 | [`base.txt`](base.txt) | **Zorunlu Temel Sistem:** Derleme araçları, dosya yönetim ve temel komutlar | `git`, `base-devel`, `stow`, `which`, `curl`, `wget`, `bash-completion`, `sudo`, `xdg-user-dirs` |
-| [`hypr.txt`](hypr.txt) | **Hyprland Masaüstü:** Wayland pencere yöneticisi ve masaüstü bileşenleri | `hyprland`, `hyprpaper`, `hyprlock`, `hypridle`, `waybar`, `rofi-wayland`, `swaync`, `slurp`, `grim` |
 | [`niri.txt`](niri.txt) | **Niri Compositor:** Scrollable-tiling Wayland ortamı | `niri`, `xwayland-satellite`, `fuzzel`, `swaybg` |
 | [`mango.txt`](mango.txt) | **MangoWM:** Hafif ve akıcı Wayland pencere yöneticisi | `mangowm` |
 | [`ghostty.txt`](ghostty.txt) | **Ghostty Terminal:** Modern GPU hızlandırmalı terminal | `ghostty` |
 | [`kitty.txt`](kitty.txt) | **Kitty Terminal:** Özelleştirilebilir terminal emülatörü | `kitty` |
-| [`fish.txt`](fish.txt) | **Fish Shell:** Akıllı interaktif kabuk ve komut istemi | `fish`, `starship`, `fisher`, `cachyos-fish-config` |
+| [`fish.txt`](fish.txt) | **Fish Shell:** Akıllı interaktif kabuk ve komut istemi | `fish`, `starship`, `fisher` |
 | [`zsh.txt`](zsh.txt) | **Zsh Shell:** Zsh kabuğu, fzf ve popüler eklentiler | `zsh`, `fzf`, `zsh-completions`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `eza` |
 | [`nvim.txt`](nvim.txt) | **Neovim IDE:** Modern metin editörü ve arama/derleme araçları | `neovim`, `tree-sitter`, `ripgrep`, `fd` |
-| [`base_cli.txt`](base_cli.txt) | **Temel CLI Araçları:** Sistem izleme, hızlı navigasyon ve arşiv araçları | `btop`, `fastfetch`, `zoxide`, `bat`, `duf`, `tree`, `jq`, `unzip`, `7zip`, `unrar`, `trash-cli`, `multitail`, `topgrade` |
+| [`base_cli.txt`](base_cli.txt) | **Temel CLI Araçları:** Sistem izleme, hızlı navigasyon ve arşiv araçları | `btop`, `fastfetch`, `zoxide`, `bat`, `duf`, `tree`, `jq`, `unzip`, `7zip`, `unrar`, `trash-cli`, `multitail`, `topgrade`, `eza`, `fzf`, `ripgrep`, `fd` |
 | [`browser.txt`](browser.txt) | **Web Tarayıcı:** Birincil internet tarayıcısı ve multimedya eklentileri | `vivaldi`, `vivaldi-ffmpeg-codecs` |
 | [`social.txt`](social.txt) | **İletişim & Sosyal:** Mesajlaşma ve ekip iletişim araçları | `vesktop`, `telegram-desktop`, `signal-desktop`, `teams-for-linux` |
 | [`dev.txt`](dev.txt) | **Geliştirici Araçları:** Kod editörleri, konteynerleştirme ve veritabanı | `code`, `docker`, `docker-compose`, `docker-buildx`, `lazydocker`, `dbeaver`, `nodejs`, `npm`, `github-cli` |
-| [`productivity.txt`](productivity.txt) | **Üretkenlik & Not:** Not alma, şifre yöneticisi ve bulut erişimi | `obsidian`, `proton-pass`, `proton-pass-cli-bin`, `keepassxc`, `termius` |
+| [`productivity.txt`](productivity.txt) | **Üretkenlik & Not:** Not alma, şifre yöneticisi ve bulut erişimi | `obsidian`, `proton-pass`, `keepassxc`, `termius` |
 | [`media.txt`](media.txt) | **Medya & İndirme:** Video/ses oynatıcılar, ekran kaydı ve indirme yöneticileri | `haruna`, `obs-studio`, `kdenlive`, `gwenview`, `calibre`, `qbittorrent`, `freedownloadmanager` |
 | [`networking.txt`](networking.txt) | **Ağ & VPN:** Mesh VPN, senkronizasyon ve uzaktan erişim | `tailscale`, `cloudflare-warp-bin`, `syncthing`, `rclone`, `rustdesk-bin`, `rsync`, `cloudflare-speed-cli` |
 | [`sunshine.txt`](sunshine.txt) | **Sunshine Sunucusu:** Düşük gecikmeli oyun ve masaüstü yayın akışı | `sunshine` |
+| [`flatpak.txt`](flatpak.txt) | **Flatpak Paketleri:** Sandbox masaüstü uygulamaları | `com.github.tchx84.Flatseal` |
 | [`hardware.txt`](hardware.txt) | **Donanım & Güvenlik:** Güç tasarrufu ve güvenlik duvarı | `tlp`, `tlp-pd`, `tlp-rdw`, `tlpui`, `ufw` |
 
 ---
