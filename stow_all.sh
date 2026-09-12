@@ -49,7 +49,6 @@ else
         fastfetch
         fish
         ghostty
-        hypr
         kitty
         mango
         niri
@@ -67,7 +66,7 @@ fi
 
 echo ":: Dotfiles 'stow' ile ana dizine bağlanıyor ($HOME)..."
 echo "   Bağlanan paketler: ${TARGET_PACKAGES[*]}"
-stow -R -t "$HOME" "${TARGET_PACKAGES[@]}"
+stow --ignore='README.*' --ignore='LICENSE.*' --ignore='.*\.bak.*' -R -t "$HOME" "${TARGET_PACKAGES[@]}"
 
 for pkg in "${TARGET_PACKAGES[@]}"; do
     if [ "$pkg" = "fastfetch" ]; then

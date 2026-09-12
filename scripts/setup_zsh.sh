@@ -15,7 +15,7 @@ echo -e "${CYAN}:: Zsh ve Oh My Zsh ortamı yapılandırılıyor...${NC}"
 # 1. Oh My Zsh Kurulumu
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     echo -e "${GREEN}:: Oh My Zsh kuruluyor (unattended)...${NC}"
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 else
     echo -e "${GREEN}:: Oh My Zsh zaten kurulu.${NC}"
 fi

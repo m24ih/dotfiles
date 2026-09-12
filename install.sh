@@ -34,7 +34,6 @@ NC='\033[0m' # No Color
 # Bileşen Kaydı (Component Registry)
 # -----------------------------------------------------------------
 ALL_MODULES=(
-    hypr
     niri
     mango
     ghostty
@@ -91,7 +90,6 @@ contains_element() {
 
 get_module_title() {
     case "$1" in
-        hypr)         echo "Hyprland Pencere Yöneticisi" ;;
         niri)         echo "Niri Pencere Yöneticisi" ;;
         mango)        echo "MangoWM Pencere Yöneticisi" ;;
         ghostty)      echo "Ghostty Terminal Emülatörü" ;;
@@ -120,7 +118,6 @@ get_module_title() {
 
 get_module_package_file() {
     case "$1" in
-        hypr)         echo "packages/hypr.txt" ;;
         niri)         echo "packages/niri.txt" ;;
         mango)        echo "packages/mango.txt" ;;
         ghostty)      echo "packages/ghostty.txt" ;;
@@ -136,7 +133,6 @@ get_module_package_file() {
         media)        echo "packages/media.txt" ;;
         networking)   echo "packages/networking.txt" ;;
         sunshine)     echo "packages/sunshine.txt" ;;
-        flatpak)      echo "flat_packages.txt" ;;
         hardware)     echo "packages/hardware.txt" ;;
         *)            echo "" ;;
     esac
@@ -144,7 +140,6 @@ get_module_package_file() {
 
 get_module_stow_packages() {
     case "$1" in
-        hypr)         echo "hypr" ;;
         niri)         echo "niri" ;;
         mango)        echo "mango" ;;
         ghostty)      echo "ghostty" ;;
@@ -167,7 +162,7 @@ get_module_scripts() {
     case "$1" in
         zsh)          echo "scripts/setup_zsh.sh" ;;
         browser)      echo "scripts/vivaldi_middle_click.sh" ;;
-        social)       echo "scripts/setup_discord_proxy.sh" ;;
+        social)       echo "" ;;
         dev)          echo "scripts/setup_npm.sh" ;;
         productivity) echo "scripts/setup_1password.sh" ;;
         networking)   echo "scripts/setup_warp.sh scripts/setup_sshd.sh" ;;
@@ -185,7 +180,7 @@ get_module_scripts() {
 
 is_sudo_script() {
     case "$1" in
-        *setup_fkeys.sh|*setup_keychron.sh|*switch_to_iwd.sh|*setup_ufw.sh|*setup_1password.sh)
+        *setup_fkeys.sh|*setup_keychron.sh|*switch_to_iwd.sh|*setup_ufw.sh|*setup_1password.sh|*setup_sshd.sh)
             return 0
             ;;
         *)
@@ -255,7 +250,7 @@ show_help() {
     echo -e "  ${GREEN}-h, --help${NC}         Bu yardım mesajını gösterir ve çıkar.\n"
     echo -e "${BOLD}KULLANILABİLİR MODÜLLER:${NC}"
     echo -e "  ${PURPLE}Masaüstü & Pencere Yöneticileri:${NC}"
-    echo -e "    hypr, niri, mango"
+    echo -e "    niri, mango"
     echo -e "  ${PURPLE}Terminal Emülatörleri:${NC}"
     echo -e "    ghostty, kitty"
     echo -e "  ${PURPLE}Kabuk, Editör & CLI:${NC}"
@@ -271,9 +266,9 @@ show_help() {
     echo -e "  $0 -d                          # Varsayılan modülleri hemen kurar"
     echo -e "  $0 -a                          # Tüm modülleri hemen kurar"
     echo -e "  $0 zsh                         # Sadece Zsh modülünü kurar"
-    echo -e "  $0 hypr fish ghostty           # Sadece belirtilen modülleri kurar"
+    echo -e "  $0 niri fish ghostty           # Sadece belirtilen modülleri kurar"
     echo -e "  $0 --dry-run zsh               # Zsh modülü için simülasyon çalıştırır"
-    echo -e "  $0 --dry-run hypr mango        # Belirtilen modüller için simülasyon çalıştırır"
+    echo -e "  $0 --dry-run niri mango        # Belirtilen modüller için simülasyon çalıştırır"
 }
 
 # Sub-script çalıştırma yardımcısı:
@@ -354,9 +349,6 @@ run_wizard() {
 
     # Kategori 1: Masaüstü & Pencere Yöneticileri (Compositors)
     print_category "1" "Masaüstü & Pencere Yöneticileri (Compositors)"
-    if ask_yn "Hyprland dinamik döşemeli Wayland pencere yöneticisi kurulsun mu?" "N"; then
-        SELECTED_MODULES+=("hypr")
-    fi
     if ask_yn "Niri kaydırmalı (scrollable-tiling) pencere yöneticisi kurulsun mu?" "N"; then
         SELECTED_MODULES+=("niri")
     fi
@@ -663,7 +655,7 @@ execute_plan() {
         echo -e "\n   ${BOLD}Yay ile kurulacak paket listesi (${#combined_packages[@]} adet):${NC}"
         echo -e "   ${CYAN}${combined_packages[*]}${NC}"
         if contains_element "flatpak" "${SELECTED_MODULES[@]}"; then
-            echo -e "\n   ${BOLD}Flatpak Durumu:${NC} 'scripts/install_flatpaks.sh' betiği çalıştırılacak (flat_packages.txt)"
+            echo -e "\n   ${BOLD}Flatpak Durumu:${NC} 'scripts/install_flatpaks.sh' betiği çalıştırılacak (packages/flatpak.txt)"
         else
             echo -e "\n   ${BOLD}Flatpak Durumu:${NC} Seçilmedi (atlanıyor)"
         fi
@@ -772,6 +764,16 @@ execute_plan() {
         run_script "$DOTFILES_DIR/stow_all.sh" "${stow_targets[@]}"
     else
         echo ":: Bağlanacak dotfiles paketi seçilmedi, atlanıyor."
+    fi
+
+    # Antigravity CLI ayar şablonunu etkinleştir (eğer yoksa)
+    local agy_target_dir="$HOME/.gemini/antigravity-cli"
+    local agy_example="$DOTFILES_DIR/antigravity/.gemini/antigravity-cli/settings.json.example"
+    if [ -f "$agy_example" ] && [ ! -f "$agy_target_dir/settings.json" ]; then
+        echo ":: Antigravity CLI varsayılan 'settings.json' dosyası şablondan oluşturuluyor..."
+        mkdir -p "$agy_target_dir"
+        sed "s|\$HOME|$HOME|g" "$agy_example" > "$agy_target_dir/settings.json"
+        echo "  -> $agy_target_dir/settings.json oluşturuldu."
     fi
 
     # Faz 4: Ayar ve Sistem Betikleri

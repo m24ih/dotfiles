@@ -79,7 +79,10 @@ elif command -v kwriteconfig5 &>/dev/null; then
     kwriteconfig5 --file powerdevilrc --group "Battery" --group "RunScript" --key "ProfileLoadCommand" "$BATTERY_SCRIPT" --notify
     echo "  -> kwriteconfig5 ile powerdevilrc başarıyla güncellendi."
 else
-    cat << INI > "$HOME/.config/powerdevilrc"
+    local pd_file="$HOME/.config/powerdevilrc"
+    if [ ! -f "$pd_file" ]; then
+        mkdir -p "$(dirname "$pd_file")"
+        cat << INI > "$pd_file"
 [AC][RunScript]
 ProfileLoadCommand=$AC_SCRIPT
 
@@ -89,7 +92,11 @@ AutoSuspendAction=0
 [Battery][RunScript]
 ProfileLoadCommand=$BATTERY_SCRIPT
 INI
-    echo "  -> powerdevilrc doğrudan güncellendi."
+        echo "  -> powerdevilrc dosyası oluşturuldu."
+    else
+        echo "  ⚠️ 'kwriteconfig' bulunamadı. Mevcut powerdevilrc ayarlarını korumak için dosya üzerine yazılmadı."
+        echo "     Manuel entegrasyon için: [AC][RunScript] ProfileLoadCommand=$AC_SCRIPT"
+    fi
 fi
 
 # PowerDevil servisine yapılandırmayı yenilemesini bildir
