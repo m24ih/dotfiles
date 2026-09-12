@@ -1,0 +1,5 @@
+# Flatpak Paket Listesi (Flathub)
+# scripts/install_flatpaks.sh ve install.sh tarafından kurulur.
+# Flathub Application ID'lerini satır satır ekleyebilirsiniz.
+
+com.github.tchx84.Flatseal                     # Flatseal (Flatpak İzin Yöneticisi)

@@ -72,17 +72,22 @@ fi
 echo ":: Flathub deposu ekleniyor..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-# flat_packages.txt dosyasından paket listesini al
-if [ -f "${DOTFILES_DIR}/flat_packages.txt" ]; then
-    flats=$(awk -F '#' '{print $1}' "${DOTFILES_DIR}/flat_packages.txt" 2>/dev/null | sed 's/ //g' | xargs)
+# packages/flatpak.txt dosyasından paket listesini al
+FLATPAK_FILE="${DOTFILES_DIR}/packages/flatpak.txt"
+if [ ! -f "$FLATPAK_FILE" ] && [ -f "${DOTFILES_DIR}/flat_packages.txt" ]; then
+    FLATPAK_FILE="${DOTFILES_DIR}/flat_packages.txt"
+fi
+
+if [ -f "$FLATPAK_FILE" ]; then
+    flats=$(awk -F '#' '{print $1}' "$FLATPAK_FILE" 2>/dev/null | sed 's/ //g' | xargs)
     if [ -n "${flats}" ]; then
         echo ":: Flatpak paketleri kuruluyor: $flats"
         flatpak install -y flathub ${flats}
     else
-        echo ":: flat_packages.txt dosyasında paket bulunamadı veya boş."
+        echo ":: $FLATPAK_FILE dosyasında aktif paket bulunamadı."
     fi
 else
-    echo ":: Uyarı: flat_packages.txt dosyası bulunamadı. Paket kurulumu atlanıyor."
+    echo ":: Uyarı: $FLATPAK_FILE dosyası bulunamadı. Paket kurulumu atlanıyor."
 fi
 
 # Kullanılmayan Flatpak paketlerini kaldır

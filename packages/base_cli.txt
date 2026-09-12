@@ -12,3 +12,7 @@ topgrade
 multitail
 btop
 fastfetch
+eza
+fzf
+ripgrep
+fd
