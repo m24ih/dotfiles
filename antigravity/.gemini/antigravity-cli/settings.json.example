@@ -43,23 +43,7 @@
   "showFeedbackSurvey": false,
   "toolPermission": "always-proceed",
   "trustedWorkspaces": [
-    "/home/melih/.config",
-    "/home/melih/Projects",
-    "/home/melih",
-    "/home/melih/.gemini/antigravity-cli",
-    "/home/melih/Downloads",
-    "/home/melih/.config/mango",
-    "/home/melih/.gemini",
-    "/home/melih/Downloads/Cemu",
-    "/home/melih/Sync/Obsidian/Personal-Obsidian",
-    "/home/melih/Documents",
-    "/home/melih/Projects/dotfiles",
-    "/home/melih/Downloads/Proton Pass",
-    "/home/melih/.config/ghostty",
-    "/home/melih/Sync/Obsidian/Personal-Obsidian/02-University Notes/Semester 8/Internship II",
-    "/home/melih/Sync/Obsidian/Personal-Obsidian/99-index/Templates",
-    "/home/melih/Projects/bookorbit",
-    "/home/melih/Projects/Fladder",
-    "/home/melih/Projects/n8n"
+    "$HOME/Projects",
+    "$HOME/.config"
   ]
 }

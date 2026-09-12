@@ -35,10 +35,14 @@ desktop.ini
 # Dynamic / generated symlinks & directories
 fastfetch/.config/fastfetch/logo/os-logo.png
 *.wants/
+fish_variables
 
-# Antigravity (settings.json haricindeki her şeyi yoksay)
+# SSH local config
+*config.local
+
+# Antigravity (settings.json.example haricindeki her şeyi yoksay)
 antigravity/.gemini/antigravity-cli/*
-!antigravity/.gemini/antigravity-cli/settings.json
+!antigravity/.gemini/antigravity-cli/settings.json.example
 
 # Sunshine (SSL anahtarları, cihaz eşleşme durumları ve loglar)
 sunshine/.config/sunshine/credentials/
