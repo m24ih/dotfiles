@@ -1,0 +1,45 @@
+name: CI & Linter
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-scripts:
+    name: Lint Shell Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Bash Syntax Check (bash -n)
+        run: |
+          echo ":: Testing all bash scripts with bash -n..."
+          find . -name "*.sh" -not -path "*/.git/*" | while read -r script; do
+            echo "Checking syntax: $script"
+            bash -n "$script"
+          done
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          ignore_paths: >-
+            fish
+          severity: warning
+
+  validate-json:
+    name: Validate JSON Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate JSON syntax with jq
+        run: |
+          echo ":: Validating JSON files..."
+          find . -name "*.json" -o -name "*.json.example" -not -path "*/.git/*" | while read -r json_file; do
+            echo "Checking JSON: $json_file"
+            jq empty "$json_file"
+          done
