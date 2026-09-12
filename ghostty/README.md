@@ -23,14 +23,14 @@ yay -S --needed ghostty ttf-jetbrains-mono-nerd
 ghostty/
 └── .config/
     └── ghostty/
-        ├── config.ghostty    # Ana Ghostty yapılandırması (Görünüm, pano, bildirimler)
+        ├── config            # Ana Ghostty yapılandırması (Görünüm, pano, bildirimler)
         ├── themes/           # Renk temaları
         └── auto/             # Otomatik tema değişkenleri
 ```
 
 ---
 
-## ⚙️ Yapılandırma Detayları (`config.ghostty`)
+## ⚙️ Yapılandırma Detayları (`config`)
 
 ### 1. 🎨 Dinamik Tema ve Görsel Ayarlar
 * **Açık/Koyu Mod Adaptasyonu:** `theme = dark:TokyoNight Night,light:TokyoNight Day` ile sistem temasına göre otomatik koyu/açık Tokyo Night teması.
