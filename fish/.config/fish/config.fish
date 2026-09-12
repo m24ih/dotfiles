@@ -26,7 +26,7 @@ end
 set -gx ANDROID_HOME "$HOME/Android/Sdk"
 set -gx ANDROID_AVD_HOME "$HOME/.android/avd"
 set -gx JAVA_HOME /usr/lib/jvm/default
-set -gx FLUTTER_HOME /home/melih/fvm/versions/3.35.7
+set -gx FLUTTER_HOME "$HOME/fvm/versions/3.35.7"
 set -gx PUB_CACHE "$HOME/.pub-cache"
 set -gx LINUXTOOLBOXDIR "$HOME/linuxtoolbox"
 
@@ -162,8 +162,8 @@ end
 # =============================================================================
 
 function __conda_setup
-    if test -f /home/melih/anaconda3/bin/conda
-        eval /home/melih/anaconda3/bin/conda "shell.fish" hook | source
+    if test -f "$HOME/anaconda3/bin/conda"
+        eval "$HOME/anaconda3/bin/conda" "shell.fish" hook | source
     end
 end
 

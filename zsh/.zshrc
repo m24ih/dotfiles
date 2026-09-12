@@ -90,7 +90,7 @@ fi
 export ANDROID_HOME="$HOME/Android/Sdk"
 export ANDROID_AVD_HOME="$HOME/.android/avd"
 export JAVA_HOME="/usr/lib/jvm/default"
-export FLUTTER_HOME="/home/melih/fvm/versions/3.35.7"
+export FLUTTER_HOME="$HOME/fvm/versions/3.35.7"
 export PUB_CACHE="$HOME/.pub-cache"
 export CHROME_EXECUTABLE="/usr/bin/google-chrome-stable"
 
@@ -182,8 +182,8 @@ fi
 # =============================================================================
 
 __conda_setup() {
-  if [[ -f "/home/melih/anaconda3/bin/conda" ]]; then
-    eval "$('/home/melih/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+  if [[ -f "$HOME/anaconda3/bin/conda" ]]; then
+    eval "$('$HOME/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
   fi
 }
 
@@ -585,7 +585,7 @@ precmd_functions+=(_fix_cursor)
 # =============================================================================
 
 # Added by Antigravity CLI installer
-export PATH="/home/melih/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # =============================================================================
 # MODÜLER YAPILANDIRMALAR (~/.config/zshrc.d)
