@@ -79,7 +79,7 @@ elif command -v kwriteconfig5 &>/dev/null; then
     kwriteconfig5 --file powerdevilrc --group "Battery" --group "RunScript" --key "ProfileLoadCommand" "$BATTERY_SCRIPT" --notify
     echo "  -> kwriteconfig5 ile powerdevilrc başarıyla güncellendi."
 else
-    local pd_file="$HOME/.config/powerdevilrc"
+    pd_file="$HOME/.config/powerdevilrc"
     if [ ! -f "$pd_file" ]; then
         mkdir -p "$(dirname "$pd_file")"
         cat << INI > "$pd_file"

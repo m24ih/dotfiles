@@ -65,8 +65,14 @@ else
 fi
 
 echo ":: Dotfiles 'stow' ile ana dizine bağlanıyor ($HOME)..."
-echo "   Bağlanan paketler: ${TARGET_PACKAGES[*]}"
-stow --ignore='README.*' --ignore='LICENSE.*' --ignore='.*\.bak.*' -R -t "$HOME" "${TARGET_PACKAGES[@]}"
+FAILED_PACKAGES=()
+for pkg in "${TARGET_PACKAGES[@]}"; do
+    echo "   -> Bağlanıyor: $pkg"
+    if ! stow --ignore='README.*' --ignore='LICENSE.*' --ignore='.*\.bak.*' -R -t "$HOME" "$pkg"; then
+        echo "   ⚠️  '$pkg' paketi bağlanırken çakışma oluştu."
+        FAILED_PACKAGES+=("$pkg")
+    fi
+done
 
 for pkg in "${TARGET_PACKAGES[@]}"; do
     if [ "$pkg" = "fastfetch" ]; then
@@ -77,4 +83,10 @@ for pkg in "${TARGET_PACKAGES[@]}"; do
     fi
 done
 
-echo "✅ 'stow' işlemi tamamlandı."
+if [ ${#FAILED_PACKAGES[@]} -gt 0 ]; then
+    echo -e "\n⚠️  Bazı paketler bağlanamadı: ${FAILED_PACKAGES[*]}"
+    echo "   Hedef dizindeki çakışan dosyaları (.bak olarak) yedekleyip tekrar çalıştırabilirsiniz."
+    exit 1
+fi
+
+echo "✅ 'stow' işlemi başarıyla tamamlandı."
