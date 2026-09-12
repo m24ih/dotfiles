@@ -1,5 +1,4 @@
 obsidian
 proton-pass
-proton-pass-cli-bin
 calibre
 keepassxc

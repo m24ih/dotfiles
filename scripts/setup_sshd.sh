@@ -14,8 +14,9 @@ TARGET_FILE="$SSHD_CONFIG_DIR/10-allowed-networks.conf"
 
 sudo mkdir -p "$SSHD_CONFIG_DIR"
 
-sudo tee "$TARGET_FILE" > /dev/null << 'EOF'
-AllowUsers melih@192.168.1.* melih@192.168.0.* melih@100.*.*.* melih@127.0.0.1
+CURRENT_USER="${SUDO_USER:-$USER}"
+sudo tee "$TARGET_FILE" > /dev/null << EOF
+AllowUsers ${CURRENT_USER}@192.168.1.* ${CURRENT_USER}@192.168.0.* ${CURRENT_USER}@100.*.*.* ${CURRENT_USER}@127.0.0.1
 EOF
 
 sudo chmod 644 "$TARGET_FILE"
