@@ -1,0 +1,30 @@
+stages:
+  - test
+
+lint-scripts:
+  stage: test
+  image:
+    name: koalaman/shellcheck-alpine:stable
+    entrypoint: [""]
+  before_script:
+    - apk add --no-cache bash
+  script:
+    - echo ":: Testing all bash scripts with bash -n..."
+    - find . -name "*.sh" -type f -not -path "*/.git/*" | while read -r script; do echo "Checking syntax: $script"; bash -n "$script"; done
+    - echo ":: Running ShellCheck..."
+    - find . -name "*.sh" -type f -not -path "*/.git/*" -not -path "*/fish/*" -not -path "*/zsh/*" | xargs -r shellcheck --severity=warning
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+validate-json:
+  stage: test
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache jq
+  script:
+    - echo ":: Validating JSON files..."
+    - find . \( -name "*.json" -o -name "*.json.example" \) -type f -not -path "*/.git/*" | while read -r json_file; do echo "Checking JSON: $json_file"; jq empty "$json_file"; done
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
