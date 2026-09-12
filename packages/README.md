@@ -34,7 +34,7 @@ Bu sayede:
 | [`productivity.txt`](productivity.txt) | **Üretkenlik & Not:** Not alma, şifre yöneticisi ve bulut erişimi | `obsidian`, `proton-pass`, `keepassxc`, `termius` |
 | [`media.txt`](media.txt) | **Medya & İndirme:** Video/ses oynatıcılar, ekran kaydı ve indirme yöneticileri | `haruna`, `obs-studio`, `kdenlive`, `gwenview`, `calibre`, `qbittorrent`, `freedownloadmanager` |
 | [`networking.txt`](networking.txt) | **Ağ & VPN:** Mesh VPN, senkronizasyon ve uzaktan erişim | `tailscale`, `cloudflare-warp-bin`, `syncthing`, `rclone`, `rustdesk-bin`, `rsync`, `cloudflare-speed-cli` |
-| [`sunshine.txt`](sunshine.txt) | **Sunshine Sunucusu:** Düşük gecikmeli oyun ve masaüstü yayın akışı | `sunshine` |
+| [`sunshine.txt`](sunshine.txt) | **Sunshine Sunucusu:** Düşük gecikmeli oyun ve masaüstü yayın akışı | `sunshine`, `krfb` |
 | [`flatpak.txt`](flatpak.txt) | **Flatpak Paketleri:** Sandbox masaüstü uygulamaları | `com.github.tchx84.Flatseal` |
 | [`hardware.txt`](hardware.txt) | **Donanım & Güvenlik:** Güç tasarrufu ve güvenlik duvarı | `tlp`, `tlp-pd`, `tlp-rdw`, `tlpui`, `ufw` |
 

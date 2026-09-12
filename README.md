@@ -119,7 +119,7 @@ Kurulum motoru 5 ana kategoride toplam 22 modül destekler:
 | | `productivity` | `[Y/n]` | Üretkenlik & parola yönetimi (Obsidian, Proton Pass, KeePassXC) | `packages/productivity.txt` | - |
 | | `media` | `[Y/n]` | Medya & indirme araçları (Haruna, OBS Studio, qBittorrent, Kdenlive) | `packages/media.txt` | - |
 | | `networking` | `[Y/n]` | Ağ & VPN araçları (Tailscale, Cloudflare WARP, Syncthing, RustDesk) | `packages/networking.txt` | `ssh` |
-| | `sunshine` | `[y/N]` | Sunshine GameStream oyun ve ekran yayını sunucusu | `packages/sunshine.txt` | `sunshine` |
+| | `sunshine` | `[y/N]` | Sunshine GameStream oyun ve ekran yayını sunucusu | `packages/sunshine.txt` | `sunshine`, `krfb` |
 | | `flatpak` | `[y/N]` | Flatpak paketleri kurulumu | `packages/flatpak.txt` | - |
 | **Donanım, Sistem & Fontlar** | `hardware` | `[y/N]` | TLP güç yönetimi, dinamik pil tasarrufu ve UFW güvenlik duvarı | `packages/hardware.txt` | `power-management` |
 | | `keychron` | `[y/N]` | Keychron mekanik klavye Bluetooth & F-tuş optimizasyonları | - | - |
@@ -164,7 +164,7 @@ Eski sistemdeki 1660 satırlık hantal, bakım zorluğu yaratan ve alt kütüpha
 | [`packages/nvim.txt`](packages/nvim.txt) | **Neovim Editör & Bağımlılıkları** | `neovim`, `ripgrep`, `fd`, `tree-sitter` |
 | [`packages/productivity.txt`](packages/productivity.txt) | **Üretkenlik & Parola Yönetimi** | `obsidian`, `proton-pass`, `calibre`, `keepassxc` |
 | [`packages/social.txt`](packages/social.txt) | **İletişim & Sosyal Medya** | `vesktop`, `telegram-desktop`, `signal-desktop`, `teams-for-linux` |
-| [`packages/sunshine.txt`](packages/sunshine.txt) | **Sunshine GameStream Sunucusu** | `sunshine` |
+| [`packages/sunshine.txt`](packages/sunshine.txt) | **Sunshine GameStream Sunucusu** | `sunshine`, `krfb` |
 | [`packages/flatpak.txt`](packages/flatpak.txt) | **Flatpak Paketleri** | `com.github.tchx84.Flatseal` |
 | [`packages/zsh.txt`](packages/zsh.txt) | **Zsh Kabuğu & Eklentiler** | Zsh kabuğu, tamamlama ve eklentiler (`zsh`, `fzf`, `zsh-completions`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `eza`) |
 
