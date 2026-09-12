@@ -187,7 +187,7 @@ Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve de
 | [`mango/`](mango/) | MangoWM hafif ve akıcı Wayland pencere yöneticisi | [📖 İncele](mango/README.md) |
 | [`niri/`](niri/) | Niri scrollable tiling Wayland compositor | [📖 İncele](niri/README.md) |
 | [`nvim/`](nvim/) | Neovim IDE yapılandırması (Lazy.nvim) | [📖 İncele](nvim/README.md) |
-| [`power-management/`](power-management/) | KDE Plasma dinamik güç tasarruf betikleri (Sunshine & Baloo yönetimi) | [📖 İncele](power-management/README.md) |
+| [`power-management/`](power-management/) | TLP donanım güç yönetimi & KDE Plasma dinamik güç tasarruf betikleri | [📖 İncele](power-management/README.md) |
 | [`ssh/`](ssh/) | SSH istemci ayarları & sunucu ağ erişim kısıtlamaları | [📖 İncele](ssh/README.md) |
 | [`starship/`](starship/) | Çapraz kabuk (Cross-shell) komut istemi | [📖 İncele](starship/README.md) |
 | [`sunshine/`](sunshine/) | Sunshine GameStream, tablet 2. ekran & güç yönetimi | [📖 İncele](sunshine/README.md) |

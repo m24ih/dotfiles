@@ -16,7 +16,7 @@ if ! command -v stow &>/dev/null; then
             sudo pacman -S --needed --noconfirm stow
             ;;
         fedora|rhel|centos|rocky|almalinux)
-            sudo dnf install -y stow
+            sudo dnf install -y --allowerasing stow
             ;;
         ubuntu|debian|linuxmint|pop|elementary)
             sudo apt update && sudo apt install -y stow

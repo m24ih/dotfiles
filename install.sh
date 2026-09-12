@@ -528,7 +528,7 @@ install_base_packages() {
             sudo pacman -Syu --needed git base-devel stow --noconfirm
             ;;
         fedora|rhel|centos|rocky|almalinux)
-            sudo dnf install -y git @development-tools stow
+            sudo dnf install -y --allowerasing git @development-tools stow
             ;;
         ubuntu|debian|linuxmint|pop|elementary)
             sudo apt update && sudo apt install -y git build-essential stow
@@ -743,6 +743,16 @@ execute_plan() {
                 }
                 rm -f "$tmp_pkg_list"
                 trap - EXIT INT TERM
+            else
+                echo ":: Kurulacak paket seçilmedi."
+            fi
+            ;;
+        fedora|rhel|centos|rocky|almalinux)
+            if [ ${#combined_packages[@]} -gt 0 ]; then
+                echo ":: Toplam ${#combined_packages[@]} paket 'dnf' (--allowerasing) ile kuruluyor..."
+                sudo dnf install -y --allowerasing "${combined_packages[@]}" 2>/dev/null || {
+                    echo -e "${YELLOW}⚠️ Bazı paketler DNF depolarında bulunamamış olabilir (Arch/AUR özelinde olabilir).${NC}"
+                }
             else
                 echo ":: Kurulacak paket seçilmedi."
             fi

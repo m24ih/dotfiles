@@ -47,7 +47,7 @@ install_package() {
             sudo pacman -S --needed --noconfirm "$pkg_name"
             ;;
         fedora|rhel|centos|rocky|almalinux)
-            sudo dnf install -y "$pkg_name"
+            sudo dnf install -y --allowerasing "$pkg_name"
             ;;
         ubuntu|debian|linuxmint|pop|elementary)
             sudo apt install -y "$pkg_name"

@@ -93,6 +93,7 @@ case "$DETECTED_OS" in
             "warp-svc.service"              # Cloudflare WARP Daemon Servisi
             "docker.service"                # Docker Konteyner Servisi
             "tailscaled.service"            # Tailscale VPN Servisi
+            "tlp.service"                   # TLP Güç Yönetimi Servisi
             "fstrim.timer"                  # SSD TRIM Otomatik Bakım Zamanlayıcısı
             "cachyos-rate-mirrors.timer"    # CachyOS Yansıma Hızı Zamanlayıcısı
             "snapper-cleanup.timer"         # Btrfs Snapper Temizlik Zamanlayıcısı
@@ -105,7 +106,7 @@ case "$DETECTED_OS" in
             "bluetooth.service"             # Bluetooth Servisi
             "firewalld.service"             # Firewall Servisi
             "avahi-daemon.service"          # Yerel Ağ Cihaz Keşif Servisi (mDNS)
-            "tuned.service"                 # Sistem Performans Tuning Servisi
+            "tlp.service"                   # TLP Güç Yönetimi Servisi
             "bpftune.service"               # BPF Otomatik Ağ Optimizasyon Servisi
             "warp-svc.service"              # Cloudflare WARP Daemon Servisi
             "docker.service"                # Docker Konteyner Servisi
@@ -124,6 +125,7 @@ case "$DETECTED_OS" in
             "warp-svc.service"              # Cloudflare WARP Daemon Servisi
             "docker.service"                # Docker Konteyner Servisi
             "tailscaled.service"            # Tailscale VPN Servisi
+            "tlp.service"                   # TLP Güç Yönetimi Servisi
             "fstrim.timer"                  # SSD TRIM Otomatik Bakım Zamanlayıcısı
             "apt-daily.timer"               # Günlük APT Güncelleme Zamanlayıcısı
             "apt-daily-upgrade.timer"       # Günlük APT Yükseltme Zamanlayıcısı
@@ -137,10 +139,22 @@ case "$DETECTED_OS" in
             "warp-svc.service"
             "docker.service"
             "tailscaled.service"
+            "tlp.service"
             "fstrim.timer"
         )
         ;;
 esac
+
+# TLP Çakışma Önleyici (power-profiles-daemon veya tuned mevcutsa durdur ve maskele)
+if $SYSTEMCTL list-unit-files tlp.service &>/dev/null; then
+    for conflict_svc in power-profiles-daemon.service tuned.service; do
+        if $SYSTEMCTL list-unit-files "$conflict_svc" &>/dev/null; then
+            echo "  -> Çakışma önleyici: $conflict_svc durduruluyor ve maskeleniyor (TLP uyumluluğu)..."
+            sudo $SYSTEMCTL stop "$conflict_svc" 2>/dev/null || true
+            sudo $SYSTEMCTL mask "$conflict_svc" 2>/dev/null || true
+        fi
+    done
+fi
 
 for service in "${SYSTEM_SERVICES[@]}"; do
     if $SYSTEMCTL list-unit-files "$service" &>/dev/null; then

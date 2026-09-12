@@ -12,7 +12,7 @@ Bu dizin, donanım optimizasyonları, ağ yapılandırmaları, güvenlik ayarlar
 | [`setup_fonts.sh`](setup_fonts.sh) | Kullanıcı | JetBrains Mono Nerd Font ve sistem yazı tiplerini indirip `~/.local/share/fonts/` altına kurar, font önbelleğini yeniler. |
 | [`setup_npm.sh`](setup_npm.sh) | Kullanıcı | NPM global paket dizinini `~/.npm-global` konumuna yönlendirir; küresel paket kurulumlarında `sudo` ihtiyacını ortadan kaldırır. |
 | [`setup_services.sh`](setup_services.sh) | Kullanıcı / Sudo | Dağıtıma göre sistem ve kullanıcı seviyesi systemd servislerini (`tailscaled`, `syncthing`, `bluetooth`, vb.) otomatik etkinleştirir. |
-| [`setup_power_management.sh`](setup_power_management.sh) | Kullanıcı | KDE Plasma PowerDevil güç yönetimine priz ve batarya geçişlerinde otomatik çalışacak güç tasarruf betiklerini (Sunshine ve Baloo) kaydeder. |
+| [`setup_power_management.sh`](setup_power_management.sh) | Kullanıcı / Sudo | TLP donanım güç yönetimini (`/etc/tlp.d`), PPD/tuned çakışma maskelemeyi ve KDE Plasma PowerDevil dinamik betiklerini yapılandırır. |
 | [`setup_ufw.sh`](setup_ufw.sh) | `sudo` | UFW güvenlik duvarını devreye alır; Sunshine, SSH, KDE Connect ve yerel ağ izinlerini yapılandırır. |
 | [`setup_sshd.sh`](setup_sshd.sh) | `sudo` | SSH sunucusuna (`sshd`) yerel ağ dışından parola ile girişi engelleyen güvenlik kurallarını kurar. |
 | [`setup_1password.sh`](setup_1password.sh) | `sudo` | 1Password için özel tarayıcı izinlerini (`/etc/1password/custom_allowed_browsers`) yapılandırır. |

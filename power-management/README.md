@@ -1,23 +1,59 @@
-# 🔋 Dinamik Güç Yönetimi Betikleri (`power-management`)
+# 🔋 Donanım & Masaüstü Güç Yönetimi (`power-management`)
 
-Bu modül, dizüstü bilgisayarda **priz (AC)** ve **batarya (pil)** durumları arasında geçiş yapıldığında arka plandaki kaynak tüketicilerini otomatik olarak yöneten betikleri ve KDE Plasma (PowerDevil) entegrasyonunu sağlar.
+Bu modül, dizüstü bilgisayarda **priz (AC)** ve **batarya (pil)** durumları arasında geçiş yapıldığında hem donanım/çekirdek seviyesinde (TLP) hem de masaüstü/kullanıcı seviyesinde (KDE Plasma PowerDevil) kaynak tüketicilerini akıllı ve dinamik olarak yönetir.
 
 ---
 
-## 🎯 Ne İşe Yarar?
+## 🏛️ İki Katmanlı Güç Mimarisi
 
-Dizüstü bilgisayarlarda pil ömrünü en çok kısaltan faktörler işlemci taramaları ve harici ekran kartının (NVIDIA dGPU) gereksiz yere uyanık kalmasıdır.
+Güç tasarrufu ve performans dengesi iki tamamlayıcı katmanda yürütülür:
 
-Bu paket iki temel betik içerir:
-1. **`power-on-battery.sh`** (Bataryaya Geçildiğinde):
-   * **Sunshine Sunucusunu Durdurur:** Sunshine arka planda NVIDIA RTX 4060 GPU'ya doğrudan bağlı çalıştığı için kartın derin uykuya (`D3cold`) geçmesini engeller. Servis durdurulduğunda dGPU boşa çıkar, harcanan güç ~2-5W azalır ve sıcaklık düşer.
-   * **Baloo Dosya İndekslemesini Askıya Alır (`balooctl6 suspend`):** KDE'nin arka plan disk ve dosya taramasını dondurarak disk G/Ç ve CPU döngülerinden tasarruf sağlar.
-   * **Masaüstü Bildirimi Gönderir:** Güç tasarrufu moduna geçildiğini bildiren düşük öncelikli bir bildirim gösterir.
+```text
+┌──────────────────────────────────────────────────────────────────┐
+│                   GÜÇ DURUMU DEĞİŞİMİ (AC ⟷ BAT)                 │
+└────────────────┬────────────────────────────────┬────────────────┘
+                 │                                │
+                 ▼                                ▼
+  [Katman 1: Donanım & Çekirdek (TLP)]   [Katman 2: Masaüstü & Servisler (KDE)]
+  ├── CPU Turbo Boost (AC: 1, BAT: 0)     ├── Sunshine Sunucusu (dGPU Uyku)
+  ├── Pil Tasarruf Profili (BAT: SAV)     ├── Baloo İndeksleyici (Suspend/Resume)
+  ├── Enerji/Performans Politikası (EPP)  └── Masaüstü Bildirimleri
+  └── PPD & Tuned Servislerini Maskeleme
+```
 
-2. **`power-on-ac.sh`** (Prize / Şarja Takıldığında):
-   * **Sunshine Sunucusunu Başlatır:** Priz gücüne geçildiğinde oyun akış sunucusunu otomatik olarak tekrar aktif eder.
-   * **Baloo Dosya İndekslemesini Devam Ettirir (`balooctl6 resume`):** Dosya indeksleme sürecini kaldığı yerden devam ettirir.
-   * **Masaüstü Bildirimi Gönderir:** Performans moduna dönüldüğünü bildirir.
+### 1. Katman 1: Donanım & Çekirdek Güç Yönetimi (TLP)
+- **CPU Turbo Boost Denetimi:** Prizdeyken Intel/AMD işlemcilerde maksimum performans için Turbo Boost devrededir (`CPU_BOOST_ON_AC=1`). Bataryaya geçildiğinde gereksiz anlık frekans patlamalarını ve yüksek watt tüketimini engellemek için Turbo Boost kapatılır (`CPU_BOOST_ON_BAT=0`, `CPU_BOOST_ON_SAV=0`).
+- **Batarya Güç Profili:** Bataryada `SAV` (Power Saving) profiline geçilerek PCIe ASPM, ses kartı güç tasarrufu ve disk G/Ç zaman aşımları en verimli seviyeye çekilir.
+- **Platform Profilleri:** AC modunda `performance`, bataryada `low-power` platform profili işletilir.
+
+### 2. Katman 2: Masaüstü & Kullanıcı Betikleri (KDE PowerDevil)
+- **`power-on-battery.sh` (Bataryaya Geçildiğinde):**
+  - **Sunshine'ı Durdurur:** NVIDIA RTX 4060 dGPU'ya doğrudan bağlı oyun akış servisini durdurur. Harici ekran kartı anında derin uykuya (`D3cold`) geçer, sıcaklık düşer ve boşa harcanan ~2-5W güç tasarruf edilir.
+  - **Baloo İndeksleyicisini Askıya Alır (`balooctl6 suspend`):** Disk ve CPU taramalarını dondurur.
+  - **TLP'yi Batarya Moduna Alır:** Udev gecikmelerini beklemeden anında batarya profilini tetikler.
+- **`power-on-ac.sh` (Prize / Şarja Takıldığında):**
+  - **Sunshine'ı Başlatır:** Priz gücünde oyun akışını otomatik tekrar açar.
+  - **Baloo'yu Devam Ettirir (`balooctl6 resume`):** Dosya indekslemeyi kaldığı yerden sürdürür.
+  - **TLP'yi AC Moduna Alır:** Yüksek performans profiline anında geçişi garantiler.
+
+---
+
+## ⚠️ TLP, Power-Profiles-Daemon (PPD) ve Tuned Çakışması
+
+Modern Linux dağıtımlarında güç yönetiminde en sık karşılaşılan sorun TLP, PPD ve Tuned'un aynı sysfs düğümlerine ve CPU governor'larına hükmetmeye çalışmasıdır:
+
+| Araç | Çalışma Prensibi | Çakışma Nedeni | Çözüm |
+| :--- | :--- | :--- | :--- |
+| **TLP** | Kapsamlı kernel/donanım optimizasyon motoru | PPD ve Tuned ile aynı anda çalışamaz | **Birincil güç yöneticisi olarak kullanılır.** |
+| **PPD** (`power-profiles-daemon`) | GNOME/KDE basit 3 kademeli güç profili daemon'ı | TLP ile servis çakışması üretir | Sistemde **maskelenir** (`systemctl mask`). Arch'ta `tlp-pd` drop-in paketiyle PPD emüle edilir. |
+| **Tuned** | Dağıtıma özel profil yöneticisi (Fedora/RHEL) | TLP güç ayarlarını ezer | Sistemde **maskelenir** (`systemctl mask`). |
+
+### `--allowerasing` ve Paket Yöneticisi Entegrasyonu:
+Fedora ve DNF tabanlı sistemlerde `tlp` paketi kurulurken varsayılan gelen `power-profiles-daemon` paket çakışması çıkarır. Bu nedenle dotfiles kurulum motorunda ([`install.sh`](file:///home/melih/Projects/dotfiles/install.sh)) tüm DNF komutlarına standart olarak `--allowerasing` argümanı eklenmiştir:
+```bash
+sudo dnf install -y --allowerasing tlp ...
+```
+Arch Linux tarafında ise [`packages/hardware.txt`](file:///home/melih/Projects/dotfiles/packages/hardware.txt) içindeki `tlp-pd` paketi PPD'nin yerini doğrudan alarak KDE ve masaüstü arayüzlerinin TLP'yi yerel güç profili gibi görmesini sağlar.
 
 ---
 
@@ -27,70 +63,71 @@ Bu paket iki temel betik içerir:
 power-management/
 ├── .local/
 │   └── bin/
-│       ├── power-on-battery.sh   # Batarya güç tasarruf betiği
-│       └── power-on-ac.sh        # Priz performans modu betiği
-└── README.md                     # Bu kılavuz belgesi
+│       ├── power-on-battery.sh     # Batarya modu dinamik geçiş betiği
+│       └── power-on-ac.sh          # Priz modu performans geçiş betiği
+├── etc/
+│   └── tlp.d/
+│       └── 01-power-save.conf      # TLP drop-in batarya & CPU boost yapılandırması
+├── .stow-local-ignore              # etc/ dizininin $HOME içine stow edilmesini engeller
+└── README.md                       # Bu kılavuz belgesi
 ```
 
-`stow` ile bağlandığında betikler doğrudan `~/.local/bin/` dizinine sembolik bağ (symlink) olarak yerleşir:
-* `~/.local/bin/power-on-battery.sh`
-* `~/.local/bin/power-on-ac.sh`
+* `stow power-management` çalıştırıldığında betikler `~/.local/bin/` dizinine yerleşir.
+* `etc/` dizini `.stow-local-ignore` ile korunur; sistem yapılandırması [`scripts/setup_power_management.sh`](file:///home/melih/Projects/dotfiles/scripts/setup_power_management.sh) tarafından `/etc/tlp.d/01-power-save.conf` konumuna kurulur.
 
 ---
 
-## ⚙️ KDE Plasma Entegrasyonu (PowerDevil)
+## ⚙️ Kurulum ve Yapılandırma
 
-KDE Plasma 6, güç durum değişimlerinde otomatik komut çalıştırmayı destekler. Yapılandırma `~/.config/powerdevilrc` dosyasında şu şekilde tutulur:
-
-```ini
-[AC][RunScript]
-ProfileLoadCommand=/home/melih/.local/bin/power-on-ac.sh
-
-[Battery][RunScript]
-ProfileLoadCommand=/home/melih/.local/bin/power-on-battery.sh
-```
-
-### Grafik Arayüzden Kontrol Etmek İsterseniz:
-1. **Sistem Ayarları (System Settings)** > **Güç Yönetimi (Power Management)** yoluna gidin.
-2. Üstteki sekmelerden **"On Battery" (Pilde)** sekmesini seçin.
-3. **"Run command or script"** (Komut veya betik çalıştır) alanını bulun.
-4. "When entering 'On Battery' state" karşısına `/home/melih/.local/bin/power-on-battery.sh` yazın.
-5. Benzer şekilde **"On AC Power" (Fişte)** sekmesine geçip `/home/melih/.local/bin/power-on-ac.sh` yolunu tanımlayın.
-6. **Uygula (Apply)** butonuna tıklayın.
-
----
-
-## 🛠️ Nasıl Test Edilir?
-
-Terminal üzerinden betiklerin sorunsuz çalıştığını manuel olarak test edebilirsiniz:
+Tüm güç yönetimini, TLP konfigürasyonunu ve KDE PowerDevil entegrasyonunu tek komutla kurmak için:
 
 ```bash
-# 1. Batarya tasarruf modunu test et:
+bash scripts/setup_power_management.sh
+```
+
+Bu betik otomatik olarak:
+1. `power-profiles-daemon.service` ve `tuned.service` servislerini durdurup maskeler.
+2. `01-power-save.conf` dosyasını `/etc/tlp.d/` altına yerleştirir.
+3. `tlp.service` servisini devreye alır ve `tlp start` çalıştırır.
+4. `~/.config/powerdevilrc` dosyasına AC ve Battery betik yollarını kaydeder.
+
+---
+
+## 🛠️ Nasıl Test Edilir ve Doğrulanır?
+
+### 1. TLP ve Donanım Durumunu Doğrulama:
+```bash
+# TLP genel durumu ve aktif profil:
+sudo tlp-stat -s
+
+# CPU frekansları ve Turbo Boost durumu:
+sudo tlp-stat -p
+
+# PPD ve Tuned'un maskelendiğini kontrol et:
+systemctl is-enabled power-profiles-daemon tuned
+# Çıktı: "masked" olmalıdır
+```
+
+### 2. Dinamik Kullanıcı Betiklerini Test Etme:
+```bash
+# Batarya modunu simüle et:
 ~/.local/bin/power-on-battery.sh
 
-# Durumu doğrula:
-balooctl6 status                     # Indexer state: Suspended olmalı
+# Doğrula:
+balooctl6 status                     # Suspended olmalı
 systemctl --user status sunshine     # inactive (dead) olmalı
 nvidia-smi                           # GPU'da Sunshine kalmamalı
 
-# 2. Priz modunu test et:
+# Priz modunu simüle et:
 ~/.local/bin/power-on-ac.sh
 
-# Durumu doğrula:
-balooctl6 status                     # Indexer state: Idle / Running olmalı
+# Doğrula:
+balooctl6 status                     # Idle / Running olmalı
 systemctl --user status sunshine     # active (running) olmalı
 ```
 
 ---
 
-## 🔧 Yeni Servisler Eklemek (Özelleştirme)
+## 🔧 Özelleştirme
 
-İleride bataryadayken başka servisleri de kapatmak isterseniz (örneğin Docker konteynerleri, Syncthing veya Free Download Manager), `power-on-battery.sh` dosyasındaki hazır yorum satırlarını açabilir veya yeni komutlar ekleyebilirsiniz:
-
-```bash
-# Örnek: Docker konteynerlerini bataryada kapatmak için:
-docker stop $(docker ps -q) 2>/dev/null || true
-
-# Örnek: Syncthing dosya eşitlemeyi durdurmak için:
-systemctl --user stop syncthing.service 2>/dev/null || true
-```
+Bataryadayken kapatmak istediğiniz ilave servisler varsa (örneğin Docker konteynerleri, Syncthing veya indirme yöneticileri), `~/.local/bin/power-on-battery.sh` içindeki hazır şablon satırlarını aktif hale getirebilirsiniz.

@@ -22,6 +22,11 @@ elif command -v balooctl &>/dev/null; then
     balooctl suspend 2>/dev/null || true
 fi
 
+# 3. TLP Batarya Modunu Tetikle (Udev gecikmelerini önlemek için anında uygula)
+if command -v tlp &>/dev/null; then
+    sudo -n tlp bat 2>/dev/null || true
+fi
+
 # ------------------------------------------------------------------------------
 # İLERİDE İSTEĞE BAĞLI EKLENEBİLECEK SERVİSLER (İhtiyaca göre yorum kaldırılabilir)
 # ------------------------------------------------------------------------------
@@ -36,9 +41,9 @@ fi
 # # Syncthing dosya senkronizasyonunu durdur:
 # systemctl --user stop syncthing.service 2>/dev/null || true
 
-# 3. Kullanıcıya hafif masaüstü bildirimi gönder
+# 4. Kullanıcıya hafif masaüstü bildirimi gönder
 if command -v notify-send &>/dev/null; then
     notify-send -u low -i battery-profile-powersave-symbolic \
         "Pil Tasarrufu Aktif" \
-        "Batarya moduna geçildi: Sunshine ve Baloo dosya indeksleme durduruldu." 2>/dev/null || true
+        "Batarya moduna geçildi: Sunshine ve Baloo durduruldu, TLP tasarruf profili uygulandı." 2>/dev/null || true
 fi

@@ -1,0 +1,4 @@
+# GNU Stow ignore rules for power-management
+# /etc configs are installed system-wide by setup_power_management.sh
+etc
+README.md
