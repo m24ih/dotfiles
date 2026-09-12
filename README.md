@@ -157,14 +157,15 @@ Eski sistemdeki 1660 satırlık hantal, bakım zorluğu yaratan ve alt kütüpha
 | [`packages/ghostty.txt`](packages/ghostty.txt) | **Ghostty Terminal Emülatörü** | `ghostty` |
 | [`packages/hardware.txt`](packages/hardware.txt) | **Donanım & Güç Yönetimi** | `tlp`, `tlp-pd`, `tlp-rdw`, `tlpui`, `ufw` |
 | [`packages/kitty.txt`](packages/kitty.txt) | **Kitty Terminal Emülatörü** | `kitty` |
-| [`packages/mango.txt`](packages/mango.txt) | **MangoWM Pencere Yöneticisi** | `mangowm` |
+| [`packages/mango.txt`](packages/mango.txt) | **MangoWM Pencere Yöneticisi** | `mangowm`, `wlr-randr` |
 | [`packages/media.txt`](packages/media.txt) | **Medya, Kayıt & İndirme** | `haruna`, `obs-studio`, `kdenlive`, `qbittorrent`, `freedownloadmanager` |
 | [`packages/networking.txt`](packages/networking.txt) | **Ağ, VPN & Uzak Erişim** | `tailscale`, `cloudflare-warp-bin`, `syncthing`, `rclone`, `rustdesk-bin` |
 | [`packages/niri.txt`](packages/niri.txt) | **Niri Scrollable Compositor** | `niri`, `fuzzel`, `xdg-desktop-portal-gnome`, `polkit-gnome` |
 | [`packages/nvim.txt`](packages/nvim.txt) | **Neovim Editör & Bağımlılıkları** | `neovim`, `ripgrep`, `fd`, `tree-sitter` |
 | [`packages/productivity.txt`](packages/productivity.txt) | **Üretkenlik & Parola Yönetimi** | `obsidian`, `proton-pass`, `calibre`, `keepassxc` |
 | [`packages/social.txt`](packages/social.txt) | **İletişim & Sosyal Medya** | `vesktop`, `telegram-desktop`, `signal-desktop`, `teams-for-linux` |
-| [`packages/sunshine.txt`](packages/sunshine.txt) | **Sunshine GameStream Sunucusu** | `sunshine`, `krfb` |
+| [`packages/sunshine.txt`](packages/sunshine.txt) | **Sunshine GameStream Sunucusu (KDE Plasma)** | `sunshine`, `krfb` |
+| [`packages/sunshine-mango.txt`](packages/sunshine-mango.txt) | **Sunshine GameStream Sunucusu (MangoWM)** | `sunshine`, `wlr-randr` |
 | [`packages/flatpak.txt`](packages/flatpak.txt) | **Flatpak Paketleri** | `com.github.tchx84.Flatseal` |
 | [`packages/zsh.txt`](packages/zsh.txt) | **Zsh Kabuğu & Eklentiler** | Zsh kabuğu, tamamlama ve eklentiler (`zsh`, `fzf`, `zsh-completions`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `eza`) |
 
@@ -188,7 +189,8 @@ Her paket kendi dizininde `~` (home) yapısını taklit eder. Özel notlar ve de
 | [`power-management/`](power-management/) | TLP donanım güç yönetimi & KDE Plasma dinamik güç tasarruf betikleri | [📖 İncele](power-management/README.md) |
 | [`ssh/`](ssh/) | SSH istemci ayarları & sunucu ağ erişim kısıtlamaları | [📖 İncele](ssh/README.md) |
 | [`starship/`](starship/) | Çapraz kabuk (Cross-shell) komut istemi | [📖 İncele](starship/README.md) |
-| [`sunshine/`](sunshine/) | Sunshine GameStream, tablet 2. ekran & güç yönetimi | [📖 İncele](sunshine/README.md) |
+| [`sunshine/`](sunshine/) | Sunshine GameStream, tablet 2. ekran & güç yönetimi (KDE Plasma) | [📖 İncele](sunshine/README.md) |
+| [`sunshine-mango/`](sunshine-mango/) | Sunshine GameStream, tablet 2. ekran & IPC otomasyonu (MangoWM / wlroots) | [📖 İncele](sunshine-mango/README.md) |
 | [`systemd/`](systemd/) | Kullanıcı seviyesi systemd servisleri | [📖 İncele](systemd/README.md) |
 | [`user-dirs/`](user-dirs/) | Standart XDG kullanıcı dizinleri | [📖 İncele](user-dirs/README.md) |
 | [`vivaldi/`](vivaldi/) | Vivaldi CSS/JS modları & orta tık sekme onarımı | [📖 İncele](vivaldi/README.md) |

@@ -1,2 +1,2 @@
-mangowm
+sunshine
 wlr-randr

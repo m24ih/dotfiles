@@ -77,6 +77,7 @@ DEFAULT_MODULES=(
 SELECTED_MODULES=()
 TARGET_SHELL_BIN=""
 DRY_RUN=false
+SUNSHINE_FLAVOR="kde"
 
 contains_element() {
     local match="$1"
@@ -104,7 +105,13 @@ get_module_title() {
         productivity) echo "Üretkenlik Araçları (Obsidian, Proton Pass)" ;;
         media)        echo "Medya & İndirme (Haruna, OBS, qBittorrent)" ;;
         networking)   echo "Ağ & VPN (Tailscale, WARP, Syncthing)" ;;
-        sunshine)     echo "Sunshine GameStream" ;;
+        sunshine)
+            if [ "$SUNSHINE_FLAVOR" = "mango" ]; then
+                echo "Sunshine GameStream (MangoWM/wlroots)"
+            else
+                echo "Sunshine GameStream (KDE Plasma)"
+            fi
+            ;;
         flatpak)      echo "Flatpak Paketleri" ;;
         hardware)     echo "Donanım & Güç Yönetimi (TLP/UFW)" ;;
         keychron)     echo "Keychron Klavye Ayarları" ;;
@@ -132,7 +139,13 @@ get_module_package_file() {
         productivity) echo "packages/productivity.txt" ;;
         media)        echo "packages/media.txt" ;;
         networking)   echo "packages/networking.txt" ;;
-        sunshine)     echo "packages/sunshine.txt" ;;
+        sunshine)
+            if [ "$SUNSHINE_FLAVOR" = "mango" ]; then
+                echo "packages/sunshine-mango.txt"
+            else
+                echo "packages/sunshine.txt"
+            fi
+            ;;
         hardware)     echo "packages/hardware.txt" ;;
         *)            echo "" ;;
     esac
@@ -150,7 +163,13 @@ get_module_stow_packages() {
         base_cli)     echo "btop fastfetch user-dirs" ;;
         browser)      echo "vivaldi" ;;
         networking)   echo "ssh" ;;
-        sunshine)     echo "sunshine" ;;
+        sunshine)
+            if [ "$SUNSHINE_FLAVOR" = "mango" ]; then
+                echo "sunshine-mango"
+            else
+                echo "sunshine"
+            fi
+            ;;
         services)     echo "systemd" ;;
         dev)          echo "antigravity" ;;
         hardware)     echo "power-management" ;;
@@ -247,6 +266,8 @@ show_help() {
     echo -e "  ${GREEN}-n, --dry-run${NC}      Simülasyon modu. Hiçbir değişiklik yapmadan yapılacak işlemleri gösterir."
     echo -e "  ${GREEN}-d, --default${NC}      Soru sormadan varsayılan modülleri kurar."
     echo -e "  ${GREEN}-a, --all${NC}          Soru sormadan tüm modülleri kurar."
+    echo -e "  ${GREEN}--sunshine-mango${NC}   Sunshine için MangoWM (wlroots) profilini seçer."
+    echo -e "  ${GREEN}--sunshine-kde${NC}     Sunshine için KDE Plasma profilini seçer (varsayılan)."
     echo -e "  ${GREEN}-h, --help${NC}         Bu yardım mesajını gösterir ve çıkar.\n"
     echo -e "${BOLD}KULLANILABİLİR MODÜLLER:${NC}"
     echo -e "  ${PURPLE}Masaüstü & Pencere Yöneticileri:${NC}"
@@ -403,6 +424,15 @@ run_wizard() {
     fi
     if ask_yn "Sunshine GameStream sunucusu kurulsun mu?" "N"; then
         SELECTED_MODULES+=("sunshine")
+        if contains_element "mango" "${SELECTED_MODULES[@]}"; then
+            if ask_yn "MangoWM seçtiğiniz tespit edildi. Sunshine, MangoWM (wlroots) profiliyle mi yapılandırılsın?" "Y"; then
+                SUNSHINE_FLAVOR="mango"
+            else
+                SUNSHINE_FLAVOR="kde"
+            fi
+        else
+            SUNSHINE_FLAVOR="kde"
+        fi
     fi
     if ask_yn "Flatpak paketleri kurulsun mu?" "N"; then
         SELECTED_MODULES+=("flatpak")
@@ -824,6 +854,7 @@ main() {
     DRY_RUN=false
     local mode=""
     local positional_modules=()
+    local sunshine_flavor_explicit=false
 
     while [ $# -gt 0 ]; do
         case "$1" in
@@ -835,6 +866,18 @@ main() {
                 ;;
             -a|--all)
                 mode="all"
+                ;;
+            --sunshine-mango)
+                SUNSHINE_FLAVOR="mango"
+                sunshine_flavor_explicit=true
+                ;;
+            --sunshine-kde)
+                SUNSHINE_FLAVOR="kde"
+                sunshine_flavor_explicit=true
+                ;;
+            --sunshine-flavor=*)
+                SUNSHINE_FLAVOR="${1#*=}"
+                sunshine_flavor_explicit=true
                 ;;
             -h|--help)
                 show_help
@@ -865,6 +908,9 @@ main() {
                 SELECTED_MODULES+=("$mod")
             fi
         done
+        if [ "$sunshine_flavor_explicit" = false ] && contains_element "mango" "${SELECTED_MODULES[@]}" && contains_element "sunshine" "${SELECTED_MODULES[@]}"; then
+            SUNSHINE_FLAVOR="mango"
+        fi
     elif [ "$mode" = "default" ]; then
         SELECTED_MODULES=("${DEFAULT_MODULES[@]}")
     elif [ "$mode" = "all" ]; then
