@@ -7,7 +7,7 @@ LOCAL_DESKTOP="$LOCAL_DESKTOP_DIR/vivaldi-stable.desktop"
 SYSTEM_DESKTOP="/usr/share/applications/vivaldi-stable.desktop"
 
 # Blink/Chromium orta tuş kaydırma (autoscroll) bayrakları
-FLAGS="--enable-blink-features=MiddleClickAutoscroll --enable-features=MiddleClickAutoscroll"
+FLAGS="--enable-features=MiddleClickAutoscroll"
 
 echo "Vivaldi Middle Click Scroll Yapılandırması Başlatılıyor..."
 

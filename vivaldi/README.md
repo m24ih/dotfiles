@@ -33,7 +33,7 @@ vivaldi/
 ## ⚙️ Yapılandırma Detayları
 
 ### 1. 🖱️ Orta Tık Otomatik Kaydırma (Middle Click Autoscroll)
-* `vivaldi-stable.conf` içerisindeki `--enable-blink-features=MiddleClickAutoscroll` ve `--enable-features=MiddleClickAutoscroll` bayrakları sayesinde farenin tekerlek (orta) tuşuna basıldığında sayfa fare hareket yönüne göre otomatik kaydırılır.
+* `vivaldi-stable.conf` içerisindeki `--enable-features=MiddleClickAutoscroll` bayrağı sayesinde farenin tekerlek (orta) tuşuna basıldığında sayfa fare hareket yönüne göre otomatik kaydırılır.
 * İlgili ayarı sisteme uygulamak için `./scripts/vivaldi_middle_click.sh` betiği de kullanılabilir.
 
 ### 2. 🎨 Favicon Arayüz Temizliği (`custom.css`)
