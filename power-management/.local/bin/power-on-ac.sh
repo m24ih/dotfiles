@@ -33,8 +33,18 @@ fi
 # systemctl --user start syncthing.service 2>/dev/null || true
 
 # 4. Kullanıcıya hafif masaüstü bildirimi gönder
-if command -v notify-send &>/dev/null; then
-    notify-send -u low -i ac-adapter-symbolic \
-        "Performans Modu Aktif" \
-        "Prize takıldı: Sunshine ve Baloo yeniden başlatıldı, TLP AC profili uygulandı." 2>/dev/null || true
+# Sistem ilk açıldığında veya yeniden başlatıldığında bildirim kirliliğini önle:
+# - Yalnızca durum gerçekten bataryadan AC'ye geçtiğinde ve sistem ilk açılış aşamasını (45s) geçtiğinde bildirim ver.
+STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/power_state_${UID:-$(id -u)}"
+PREV_STATE=$(cat "$STATE_FILE" 2>/dev/null || true)
+echo "ac" > "$STATE_FILE" 2>/dev/null || true
+
+UPTIME_SEC=$(awk '{print int($1)}' /proc/uptime 2>/dev/null || echo 999)
+
+if [ -n "$PREV_STATE" ] && [ "$PREV_STATE" != "ac" ] && [ "$UPTIME_SEC" -ge 45 ]; then
+    if command -v notify-send &>/dev/null; then
+        notify-send -u low -i battery-profile-performance-symbolic \
+            "Performans Modu Aktif" \
+            "Prize takıldı: Sunshine ve Baloo yeniden başlatıldı, TLP AC profili uygulandı." 2>/dev/null || true
+    fi
 fi

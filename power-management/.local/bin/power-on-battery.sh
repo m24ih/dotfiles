@@ -42,8 +42,18 @@ fi
 # systemctl --user stop syncthing.service 2>/dev/null || true
 
 # 4. Kullanıcıya hafif masaüstü bildirimi gönder
-if command -v notify-send &>/dev/null; then
-    notify-send -u low -i battery-profile-powersave-symbolic \
-        "Pil Tasarrufu Aktif" \
-        "Batarya moduna geçildi: Sunshine ve Baloo durduruldu, TLP tasarruf profili uygulandı." 2>/dev/null || true
+# Sistem ilk açıldığında veya yeniden başlatıldığında bildirim kirliliğini önle:
+# - Yalnızca durum gerçekten AC'den bataryaya geçtiğinde ve sistem ilk açılış aşamasını (45s) geçtiğinde bildirim ver.
+STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/power_state_${UID:-$(id -u)}"
+PREV_STATE=$(cat "$STATE_FILE" 2>/dev/null || true)
+echo "battery" > "$STATE_FILE" 2>/dev/null || true
+
+UPTIME_SEC=$(awk '{print int($1)}' /proc/uptime 2>/dev/null || echo 999)
+
+if [ -n "$PREV_STATE" ] && [ "$PREV_STATE" != "battery" ] && [ "$UPTIME_SEC" -ge 45 ]; then
+    if command -v notify-send &>/dev/null; then
+        notify-send -u low -i battery-profile-powersave-symbolic \
+            "Pil Tasarrufu Aktif" \
+            "Batarya moduna geçildi: Sunshine ve Baloo durduruldu, TLP tasarruf profili uygulandı." 2>/dev/null || true
+    fi
 fi
