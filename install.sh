@@ -20,6 +20,58 @@ if [ -f /etc/os-release ]; then
     DETECTED_OS="$ID"
 fi
 
+# Aktif Masaüstü Ortamı / Pencere Yöneticisi Tespiti
+detect_active_de() {
+    # 1. Oturum / XDG ortam değişkenleri (mevcut oturumu yansıtır)
+    local cur_desktop="${XDG_CURRENT_DESKTOP:-$DESKTOP_SESSION}"
+    cur_desktop="$(echo "$cur_desktop" | tr '[:upper:]' '[:lower:]')"
+    case "$cur_desktop" in
+        *mango*) echo "mango" ; return 0 ;;
+        *kde*|*plasma*) echo "kde" ; return 0 ;;
+        *niri*) echo "niri" ; return 0 ;;
+        *hyprland*) echo "hyprland" ; return 0 ;;
+        *sway*) echo "sway" ; return 0 ;;
+        *gnome*) echo "gnome" ; return 0 ;;
+    esac
+
+    # 2. Çalışan süreçler (TTY/SSH veya ortam değişkeni eksikse süreç kontrolü)
+    if pgrep -x "mangowm" &>/dev/null || pgrep -x "mango" &>/dev/null; then
+        echo "mango"
+        return 0
+    elif pgrep -x "kwin_wayland" &>/dev/null || pgrep -x "kwin_x11" &>/dev/null || pgrep -x "plasmashell" &>/dev/null; then
+        echo "kde"
+        return 0
+    elif pgrep -x "niri" &>/dev/null; then
+        echo "niri"
+        return 0
+    elif pgrep -x "Hyprland" &>/dev/null; then
+        echo "hyprland"
+        return 0
+    elif pgrep -x "sway" &>/dev/null; then
+        echo "sway"
+        return 0
+    elif pgrep -x "gnome-shell" &>/dev/null; then
+        echo "gnome"
+        return 0
+    fi
+
+    echo "unknown"
+}
+
+get_de_display_name() {
+    case "$1" in
+        mango)    echo "MangoWM (Wayland)" ;;
+        kde)      echo "KDE Plasma" ;;
+        niri)     echo "Niri (Wayland)" ;;
+        hyprland) echo "Hyprland (Wayland)" ;;
+        sway)     echo "Sway (Wayland)" ;;
+        gnome)    echo "GNOME" ;;
+        *)        echo "Bilinmiyor / Tespit Edilemedi" ;;
+    esac
+}
+
+DETECTED_DE="$(detect_active_de)"
+
 # ANSI Renk Tanımlamaları
 BOLD='\033[1m'
 CYAN='\033[0;36m'
@@ -226,6 +278,7 @@ EOF
     echo -e "${PURPLE}       :: Melih's Dotfiles Installer (JaKooLit Tarzı) ::${NC}"
     echo -e "${BLUE}  Dotfiles Dizini  :${NC} $DOTFILES_DIR"
     echo -e "${BLUE}  Tespit Edilen OS :${NC} ${DETECTED_OS:-Bilinmiyor}"
+    echo -e "${BLUE}  Aktif Masaüstü   :${NC} $(get_de_display_name "$DETECTED_DE")"
     echo -e "${CYAN}================================================================${NC}\n"
 }
 
@@ -373,8 +426,15 @@ run_wizard() {
     if ask_yn "Niri kaydırmalı (scrollable-tiling) pencere yöneticisi kurulsun mu?" "N"; then
         SELECTED_MODULES+=("niri")
     fi
-    if ask_yn "MangoWM hafif pencere yöneticisi kurulsun mu?" "N"; then
-        SELECTED_MODULES+=("mango")
+    if [ "$DETECTED_DE" = "mango" ] || command -v mangowm &>/dev/null || command -v mango &>/dev/null; then
+        echo -e "   ${GREEN}ℹ️  MangoWM sisteminizde zaten aktif/kurulu görünüyor.${NC}"
+        if ask_yn "MangoWM pencere yöneticisi dotfiles'ı tekrar uygulansın / kurulsun mu?" "N"; then
+            SELECTED_MODULES+=("mango")
+        fi
+    else
+        if ask_yn "MangoWM hafif pencere yöneticisi kurulsun mu?" "N"; then
+            SELECTED_MODULES+=("mango")
+        fi
     fi
 
     # Kategori 2: Terminal Emülatörleri
@@ -424,8 +484,20 @@ run_wizard() {
     fi
     if ask_yn "Sunshine GameStream sunucusu kurulsun mu?" "N"; then
         SELECTED_MODULES+=("sunshine")
-        if contains_element "mango" "${SELECTED_MODULES[@]}"; then
-            if ask_yn "MangoWM seçtiğiniz tespit edildi. Sunshine, MangoWM (wlroots) profiliyle mi yapılandırılsın?" "Y"; then
+        if [ "$DETECTED_DE" = "mango" ]; then
+            if ask_yn "Aktif masaüstü ortamınızın MangoWM olduğu tespit edildi. Sunshine, MangoWM (wlroots) profiliyle mi yapılandırılsın?" "Y"; then
+                SUNSHINE_FLAVOR="mango"
+            else
+                SUNSHINE_FLAVOR="kde"
+            fi
+        elif contains_element "mango" "${SELECTED_MODULES[@]}"; then
+            if ask_yn "MangoWM modülünü seçtiğiniz tespit edildi. Sunshine, MangoWM (wlroots) profiliyle mi yapılandırılsın?" "Y"; then
+                SUNSHINE_FLAVOR="mango"
+            else
+                SUNSHINE_FLAVOR="kde"
+            fi
+        elif command -v mangowm &>/dev/null || command -v mango &>/dev/null; then
+            if ask_yn "Sistemde MangoWM kurulu olduğu tespit edildi. Sunshine, MangoWM (wlroots) profiliyle mi yapılandırılsın?" "Y"; then
                 SUNSHINE_FLAVOR="mango"
             else
                 SUNSHINE_FLAVOR="kde"
@@ -908,8 +980,10 @@ main() {
                 SELECTED_MODULES+=("$mod")
             fi
         done
-        if [ "$sunshine_flavor_explicit" = false ] && contains_element "mango" "${SELECTED_MODULES[@]}" && contains_element "sunshine" "${SELECTED_MODULES[@]}"; then
-            SUNSHINE_FLAVOR="mango"
+        if [ "$sunshine_flavor_explicit" = false ] && contains_element "sunshine" "${SELECTED_MODULES[@]}"; then
+            if contains_element "mango" "${SELECTED_MODULES[@]}" || [ "$DETECTED_DE" = "mango" ]; then
+                SUNSHINE_FLAVOR="mango"
+            fi
         fi
     elif [ "$mode" = "default" ]; then
         SELECTED_MODULES=("${DEFAULT_MODULES[@]}")
