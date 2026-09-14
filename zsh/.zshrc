@@ -595,3 +595,5 @@ if [ -d "$HOME/.config/zshrc.d" ]; then
     [ -f "$file" ] && source "$file"
   done
 fi
+
+. "$HOME/.local/share/../bin/env"
