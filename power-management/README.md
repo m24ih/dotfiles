@@ -21,10 +21,14 @@ Güç tasarrufu ve performans dengesi iki tamamlayıcı katmanda yürütülür:
   └── PPD & Tuned Servislerini Maskeleme
 ```
 
-### 1. Katman 1: Donanım & Çekirdek Güç Yönetimi (TLP)
-- **CPU Turbo Boost Denetimi:** Prizdeyken Intel/AMD işlemcilerde maksimum performans için Turbo Boost devrededir (`CPU_BOOST_ON_AC=1`). Bataryaya geçildiğinde gereksiz anlık frekans patlamalarını ve yüksek watt tüketimini engellemek için Turbo Boost kapatılır (`CPU_BOOST_ON_BAT=0`, `CPU_BOOST_ON_SAV=0`).
-- **Batarya Güç Profili:** Bataryada `SAV` (Power Saving) profiline geçilerek PCIe ASPM, ses kartı güç tasarrufu ve disk G/Ç zaman aşımları en verimli seviyeye çekilir.
-- **Platform Profilleri:** AC modunda `performance`, bataryada `low-power` platform profili işletilir.
+### 1. Katman 1: Donanım & Çekirdek Güç Yönetimi (TLP 1.10 - HP Victus 16)
+- **Profil Haritalaması & Akıllı Geçiş:** Prizde Dengeli (`TLP_PROFILE_AC=BAL`), bataryada Güç Tasarrufu (`TLP_PROFILE_BAT=SAV`) devreye girer. Akıllı geçiş (`TLP_AUTO_SWITCH=2`) ile güç kaynağı değişimleri otomatik yönetilir.
+- **CPU Boost Denetimi:** Sadece tam performans (PRF) veya AC modunda boost izinlidir (`CPU_BOOST_ON_AC=1`). Bataryada ani saat frekans patlamalarını ve yüksek watt tüketimini engellemek için Turbo Boost kapatılır (`CPU_BOOST_ON_BAT=0`, `CPU_BOOST_ON_SAV=0`).
+- **AMD P-State EPP (Enerji/Performans Politikası):** AC modunda `performance`, bataryada dengeli performans (`balance_performance`), derin güç tasarrufunda ise `power` politikası uygulanır.
+- **HP Victus ACPI Platform Profili:** AC modunda `performance`, bataryada `balanced`, tasarruf modunda `low-power` işletilir.
+- **Kesintisiz Wi-Fi:** Güç kaynağı fark etmeksizin ping sıçramalarını ve paket kaybını önlemek için Wi-Fi güç tasarrufu kapalıdır (`WIFI_PWR_ON_AC=off`, `WIFI_PWR_ON_BAT=off`).
+- **AMD Panel ABM (Adaptive Backlight Management):** Renk ve kontrast doğruluğunu bozmamak için normal kullanımda kapalı (`0`), yalnızca `SAV` modunda seviye 3 (`AMDGPU_ABM_LEVEL_ON_SAV=3`) aktiftir.
+- **GPU Sürücü Koruması (Runtime PM Denylist):** `RUNTIME_PM_DRIVER_DENYLIST="amdgpu mei_me nouveau nvidia xhci_hcd"` ile harici Nvidia ve dahili AMD GPU sürücülerinin TLP PCIe güç askıya alma çakışmalarından korunması sağlanır.
 
 ### 2. Katman 2: Masaüstü & Kullanıcı Betikleri (KDE PowerDevil)
 - **`power-on-battery.sh` (Bataryaya Geçildiğinde):**
@@ -61,19 +65,15 @@ Arch Linux tarafında ise [`packages/hardware.txt`](file:///home/melih/Projects/
 
 ```text
 power-management/
-├── .local/
-│   └── bin/
-│       ├── power-on-battery.sh     # Batarya modu dinamik geçiş betiği
-│       └── power-on-ac.sh          # Priz modu performans geçiş betiği
 ├── etc/
+│   ├── tlp.conf                    # TLP ana yapılandırma dosyası
 │   └── tlp.d/
-│       └── 01-power-save.conf      # TLP drop-in batarya & CPU boost yapılandırması
+│       └── 01-victus.conf          # HP Victus 16 özel TLP 1.10 drop-in yapılandırması
 ├── .stow-local-ignore              # etc/ dizininin $HOME içine stow edilmesini engeller
 └── README.md                       # Bu kılavuz belgesi
 ```
 
-* `stow power-management` çalıştırıldığında betikler `~/.local/bin/` dizinine yerleşir.
-* `etc/` dizini `.stow-local-ignore` ile korunur; sistem yapılandırması [`scripts/setup_power_management.sh`](file:///home/melih/Projects/dotfiles/scripts/setup_power_management.sh) tarafından `/etc/tlp.d/01-power-save.conf` konumuna kurulur.
+* `etc/` dizini `.stow-local-ignore` ile korunur; sistem yapılandırması [`scripts/setup_power_management.sh`](file:///home/melih/Projects/dotfiles/scripts/setup_power_management.sh) tarafından `/etc/tlp.conf` ve `/etc/tlp.d/01-victus.conf` konumuna kurulur.
 
 ---
 
@@ -87,7 +87,7 @@ bash scripts/setup_power_management.sh
 
 Bu betik otomatik olarak:
 1. `power-profiles-daemon.service` ve `tuned.service` servislerini durdurup maskeler.
-2. `01-power-save.conf` dosyasını `/etc/tlp.d/` altına yerleştirir.
+2. `01-victus.conf` dosyasını `/etc/tlp.d/` altına yerleştirir ve ana `tlp.conf` dosyasını `/etc/` altına kurar.
 3. `tlp.service` servisini devreye alır ve `tlp start` çalıştırır.
 4. `~/.config/powerdevilrc` dosyasına AC ve Battery betik yollarını kaydeder.
 

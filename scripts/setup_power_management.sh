@@ -33,11 +33,27 @@ for conflict_svc in power-profiles-daemon.service tuned.service; do
 done
 
 # TLP Yapılandırmasını Kur
-TLP_SOURCE_CONF="$DOTFILES_DIR/power-management/etc/tlp.d/01-power-save.conf"
-if [ -f "$TLP_SOURCE_CONF" ]; then
-    echo "  -> TLP drop-in yapılandırması kuruluyor: /etc/tlp.d/01-power-save.conf"
+TLP_SOURCE_DIR="$DOTFILES_DIR/power-management/etc/tlp.d"
+if [ -d "$TLP_SOURCE_DIR" ]; then
+    echo "  -> TLP drop-in yapılandırmaları kuruluyor..."
     sudo mkdir -p /etc/tlp.d
-    sudo install -Dm644 "$TLP_SOURCE_CONF" /etc/tlp.d/01-power-save.conf
+    # Eski 01-power-save.conf varsa temizle (01-victus.conf ile değiştirildi)
+    if [ -f "/etc/tlp.d/01-power-save.conf" ] && [ -f "$TLP_SOURCE_DIR/01-victus.conf" ]; then
+        sudo rm -f /etc/tlp.d/01-power-save.conf
+    fi
+    for conf in "$TLP_SOURCE_DIR"/*.conf; do
+        if [ -f "$conf" ]; then
+            echo "     -> $(basename "$conf") kuruluyor..."
+            sudo install -Dm644 "$conf" "/etc/tlp.d/$(basename "$conf")"
+        fi
+    done
+fi
+
+# TLP Ana Yapılandırma Dosyası (/etc/tlp.conf)
+TLP_MAIN_CONF="$DOTFILES_DIR/power-management/etc/tlp.conf"
+if [ -f "$TLP_MAIN_CONF" ]; then
+    echo "  -> TLP ana yapılandırması kuruluyor: /etc/tlp.conf"
+    sudo install -Dm644 "$TLP_MAIN_CONF" /etc/tlp.conf
 fi
 
 # TLP Servisini Etkinleştir ve Başlat
@@ -55,34 +71,29 @@ fi
 # ------------------------------------------------------------------------------
 # 2. MASAÜSTÜ KATMANI: KDE PLASMA POWERDEVIL BETİKLERİ
 # ------------------------------------------------------------------------------
-echo "-> [Katman 2/2] KDE Plasma PowerDevil betikleri yapılandırılıyor..."
-
 BATTERY_SCRIPT="$HOME/.local/bin/power-on-battery.sh"
 AC_SCRIPT="$HOME/.local/bin/power-on-ac.sh"
 
-# Betiklerin çalıştırılabilirlik izinlerini kontrol et ve ver
-if [ -f "$BATTERY_SCRIPT" ]; then
-    chmod +x "$BATTERY_SCRIPT"
-fi
+if [ -f "$BATTERY_SCRIPT" ] || [ -f "$AC_SCRIPT" ]; then
+    echo "-> [Katman 2/2] KDE Plasma PowerDevil betikleri yapılandırılıyor..."
 
-if [ -f "$AC_SCRIPT" ]; then
-    chmod +x "$AC_SCRIPT"
-fi
+    [ -f "$BATTERY_SCRIPT" ] && chmod +x "$BATTERY_SCRIPT"
+    [ -f "$AC_SCRIPT" ] && chmod +x "$AC_SCRIPT"
 
-# KDE Plasma PowerDevil yapılandırma dosyasını güncelle (~/.config/powerdevilrc)
-if command -v kwriteconfig6 &>/dev/null; then
-    kwriteconfig6 --file powerdevilrc --group "AC" --group "RunScript" --key "ProfileLoadCommand" "$AC_SCRIPT" --notify
-    kwriteconfig6 --file powerdevilrc --group "Battery" --group "RunScript" --key "ProfileLoadCommand" "$BATTERY_SCRIPT" --notify
-    echo "  -> kwriteconfig6 ile powerdevilrc başarıyla güncellendi."
-elif command -v kwriteconfig5 &>/dev/null; then
-    kwriteconfig5 --file powerdevilrc --group "AC" --group "RunScript" --key "ProfileLoadCommand" "$AC_SCRIPT" --notify
-    kwriteconfig5 --file powerdevilrc --group "Battery" --group "RunScript" --key "ProfileLoadCommand" "$BATTERY_SCRIPT" --notify
-    echo "  -> kwriteconfig5 ile powerdevilrc başarıyla güncellendi."
-else
-    pd_file="$HOME/.config/powerdevilrc"
-    if [ ! -f "$pd_file" ]; then
-        mkdir -p "$(dirname "$pd_file")"
-        cat << INI > "$pd_file"
+    # KDE Plasma PowerDevil yapılandırma dosyasını güncelle (~/.config/powerdevilrc)
+    if command -v kwriteconfig6 &>/dev/null; then
+        [ -f "$AC_SCRIPT" ] && kwriteconfig6 --file powerdevilrc --group "AC" --group "RunScript" --key "ProfileLoadCommand" "$AC_SCRIPT" --notify
+        [ -f "$BATTERY_SCRIPT" ] && kwriteconfig6 --file powerdevilrc --group "Battery" --group "RunScript" --key "ProfileLoadCommand" "$BATTERY_SCRIPT" --notify
+        echo "  -> kwriteconfig6 ile powerdevilrc başarıyla güncellendi."
+    elif command -v kwriteconfig5 &>/dev/null; then
+        [ -f "$AC_SCRIPT" ] && kwriteconfig5 --file powerdevilrc --group "AC" --group "RunScript" --key "ProfileLoadCommand" "$AC_SCRIPT" --notify
+        [ -f "$BATTERY_SCRIPT" ] && kwriteconfig5 --file powerdevilrc --group "Battery" --group "RunScript" --key "ProfileLoadCommand" "$BATTERY_SCRIPT" --notify
+        echo "  -> kwriteconfig5 ile powerdevilrc başarıyla güncellendi."
+    else
+        pd_file="$HOME/.config/powerdevilrc"
+        if [ ! -f "$pd_file" ]; then
+            mkdir -p "$(dirname "$pd_file")"
+            cat << INI > "$pd_file"
 [AC][RunScript]
 ProfileLoadCommand=$AC_SCRIPT
 
@@ -92,22 +103,25 @@ AutoSuspendAction=0
 [Battery][RunScript]
 ProfileLoadCommand=$BATTERY_SCRIPT
 INI
-        echo "  -> powerdevilrc dosyası oluşturuldu."
-    else
-        echo "  ⚠️ 'kwriteconfig' bulunamadı. Mevcut powerdevilrc ayarlarını korumak için dosya üzerine yazılmadı."
-        echo "     Manuel entegrasyon için: [AC][RunScript] ProfileLoadCommand=$AC_SCRIPT"
+            echo "  -> powerdevilrc dosyası oluşturuldu."
+        else
+            echo "  ⚠️ 'kwriteconfig' bulunamadı. Mevcut powerdevilrc ayarlarını korumak için dosya üzerine yazılmadı."
+            echo "     Manuel entegrasyon için: [AC][RunScript] ProfileLoadCommand=$AC_SCRIPT"
+        fi
     fi
-fi
 
-# PowerDevil servisine yapılandırmayı yenilemesini bildir
-if command -v qdbus6 &>/dev/null; then
-    qdbus6 org.kde.Solid.PowerManagement /org/kde/Solid/PowerManagement refreshStatus 2>/dev/null || true
-elif command -v qdbus &>/dev/null; then
-    qdbus org.kde.Solid.PowerManagement /org/kde/Solid/PowerManagement refreshStatus 2>/dev/null || true
+    # PowerDevil servisine yapılandırmayı yenilemesini bildir
+    if command -v qdbus6 &>/dev/null; then
+        qdbus6 org.kde.Solid.PowerManagement /org/kde/Solid/PowerManagement refreshStatus 2>/dev/null || true
+    elif command -v qdbus &>/dev/null; then
+        qdbus org.kde.Solid.PowerManagement /org/kde/Solid/PowerManagement refreshStatus 2>/dev/null || true
+    fi
+else
+    echo "-> [Katman 2/2] İsteğe bağlı masaüstü geçiş betikleri bulunamadı (atlanıyor)."
 fi
 
 echo "✅ Güç Yönetimi mimarisi başarıyla yapılandırıldı."
-echo "   - Donanım Katmanı : TLP (/etc/tlp.d/01-power-save.conf)"
+echo "   - Donanım Katmanı : TLP (/etc/tlp.d/01-victus.conf ve /etc/tlp.conf)"
 echo "   - Çakışma Durumu  : power-profiles-daemon ve tuned maskelendi"
-echo "   - Batarya Betiği  : $BATTERY_SCRIPT"
-echo "   - Priz (AC) Betiği: $AC_SCRIPT"
+[ -f "$BATTERY_SCRIPT" ] && echo "   - Batarya Betiği  : $BATTERY_SCRIPT"
+[ -f "$AC_SCRIPT" ] && echo "   - Priz (AC) Betiği: $AC_SCRIPT"
