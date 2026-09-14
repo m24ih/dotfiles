@@ -83,6 +83,14 @@ for pkg in "${TARGET_PACKAGES[@]}"; do
     fi
 done
 
+# Git Pre-Commit Hook (Gitleaks) Kurulumu
+if [ -d "$DOTFILES_DIR/.git" ] && [ -f "$DOTFILES_DIR/.githooks/pre-commit" ]; then
+    chmod +x "$DOTFILES_DIR/.githooks/pre-commit"
+    git -C "$DOTFILES_DIR" config core.hooksPath .githooks 2>/dev/null || true
+    mkdir -p "$DOTFILES_DIR/.git/hooks"
+    ln -sf "../../.githooks/pre-commit" "$DOTFILES_DIR/.git/hooks/pre-commit" 2>/dev/null || true
+fi
+
 if [ ${#FAILED_PACKAGES[@]} -gt 0 ]; then
     echo -e "\n⚠️  Bazı paketler bağlanamadı: ${FAILED_PACKAGES[*]}"
     echo "   Hedef dizindeki çakışan dosyaları (.bak olarak) yedekleyip tekrar çalıştırabilirsiniz."

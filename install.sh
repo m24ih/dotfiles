@@ -868,7 +868,7 @@ execute_plan() {
         echo ":: Bağlanacak dotfiles paketi seçilmedi, atlanıyor."
     fi
 
-    # Antigravity CLI ayar şablonunu etkinleştir (eğer yoksa)
+    # Antigravity CLI ve Antigravity 2.0 ayar ve kural yapılandırması
     local agy_target_dir="$HOME/.gemini/antigravity-cli"
     local agy_example="$DOTFILES_DIR/antigravity/.gemini/antigravity-cli/settings.json.example"
     if [ -f "$agy_example" ] && [ ! -f "$agy_target_dir/settings.json" ]; then
@@ -876,6 +876,26 @@ execute_plan() {
         mkdir -p "$agy_target_dir"
         sed "s|\$HOME|$HOME|g" "$agy_example" > "$agy_target_dir/settings.json"
         echo "  -> $agy_target_dir/settings.json oluşturuldu."
+    fi
+
+    local agy_config_dir="$HOME/.gemini/config"
+    local agy_rules_src="$DOTFILES_DIR/antigravity/.gemini/config/GEMINI.md"
+    if [ -f "$agy_rules_src" ]; then
+        echo ":: Antigravity global kuralları bağlanıyor (~/.gemini/config)..."
+        mkdir -p "$agy_config_dir"
+        ln -sf "$agy_rules_src" "$agy_config_dir/GEMINI.md"
+        ln -sf "$agy_rules_src" "$agy_config_dir/AGENTS.md"
+        echo "  -> Global kurallar başarıyla bağlandı."
+    fi
+
+    # Git Pre-Commit Hook (Gitleaks) Yapılandırması
+    if [ -d "$DOTFILES_DIR/.git" ] && [ -f "$DOTFILES_DIR/.githooks/pre-commit" ]; then
+        echo ":: Dotfiles Git Pre-Commit (Gitleaks) kancası etkinleştiriliyor..."
+        chmod +x "$DOTFILES_DIR/.githooks/pre-commit"
+        git -C "$DOTFILES_DIR" config core.hooksPath .githooks
+        mkdir -p "$DOTFILES_DIR/.git/hooks"
+        ln -sf "../../.githooks/pre-commit" "$DOTFILES_DIR/.git/hooks/pre-commit"
+        echo "  -> Git pre-commit kancası başarıyla kuruldu."
     fi
 
     # Faz 4: Ayar ve Sistem Betikleri

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Git Pre-Commit Hook: Gitleaks Secret & Token Koruması
+# ==============================================================================
+# Bu kanca, herhangi bir commit yapılmadan önce stage edilmiş (kuyruğa alınmış)
+# dosyaları tarar ve hassas anahtar / token / sır sızıntılarını engeller.
+
+set -e
+
+if command -v gitleaks >/dev/null 2>&1; then
+    echo ":: Gitleaks ile hassas veri (secret/token) taraması yapılıyor..."
+    if ! gitleaks git --staged --verbose; then
+        echo ""
+        echo "❌ [GÜVENLİK UYARISI] Gitleaks commit kuyruğunda hassas anahtar/token tespit etti!"
+        echo "   Lütfen yukarıda işaret edilen dosyaları temizleyin."
+        echo "   Yanlış alarm ise .gitleaks.toml içerisindeki [allowlist] alanını güncelleyin."
+        echo "   Commit işlemi güvenlik nedeniyle iptal edildi."
+        exit 1
+    fi
+    echo "✅ Gitleaks taraması temiz: Sızıntı bulunamadı."
+else
+    echo "⚠️ [UYARI] 'gitleaks' komutu bulunamadı. Gizli anahtar taraması atlanıyor."
+    echo "   Güvenlik için lütfen 'gitleaks' paketini kurun."
+fi

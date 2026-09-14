@@ -1,0 +1,8 @@
+# Gitleaks Yapılandırması
+# Antigravity yerel çalışma logları ve oturum transkriptlerini tarama dışı bırakır.
+
+[allowlist]
+description = "Ignore local Antigravity runtime logs and memory dumps"
+paths = [
+    '''antigravity/\.gemini/.*''',
+]

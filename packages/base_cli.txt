@@ -16,3 +16,4 @@ eza
 fzf
 ripgrep
 fd
+gitleaks
