@@ -152,7 +152,7 @@ Eski sistemdeki 1660 satırlık hantal, bakım zorluğu yaratan ve alt kütüpha
 | [`packages/base.txt`](packages/base.txt) | **Temel Sistem Paketleri** (Zorunlu temel katman) | `git`, `base-devel`, `stow`, `which`, `curl`, `wget`, `sudo`, `xdg-user-dirs` |
 | [`packages/base_cli.txt`](packages/base_cli.txt) | **Modern CLI & Terminal Araçları** | `bat`, `zoxide`, `btop`, `fastfetch`, `duf`, `ripgrep`, `jq`, `topgrade`, `7zip`, `eza`, `fzf`, `fd` |
 | [`packages/browser.txt`](packages/browser.txt) | **Web Tarayıcı** | `vivaldi`, `vivaldi-ffmpeg-codecs` |
-| [`packages/dev.txt`](packages/dev.txt) | **Geliştirici & Konteyner Ortamı** | `code`, `docker`, `docker-compose`, `lazydocker`, `dbeaver`, `nodejs`, `npm` |
+| [`packages/dev.txt`](packages/dev.txt) | **Geliştirici & Konteyner Ortamı** | `code`, `docker`, `docker-compose`, `lazydocker`, `lazygit`, `dbeaver`, `nodejs`, `npm` |
 | [`packages/fish.txt`](packages/fish.txt) | **Fish Kabuğu & Eklentiler** | `fish`, `fisher`, `starship` |
 | [`packages/ghostty.txt`](packages/ghostty.txt) | **Ghostty Terminal Emülatörü** | `ghostty` |
 | [`packages/hardware.txt`](packages/hardware.txt) | **Donanım & Güç Yönetimi** | `tlp`, `tlp-pd`, `tlp-rdw`, `tlpui`, `ufw` |
@@ -161,7 +161,7 @@ Eski sistemdeki 1660 satırlık hantal, bakım zorluğu yaratan ve alt kütüpha
 | [`packages/media.txt`](packages/media.txt) | **Medya, Kayıt & İndirme** | `haruna`, `obs-studio`, `kdenlive`, `qbittorrent`, `freedownloadmanager` |
 | [`packages/networking.txt`](packages/networking.txt) | **Ağ, VPN & Uzak Erişim** | `tailscale`, `cloudflare-warp-bin`, `syncthing`, `rclone`, `rustdesk-bin` |
 | [`packages/niri.txt`](packages/niri.txt) | **Niri Scrollable Compositor** | `niri`, `fuzzel`, `xdg-desktop-portal-gnome`, `polkit-gnome` |
-| [`packages/nvim.txt`](packages/nvim.txt) | **Neovim Editör & Bağımlılıkları** | `neovim`, `ripgrep`, `fd`, `tree-sitter` |
+| [`packages/nvim.txt`](packages/nvim.txt) | **Neovim Editör & Bağımlılıkları** | `neovim`, `ripgrep`, `fd`, `tree-sitter`, `lazygit` |
 | [`packages/productivity.txt`](packages/productivity.txt) | **Üretkenlik & Parola Yönetimi** | `obsidian`, `proton-pass`, `calibre`, `keepassxc` |
 | [`packages/social.txt`](packages/social.txt) | **İletişim & Sosyal Medya** | `vesktop`, `telegram-desktop`, `signal-desktop`, `teams-for-linux` |
 | [`packages/sunshine.txt`](packages/sunshine.txt) | **Sunshine GameStream Sunucusu (KDE Plasma)** | `sunshine`, `krfb` |

@@ -26,11 +26,11 @@ Bu sayede:
 | [`kitty.txt`](kitty.txt) | **Kitty Terminal:** Özelleştirilebilir terminal emülatörü | `kitty` |
 | [`fish.txt`](fish.txt) | **Fish Shell:** Akıllı interaktif kabuk ve komut istemi | `fish`, `starship`, `fisher` |
 | [`zsh.txt`](zsh.txt) | **Zsh Shell:** Zsh kabuğu, fzf ve popüler eklentiler | `zsh`, `fzf`, `zsh-completions`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `eza` |
-| [`nvim.txt`](nvim.txt) | **Neovim IDE:** Modern metin editörü ve arama/derleme araçları | `neovim`, `tree-sitter`, `ripgrep`, `fd` |
+| [`nvim.txt`](nvim.txt) | **Neovim IDE:** Modern metin editörü ve arama/derleme araçları | `neovim`, `tree-sitter`, `ripgrep`, `fd`, `lazygit` |
 | [`base_cli.txt`](base_cli.txt) | **Temel CLI Araçları:** Sistem izleme, hızlı navigasyon ve arşiv araçları | `btop`, `fastfetch`, `zoxide`, `bat`, `duf`, `tree`, `jq`, `unzip`, `7zip`, `unrar`, `trash-cli`, `multitail`, `topgrade`, `eza`, `fzf`, `ripgrep`, `fd` |
 | [`browser.txt`](browser.txt) | **Web Tarayıcı:** Birincil internet tarayıcısı ve multimedya eklentileri | `vivaldi`, `vivaldi-ffmpeg-codecs` |
 | [`social.txt`](social.txt) | **İletişim & Sosyal:** Mesajlaşma ve ekip iletişim araçları | `vesktop`, `telegram-desktop`, `signal-desktop`, `teams-for-linux` |
-| [`dev.txt`](dev.txt) | **Geliştirici Araçları:** Kod editörleri, konteynerleştirme ve veritabanı | `code`, `docker`, `docker-compose`, `docker-buildx`, `lazydocker`, `dbeaver`, `nodejs`, `npm`, `github-cli` |
+| [`dev.txt`](dev.txt) | **Geliştirici Araçları:** Kod editörleri, konteynerleştirme ve veritabanı | `code`, `docker`, `docker-compose`, `docker-buildx`, `lazydocker`, `lazygit`, `dbeaver`, `nodejs`, `npm`, `github-cli` |
 | [`productivity.txt`](productivity.txt) | **Üretkenlik & Not:** Not alma, şifre yöneticisi ve bulut erişimi | `obsidian`, `proton-pass`, `keepassxc`, `termius` |
 | [`media.txt`](media.txt) | **Medya & İndirme:** Video/ses oynatıcılar, ekran kaydı ve indirme yöneticileri | `haruna`, `obs-studio`, `kdenlive`, `gwenview`, `calibre`, `qbittorrent`, `freedownloadmanager` |
 | [`networking.txt`](networking.txt) | **Ağ & VPN:** Mesh VPN, senkronizasyon ve uzaktan erişim | `tailscale`, `cloudflare-warp-bin`, `syncthing`, `rclone`, `rustdesk-bin`, `rsync`, `cloudflare-speed-cli` |

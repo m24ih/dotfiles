@@ -3,6 +3,7 @@ docker
 docker-compose
 docker-buildx
 lazydocker
+lazygit
 dbeaver
 github-cli
 nodejs
