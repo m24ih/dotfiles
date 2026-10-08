@@ -26,6 +26,8 @@ Kullanıcının düşünme ortağı ve merkezi ikinci beyin vault'u `/home/melih
   - Tekrar kullanılabilir kalıcı bilgi/karar: `/usr/bin/python3 /home/melih/Sync/Obsidian/Agent/beyin.py note-create --file <json>` veya vault'taki `knowledge/` altına Markdown notu oluşturup ardından `sync` çalıştır.
   - Görevler: `/usr/bin/python3 /home/melih/Sync/Obsidian/Agent/beyin.py task-create --file <json>`.
   - Oturum sonu devir kartı: `/home/melih/Sync/Obsidian/Agent/🔮 850-Companion/Last-Session.md` dosyasını son durumla yerinde güncelle.
+  - Günlük hafıza receipt'i (Zorunlu): `/usr/bin/python3 /home/melih/Sync/Obsidian/Agent/beyin.py receipt --file <json> --harness antigravity` ile `Agent/daily/v3/YYYY-MM-DD.md` içine kümülatif işle.
+  - Kişisel günlük entegrasyonu: `/home/melih/Sync/Obsidian/Personal-Obsidian/60-Journal/YYYY/YYYY.MM-Ay/YYYY.MM.DD.md` altındaki `####    TIME` listesine o anki saat ve yapılan işi tek cümleyle append et (`- HH:MM <Yapılan iş>`).
   - Açık konu takibi: `/home/melih/Sync/Obsidian/Agent/🔮 850-Companion/Threads.md` dosyasını güncelle.
   - Her güncellemeden sonra senkronizasyon: `/usr/bin/python3 /home/melih/Sync/Obsidian/Agent/beyin.py sync`
 - **Arama / Hatırlama:** Vault içindeki bilgiyi bulmak için `/usr/bin/python3 /home/melih/Sync/Obsidian/Agent/beyin.py context "<arama sorgusu>"` çalıştır.
