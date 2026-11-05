@@ -1,0 +1,12 @@
+[Unit]
+Description=Weekly Restic Backup to Google Drive
+Persistent=true
+
+[Timer]
+# Her Pazar gece 03:00'te tetiklenir
+OnCalendar=Sun *-*-* 03:00:00
+# Sistem kapalıysa ilk açılışta kaçırılan görevi hemen yürüt
+Persistent=true
+
+[Install]
+WantedBy=timers.target

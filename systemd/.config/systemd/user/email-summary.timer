@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Email Summarizer Timer (with persistent catch-up)
+
+[Timer]
+OnCalendar=*-*-* 12:00:00
+Persistent=true
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target

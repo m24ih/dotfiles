@@ -1,0 +1,10 @@
+[Unit]
+Description=Synchronize Faugus Launcher playtime with Yamtrack
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/melih/.local/bin/faugus-yamtrack-sync
+StandardOutput=journal
+StandardError=journal

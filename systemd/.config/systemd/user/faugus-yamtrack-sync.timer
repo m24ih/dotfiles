@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer for Faugus Launcher to Yamtrack Playtime Synchronization (Runs daily at 10:00 and 22:00)
+
+[Timer]
+OnCalendar=*-*-* 10:00:00
+OnCalendar=*-*-* 22:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

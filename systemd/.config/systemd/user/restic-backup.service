@@ -1,0 +1,14 @@
+[Unit]
+Description=Restic Home Directory Encrypted Backup to Google Drive
+Documentation=man:restic(1)
+After=network-online.target
+
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=2
+IOSchedulingPriority=7
+ExecStart=%h/.config/restic/backup.sh
+
+[Install]
+WantedBy=default.target

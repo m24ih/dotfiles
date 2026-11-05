@@ -1,0 +1,10 @@
+[Unit]
+Description=Synchronize Komga Comic Reading Progress with Yamtrack
+After=network-online.target komga.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/melih/.local/bin/komga-yamtrack-sync
+StandardOutput=journal
+StandardError=journal

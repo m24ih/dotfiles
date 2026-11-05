@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer for Heroic to Yamtrack Playtime Synchronization (Runs daily at 10:30 and 22:30)
+
+[Timer]
+OnCalendar=*-*-* 10:30:00
+OnCalendar=*-*-* 22:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

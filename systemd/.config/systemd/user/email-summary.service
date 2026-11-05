@@ -1,0 +1,15 @@
+[Unit]
+Description=Daily Email Summarizer for Obsidian
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/melih/.config/email-summarizer
+ExecStart=/home/melih/.config/email-summarizer/.venv/bin/python /home/melih/.config/email-summarizer/summarizer.py
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target
