@@ -95,12 +95,12 @@ export PUB_CACHE="$HOME/.pub-cache"
 export CHROME_EXECUTABLE="/usr/bin/google-chrome-stable"
 
 # Proton Pass Entegrasyonu
-export SSH_AUTH_SOCK="$HOME/.ssh/proton-pass-ssh-agent.sock"
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
 export PROTON_PASS_LINUX_KEYRING=dbus
 export PROTON_PASS_KEY_PROVIDER=fs
 
 if [[ -o interactive ]] && command -v dbus-update-activation-environment &>/dev/null; then
-  dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK PROTON_PASS_KEY_PROVIDER 2>/dev/null
+  dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GNOME_KEYRING_CONTROL SSH_AUTH_SOCK 2>/dev/null
 fi
 
 # =============================================================================
@@ -304,7 +304,9 @@ alias sha1='openssl sha1'
 # Donanım ve Servisler
 alias rebootsafe='sudo shutdown -r now'
 alias rebootforce='sudo shutdown -r -n now'
-alias clickpaste='sleep 3; xdotool type "$(xclip -o -selection clipboard)"'
+#alias clickpaste='sleep 3; xdotool type "$(xclip -o -selection clipboard)"'
+# Wayland alternatifi:
+alias clickpaste='sleep 3; ydotool type -d 10 "$(wl-paste)"'
 alias kssh="kitty +kitten ssh"
 alias docker-clean='docker container prune -f; docker image prune -f; docker network prune -f; docker volume prune -f'
 alias hug="systemctl --user restart hugo"
@@ -552,8 +554,8 @@ bindkey -M viins '^h' backward-delete-char
 bindkey -M viins '^w' backward-kill-word
 
 # Ctrl+f -> Zoxide Interactive Search
-bindkey -M viins '^f' 'zi\n'
-bindkey -M vicmd '^f' 'zi\n'
+bindkey -s -M viins '^f' 'zi\n'
+bindkey -s -M vicmd '^f' 'zi\n'
 
 # zsh-history-substring-search tuş atamaları (Normal ve Ekleme modu için)
 bindkey -M viins '^[[A' history-substring-search-up
@@ -597,3 +599,5 @@ if [ -d "$HOME/.config/zshrc.d" ]; then
 fi
 
 . "$HOME/.local/share/../bin/env"
+
+unsetopt correct_all

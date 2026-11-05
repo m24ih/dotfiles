@@ -17,3 +17,4 @@ fzf
 ripgrep
 fd
 gitleaks
+ydotool

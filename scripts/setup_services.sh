@@ -38,6 +38,7 @@ case "$DETECTED_OS" in
             "arch-update.timer"             # Arch Güncelleme Kontrol Zamanlayıcısı
             "warp-taskbar.service"          # Cloudflare WARP Sistem Tepsi Servisi
             "syncthing.service"             # Syncthing Kullanıcı Servisi
+            "ydotool.service"               # ydotool Otomasyon Servisi (input grubu gerekir)
         )
         ;;
     fedora|rhel|centos|rocky|almalinux)
@@ -60,9 +61,16 @@ case "$DETECTED_OS" in
             "psd.service"                   # Profile Sync Daemon
             "arch-update.timer"             # Güncelleme Kontrol Zamanlayıcısı
             "syncthing.service"             # Syncthing Kullanıcı Servisi
+            "ydotool.service"               # ydotool Otomasyon Servisi (input grubu gerekir)
         )
         ;;
 esac
+
+# ydotool 'input' grubu üyeliği (servis bu grup olmadan çalışmaz)
+if ! id -nG "$USER" | tr ' ' '\n' | grep -qx "input"; then
+    echo "  -> Kullanıcı 'input' grubuna ekleniyor (ydotool için)..."
+    sudo usermod -aG input "$USER" || echo "     ⚠️ 'input' grubuna ekleme başarısız oldu."
+fi
 
 # Systemd daemon yenile
 $SYSTEMCTL --user daemon-reload
