@@ -1,0 +1,12 @@
+[Unit]
+Description=Yamtrack to Obsidian Journal & Media Synchronization
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/melih/.local/bin/yamtrack-obsidian-sync --days 3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
