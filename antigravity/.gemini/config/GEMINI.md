@@ -1,5 +1,15 @@
 # Antigravity Global Geliştirici & Güvenlik Kuralları (agy CLI & Antigravity 2.0)
 
+## RTK Komut Çıktısı (Akıllı & Seçici Kullanım)
+- **Ne Zaman RTK Kullanılmalı:** Desteklenen ve çıktısı uzun olabilen derleme, test ve git operasyonlarında: `rtk git status`, `rtk git diff`, `rtk git log`, `rtk cargo test`, `rtk cargo build`, `rtk npm test`, `rtk pytest`.
+- **Ne Zaman RTK KULLANILMAMALI (Doğrudan ham komut):**
+  - Başında ortam değişkeni bulunan komutlar (`DISPLAY=:0 ...`, `WAYLAND_DISPLAY=...`, `VAR=val ...`).
+  - Tarayıcı, GUI ve arka plan süreçleri (`google-chrome-stable`, `xdg-open`, `&`, daemon).
+  - MCP araçları, DevTools portları (`curl 127.0.0.1:9222`), yerel soket/port testleri.
+  - Kısa & hassas komutlar (`which`, `ls`, `cat`, `head`, `sed`, `grep`, `pwd`, `kill`, `ps`).
+  - Boru hatları (`|`), `&&`, `;` veya karmaşık kabuk zincirleri.
+- **`rtk proxy` Kullanımı:** Sadece desteklenmeyen fakat çıktısı yüzlerce satır devasa log üretecek düz araçlarda isteğe bağlıdır. Her komutun önüne körü körüne `rtk proxy` eklenmez. `rtk gain` kullanım istatistiklerini gösterir.
+
 ## 🔒 Güvenlik & Gizli Anahtar Koruması
 - **Gitleaks:** Commit (`git commit`) öncesi zorunlu: `gitleaks git --staged`. Sızıntı tespit edilirse commit derhal durdurulur, kullanıcıya dosya/satır gösterilir, onaysız devam edilmez.
 - **Hassas Dosyalar:** `.env`, `*.key`, `*.pem`, `credentials.json`, `token*`, SSH özel anahtarları daima `.gitignore` ile korunmalı, asla stage edilmemeli.
@@ -9,13 +19,18 @@
 - **Commit Formatı & Sıklığı (Checkpoint Commits):** Conventional Commits standardı (`feat(...)`, `fix(...)`, `refactor(...)`, `test(...)`, `chore(...)`). Büyük işlerin tek commit'e yığılması beklenmez; bir subagent işini bitirdiğinde, bağımsız bir modül tamamlandığında veya önemli bir aşama kaydedildiğinde bekletilmeden atomik kontrol noktası (checkpoint) commit'i atılır. Olası regresyon ve hatalarda sağlam duruma güvenle dönülür.
 
 ## 🌐 Tarayıcı Otomasyonu (/browser)
-- `/browser` veya DevTools işlemi öncesi Chrome 9222 portu kapalıysa başlat:
+- Varsayılan olarak `/browser` veya DevTools işlemi öncesi Chrome 9222 portu kapalıysa başlat:
   ```bash
   google-chrome-stable --remote-debugging-port=9222 --user-data-dir="$HOME/.config/chrome-debug"
   ```
+- **Vivaldi İsteği (Veri Kaybı Olmadan):** Kullanıcı açıkça Vivaldi ile çalışılmasını isterse (örn. "Vivaldi'yi `/browser` ile çalıştır"), mevcut Vivaldi profiline (`~/.config/vivaldi`) zarar verecek şekilde süreci öldürme, yeniden başlatma veya ana profil üzerine yazma yapma:
+  - Mevcut oturuma (açık sekmeler/oturumlar) bağlanmak için Vivaldi'de `vivaldi://inspect/#remote-debugging` açıkken `~/.config/vivaldi/DevToolsActivePort` dosyasından port ve WebSocket yolunu (`ws://127.0.0.1:<port>/devtools/browser/<id>`) okuyup `chrome-devtools-mcp --wsEndpoint` veya CDP WebSocket üzerinden bağlan.
+  - İzole yeni bir Vivaldi örneği gerekiyorsa yalnızca ayrı profil diziniyle başlat: `vivaldi-stable --remote-debugging-port=9222 --user-data-dir="$HOME/.config/vivaldi-debug"`.
+  - Not: Antigravity'nin yerleşik `/browser` alt ajanı kendi dahili tarayıcısını kullanır; Vivaldi otomasyonu `chrome_devtools` MCP / CDP WebSocket üzerinden yürütülür.
 
 ## 🧠 Merkezi İkinci Beyin (/home/melih/Sync/Obsidian/Agent)
 Vault daima aktiftir. Melih aksini ("kaydetme") belirtmedikçe önemli kararları, bilgileri ve ilerlemeleri kaydet.
+- Her işte `/home/melih/.gemini/antigravity/skills/beyin/SKILL.md` yönergelerini, kullanıcı `/beyin` komutunu ayrıca yazmasa da uygula. Hafıza, kaynak bağlamı, not/görev ve oturum kapanışı akışları bu skill'e tabidir.
 - **Başlangıç:** `/home/melih/Sync/Obsidian/Agent/🔮 850-Companion/` altındaki `Core.md`, `Kurallar.md`, `Last-Session.md` ve aktif `Threads.md` dosyalarını dikkate al.
 - **Kayıt Kanalları:**
   - Kalıcı bilgi/karar: `/usr/bin/python3 /home/melih/Sync/Obsidian/Agent/beyin.py note-create --file <json>` veya `knowledge/` altına MD + `sync`.
